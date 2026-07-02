@@ -1,0 +1,322 @@
+#include "resource.h"
+#include <windows.h>
+
+IDR_QTTABBARNATIVE REGISTRY "QTTabBarNative.rgs"
+IDR_QTTABBARCLASS REGISTRY "QTTabBarClass.rgs"
+IDR_AUTOLOADERNATIVE REGISTRY "AutoLoaderNative.rgs"
+IDR_QTSECONDVIEWBAR REGISTRY "QTSecondViewBar.rgs"
+IDR_QTBUTTONBAR REGISTRY "QTButtonBar.rgs"
+IDR_QTDESKTOPTOOL REGISTRY "QTDesktopTool.rgs"
+
+IDR_QTTABBAR_CONTEXT_MENU MENU
+BEGIN
+    POPUP "&Tabs"
+    BEGIN
+        MENUITEM "&New Tab", ID_CONTEXT_NEWTAB
+        MENUITEM "&Close Tab", ID_CONTEXT_CLOSETAB
+        MENUITEM "Close Tabs to the &Right", ID_CONTEXT_CLOSE_RIGHT
+        MENUITEM "Close Tabs to the &Left", ID_CONTEXT_CLOSE_LEFT
+        MENUITEM "Close &Other Tabs", ID_CONTEXT_CLOSE_OTHERS
+        MENUITEM "Restore &Last Closed", ID_CONTEXT_RESTORELASTCLOSED
+        MENUITEM SEPARATOR
+        POPUP "Add to &Group"
+        BEGIN
+            MENUITEM "(empty)", ID_CONTEXT_GROUP_BASE
+        END
+        MENUITEM "Create &Group...", ID_CONTEXT_CREATE_GROUP
+        MENUITEM SEPARATOR
+        MENUITEM "&Lock Tab", ID_CONTEXT_TOGGLE_LOCK
+        MENUITEM "&Clone Tab", ID_CONTEXT_CLONE_TAB
+        MENUITEM "Open in New &Window", ID_CONTEXT_OPEN_NEW_WINDOW
+        MENUITEM "&Copy Path", ID_CONTEXT_COPY_PATH
+        MENUITEM "&Properties", ID_CONTEXT_PROPERTIES
+        POPUP "&History"
+        BEGIN
+            MENUITEM "(empty)", ID_CONTEXT_HISTORY_BASE
+            MENUITEM "&Clear History", ID_CONTEXT_HISTORY_CLEAR
+        END
+        MENUITEM "Open &Command Prompt Here", ID_CONTEXT_OPEN_COMMAND
+        MENUITEM "Edit &Alias...", ID_CONTEXT_EDIT_ALIAS
+        MENUITEM SEPARATOR
+        MENUITEM "&Refresh", ID_CONTEXT_REFRESH
+        MENUITEM "&Options...", ID_CONTEXT_OPTIONS
+    END
+END
+
+IDD_OPTIONS_DIALOG DIALOGEX 0, 0, 360, 360
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "QTTabBar Options"
+FONT 9, "Segoe UI", 0, 0, 0x0
+BEGIN
+    CONTROL         "",IDC_OPTIONS_TAB,"SysTabControl32",WS_TABSTOP | WS_CHILD | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_BORDER,7,7,346,330
+    PUSHBUTTON      "Reset",IDC_RESET_BUTTON,102,338,50,14
+    DEFPUSHBUTTON   "OK",IDOK,214,338,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,268,338,50,14
+    PUSHBUTTON      "Apply",IDC_APPLY_BUTTON,322,338,50,14
+END
+
+IDD_OPTIONS_WINDOW DIALOGEX 0, 0, 340, 320
+STYLE DS_SETFONT | WS_CHILD | WS_VISIBLE
+FONT 9, "Segoe UI", 0, 0, 0x0
+BEGIN
+    LTEXT           "",IDC_WINDOW_HEADER,7,7,326,10
+    LTEXT           "",IDC_WINDOW_SINGLE_LABEL,7,22,326,10
+    CONTROL         "",IDC_CAPTURE_ENABLE,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,36,150,10
+    CONTROL         "",IDC_CAPTURE_DISABLE,"Button",BS_AUTORADIOBUTTON,180,36,150,10
+    LTEXT           "",IDC_DEFAULT_LOCATION_LABEL,7,52,326,10
+    EDITTEXT        IDC_DEFAULT_LOCATION_EDIT,14,66,240,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",IDC_DEFAULT_LOCATION_BROWSE,260,66,70,12
+    LTEXT           "",IDC_SESSION_LABEL,7,86,326,10
+    CONTROL         "",IDC_SESSION_NEW,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,100,300,10
+    CONTROL         "",IDC_SESSION_RESTORE_ALL,"Button",BS_AUTORADIOBUTTON,14,114,300,10
+    CONTROL         "",IDC_SESSION_RESTORE_LOCKED,"Button",BS_AUTORADIOBUTTON,14,128,300,10
+    LTEXT           "",IDC_CLOSE_BUTTON_LABEL,7,146,326,10
+    CONTROL         "",IDC_CLOSE_ACTION_WINDOW,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,160,300,10
+    CONTROL         "",IDC_CLOSE_ACTION_TAB,"Button",BS_AUTORADIOBUTTON,14,174,300,10
+    CONTROL         "",IDC_CLOSE_ACTION_UNLOCKED,"Button",BS_AUTORADIOBUTTON,14,188,300,10
+    LTEXT           "",IDC_TRAY_LABEL,7,204,326,10
+    CONTROL         "",IDC_TRAY_ON_CLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,218,150,10
+    CONTROL         "",IDC_TRAY_ON_MINIMIZE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,180,218,150,10
+    LTEXT           "",IDC_WINDOW_OTHERS_LABEL,7,234,326,10
+    CONTROL         "",IDC_AUTO_HOOK_WINDOW,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,262,300,10
+    CONTROL         "",IDC_SHOW_FAIL_NAV_MSG,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,276,300,10
+    CONTROL         "",IDC_CAPTURE_WECHAT_SELECTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,290,300,10
+END
+
+IDD_OPTIONS_TABS DIALOGEX 0, 0, 340, 360
+STYLE DS_SETFONT | WS_CHILD
+FONT 9, "Segoe UI", 0, 0, 0x0
+BEGIN
+    LTEXT           "",IDC_TABS_HEADER,7,7,326,10
+    LTEXT           "",IDC_TABS_OPEN_LABEL,7,22,160,10
+    COMBOBOX        IDC_TABS_NEW_TAB_COMBO,170,20,160,80,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "",IDC_TABS_CLOSE_SWITCH_LABEL,7,40,160,10
+    COMBOBOX        IDC_TABS_CLOSE_SWITCH_COMBO,170,38,160,80,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "",IDC_TABS_ACTIVATE_NEW,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,58,300,10
+    CONTROL         "",IDC_TABS_NEVER_OPEN_SAME,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,72,300,10
+    CONTROL         "",IDC_TABS_RENAME_AMBIGUOUS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,86,300,10
+    LTEXT           "",IDC_TABS_DRAG_HOVER_LABEL,7,104,326,10
+    CONTROL         "",IDC_TABS_DRAG_SWITCH,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,118,300,10
+    CONTROL         "",IDC_TABS_DRAG_SUBMENU,"Button",BS_AUTORADIOBUTTON,14,132,300,10
+    LTEXT           "",IDC_TABS_ICON_HEADER,7,150,326,10
+    CONTROL         "",IDC_TABS_SHOW_FOLDER_ICONS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,164,300,10
+    CONTROL         "",IDC_TABS_SUBDIR_ICON_ACTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,30,178,284,10
+    CONTROL         "",IDC_TABS_SHOW_DRIVE_LETTER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,30,192,284,10
+    LTEXT           "",IDC_TABS_CLOSE_HEADER,7,210,326,10
+    CONTROL         "",IDC_TABS_CLOSE_BUTTONS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,224,300,10
+    CONTROL         "",IDC_TABS_CLOSE_ALT_ONLY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,30,238,284,10
+    CONTROL         "",IDC_TABS_CLOSE_HOVER_ONLY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,30,252,284,10
+    LTEXT           "",IDC_TABS_BAR_HEADER,7,270,326,10
+    CONTROL         "",IDC_TABS_SHOW_NAV_BUTTONS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,284,300,10
+    CONTROL         "",IDC_TABS_NAV_LEFT,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,30,298,140,10
+    CONTROL         "",IDC_TABS_NAV_RIGHT,"Button",BS_AUTORADIOBUTTON,180,298,140,10
+    CONTROL         "",IDC_TABS_ALLOW_MULTI_ROWS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,312,300,10
+    CONTROL         "",IDC_TABS_ACTIVE_ROW_BOTTOM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,30,326,284,10
+    CONTROL         "",IDC_TABS_NEED_PLUS_BUTTON,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,340,300,10
+END
+
+IDD_OPTIONS_TWEAKS DIALOGEX 0, 0, 340, 250
+STYLE DS_SETFONT | WS_CHILD
+FONT 9, "Segoe UI", 0, 0, 0x0
+BEGIN
+    LTEXT           "",IDC_TWEAKS_HEADER,7,7,326,10
+    LTEXT           "",IDC_TWEAKS_GENERAL_LABEL,7,22,326,10
+    CONTROL         "",IDC_TWEAKS_ALWAYS_HEADERS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,36,310,10
+    CONTROL         "",IDC_TWEAKS_REDIRECT_LIBRARY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,50,310,10
+    CONTROL         "",IDC_TWEAKS_KILL_EXT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,64,310,10
+    CONTROL         "",IDC_TWEAKS_F2_SELECTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,78,310,10
+    CONTROL         "",IDC_TWEAKS_WRAP_ARROW,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,92,310,10
+    CONTROL         "",IDC_TWEAKS_BACKSPACE_UP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,106,310,10
+    CONTROL         "",IDC_TWEAKS_HORIZONTAL_SCROLL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,120,310,10
+    LTEXT           "",IDC_TWEAKS_OLD_LIST_LABEL,7,140,326,10
+    CONTROL         "",IDC_TWEAKS_FORCE_SYSLISTVIEW,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,154,310,10
+    CONTROL         "",IDC_TWEAKS_FULL_ROW_SELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,30,168,294,10
+    CONTROL         "",IDC_TWEAKS_GRID_LINES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,30,182,294,10
+    CONTROL         "",IDC_TWEAKS_ALT_ROW_COLORS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,30,196,294,10
+    LTEXT           "",IDC_TWEAKS_FOREGROUND_LABEL,30,214,120,10
+    LTEXT           "",IDC_TWEAKS_FOREGROUND_VALUE,160,214,80,10
+    PUSHBUTTON      "...",IDC_TWEAKS_FOREGROUND_BUTTON,246,212,30,12
+    LTEXT           "",IDC_TWEAKS_BACKGROUND_LABEL,30,230,120,10
+    LTEXT           "",IDC_TWEAKS_BACKGROUND_VALUE,160,230,80,10
+    PUSHBUTTON      "...",IDC_TWEAKS_BACKGROUND_BUTTON,246,228,30,12
+END
+
+IDD_OPTIONS_TOOLTIPS DIALOGEX 0, 0, 340, 190
+STYLE DS_SETFONT | WS_CHILD
+FONT 9, "Segoe UI", 0, 0, 0x0
+BEGIN
+    LTEXT           "Tooltips options coming soon.",IDC_STATIC,7,7,200,10
+END
+
+IDD_OPTIONS_GENERAL DIALOGEX 0, 0, 340, 190
+STYLE DS_SETFONT | WS_CHILD
+FONT 9, "Segoe UI", 0, 0, 0x0
+BEGIN
+    LTEXT           "General options coming soon.",IDC_STATIC,7,7,200,10
+END
+
+IDD_OPTIONS_APPEARANCE DIALOGEX 0, 0, 340, 190
+STYLE DS_SETFONT | WS_CHILD
+FONT 9, "Segoe UI", 0, 0, 0x0
+BEGIN
+    LTEXT           "Appearance options coming soon.",IDC_STATIC,7,7,200,10
+END
+
+IDD_OPTIONS_MOUSE DIALOGEX 0, 0, 340, 190
+STYLE DS_SETFONT | WS_CHILD
+FONT 9, "Segoe UI", 0, 0, 0x0
+BEGIN
+    LTEXT           "Mouse options coming soon.",IDC_STATIC,7,7,200,10
+END
+
+IDD_OPTIONS_KEYS DIALOGEX 0, 0, 340, 190
+STYLE DS_SETFONT | WS_CHILD
+FONT 9, "Segoe UI", 0, 0, 0x0
+BEGIN
+    LTEXT           "Keyboard options coming soon.",IDC_STATIC,7,7,200,10
+END
+
+IDD_OPTIONS_GROUPS DIALOGEX 0, 0, 340, 190
+STYLE DS_SETFONT | WS_CHILD
+FONT 9, "Segoe UI", 0, 0, 0x0
+BEGIN
+    LTEXT           "Groups options coming soon.",IDC_STATIC,7,7,200,10
+END
+
+IDD_OPTIONS_APPS DIALOGEX 0, 0, 340, 190
+STYLE DS_SETFONT | WS_CHILD
+FONT 9, "Segoe UI", 0, 0, 0x0
+BEGIN
+    LTEXT           "Apps options coming soon.",IDC_STATIC,7,7,200,10
+END
+
+IDD_OPTIONS_BUTTONBAR DIALOGEX 0, 0, 340, 190
+STYLE DS_SETFONT | WS_CHILD
+FONT 9, "Segoe UI", 0, 0, 0x0
+BEGIN
+    LTEXT           "Button bar options coming soon.",IDC_STATIC,7,7,200,10
+END
+
+IDD_OPTIONS_PLUGINS DIALOGEX 0, 0, 340, 190
+STYLE DS_SETFONT | WS_CHILD
+FONT 9, "Segoe UI", 0, 0, 0x0
+BEGIN
+    LTEXT           "Plugin options coming soon.",IDC_STATIC,7,7,200,10
+END
+
+IDD_OPTIONS_LANGUAGE DIALOGEX 0, 0, 340, 190
+STYLE DS_SETFONT | WS_CHILD
+FONT 9, "Segoe UI", 0, 0, 0x0
+BEGIN
+    LTEXT           "Language options coming soon.",IDC_STATIC,7,7,200,10
+END
+
+IDD_OPTIONS_ABOUT DIALOGEX 0, 0, 340, 190
+STYLE DS_SETFONT | WS_CHILD
+FONT 9, "Segoe UI", 0, 0, 0x0
+BEGIN
+    LTEXT           "About information coming soon.",IDC_STATIC,7,7,200,10
+END
+
+IDD_TEXT_INPUT DIALOGEX 0, 0, 220, 90
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION ""
+FONT 9, "Segoe UI", 0, 0, 0x0
+BEGIN
+    LTEXT           "",IDC_TEXT_PROMPT,7,7,206,26
+    EDITTEXT        IDC_TEXT_INPUT,7,38,206,14,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "OK",IDOK,100,60,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,156,60,50,14
+END
+
+STRINGTABLE
+BEGIN
+    IDS_PROJNAME           "QTTabBarNative"
+    IDS_DESKTOPTOOL_TITLE  "QTTab Desktop Tool"
+    IDS_DESKTOPTOOL_GROUPS "Groups"
+    IDS_DESKTOPTOOL_RECENT_TABS "Recent Tabs"
+    IDS_DESKTOPTOOL_APPLICATIONS "Applications"
+    IDS_DESKTOPTOOL_RECENT_FILES "Recent Files"
+    IDS_DESKTOPTOOL_SETTINGS "Settings"
+    IDS_DESKTOPTOOL_LOCK_MENU "Lock menu order"
+    IDS_DESKTOPTOOL_ONE_CLICK "Open items with single click"
+    IDS_DESKTOPTOOL_APP_SHORTCUTS "Enable application shortcuts"
+    IDS_DESKTOPTOOL_INCLUDE "Include"
+    IDS_DESKTOPTOOL_EXPAND "Expand"
+    IDS_DESKTOPTOOL_REORDER "Reorder"
+    IDS_DESKTOPTOOL_MOVE_UP "Move up"
+    IDS_DESKTOPTOOL_MOVE_DOWN "Move down"
+    IDS_DESKTOPTOOL_LOADING "Loading..."
+    IDS_DESKTOPTOOL_EMPTY "(empty)"
+    IDS_DESKTOPTOOL_NOT_AVAILABLE "Not yet available"
+    IDS_DESKTOPTOOL_NO_TABBAR "Desktop data unavailable"
+    IDS_CONTEXT_MENU_NEW_TAB "&New Tab"
+    IDS_CONTEXT_MENU_CLOSE_TAB "&Close Tab"
+    IDS_CONTEXT_MENU_CLOSE_RIGHT "Close Tabs to the &Right"
+    IDS_CONTEXT_MENU_CLOSE_LEFT "Close Tabs to the &Left"
+    IDS_CONTEXT_MENU_CLOSE_OTHERS "Close &Other Tabs"
+    IDS_CONTEXT_MENU_RESTORE_LAST "Restore &Last Closed"
+    IDS_CONTEXT_MENU_GROUP_CAPTION "Add to &Group"
+    IDS_CONTEXT_MENU_NO_GROUPS "(no groups)"
+    IDS_CONTEXT_MENU_CREATE_GROUP "Create &Group..."
+    IDS_CONTEXT_MENU_LOCK_TAB "&Lock Tab"
+    IDS_CONTEXT_MENU_UNLOCK_TAB "&Unlock Tab"
+    IDS_CONTEXT_MENU_CLONE_TAB "&Clone Tab"
+    IDS_CONTEXT_MENU_OPEN_NEW_WIN "Open in New &Window"
+    IDS_CONTEXT_MENU_COPY_PATH "&Copy Path"
+    IDS_CONTEXT_MENU_PROPERTIES "&Properties"
+    IDS_CONTEXT_MENU_HISTORY "&History"
+    IDS_CONTEXT_MENU_HISTORY_EMPTY "(empty)"
+    IDS_CONTEXT_MENU_HISTORY_CLEAR "&Clear History"
+    IDS_CONTEXT_MENU_COMMAND "Open &Command Prompt Here"
+    IDS_CONTEXT_MENU_EDIT_ALIAS "Edit &Alias..."
+    IDS_CONTEXT_MENU_REFRESH "&Refresh"
+    IDS_CONTEXT_MENU_OPTIONS "&Options..."
+    IDS_CONTEXT_DIALOG_GROUP_TITLE "Create Group"
+    IDS_CONTEXT_DIALOG_GROUP_PROMPT "Enter a name for the new group:"
+    IDS_CONTEXT_DIALOG_ALIAS_TITLE "Tab Alias"
+    IDS_CONTEXT_DIALOG_ALIAS_PROMPT "Enter an alias for this tab:"
+    IDS_BUTTONBAR_MENU_OVERFLOW "Too many items to display"
+    IDS_OPTIONS_PAGE01_WINDOW "Change how Explorer Windows behave.;Single Window mode;Capture new Explorer windows as new tabs;Do not capture new Explorer windows;Default location for new windows and tabs;Session saving;Start a new session each time;Restore all tabs from the previous session;Restore only the locked tabs from the previous session;When the close button is clicked;Close the window;Close the current tab;Close all unlocked tabs;Send the window to the Task Tray on;Close;Minimize;Blue Plus Button"
+    IDS_OPTIONS_PAGE01_WINDOW_OTHERS "Other options"
+    IDS_OPTIONS_INVALID_LOCATION "Enter a valid shell path or pick a folder for the default location."
+    IDS_OPTIONS_WINDOW_AUTOHOOK "Automatically hook Explorer windows"
+    IDS_OPTIONS_WINDOW_FAILMSG "Show navigation failure message"
+    IDS_OPTIONS_WINDOW_CAPTURESEL "Capture WeChat selection"
+    IDS_OPTIONS_PAGE02_TABS "Change options related to tabs.;Open new tabs:;When the current tab is closed, switch to the:;Switch to new tabs immediately;Reuse existing tabs;Rename ambiguous tabs;When drag-hovering over a tab,;Switch to it;Show the Subfolder Tip menu;Tab icons;Show folder icons on tabs;Show the Subfolder Tip menu when the icon is clicked;Show the drive letter on the icon;Close button;Show close button on tabs;Only with the Alt key down;Only on mouse hover;Tab Bar;Show navigation buttons on the tab bar;On the left;On the right;Allow multiple rows of tabs;Always put the row with the active tab on the bottom;Left of the current tab;Right of the current tab;In the leftmost position;In the rightmost position;Tab to the left;Tab to the right;Leftmost tab;Rightmost tab;Last activated tab;Behavior"
+    IDS_OPTIONS_PAGE03_TWEAKS "Enable or disable tweaks to Explorer's List View.;Tweaks that can be used with either List View;Display column headers in all view modes (Windows Vista/7);Use the standard filesystem view for Library folders (Windows 7);Deselect file extension when renaming files (Windows XP);Cycle selection with F2 while renaming;Wrap around when moving the selection with the arrow keys;Backspace goes up one level (Windows Vista/7);Scrolling with mouse wheel while holding shift scrolls horizontally;Tweaks that can only be used with the older List View;Enable the older List View control (Windows 7);Full row selection in Details view;Show grid lines in Details view;Alternate row colors in Details view;Foreground color:;Background color:"
+END
+
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION 1,5,62,0
+PRODUCTVERSION 1,5,62,0
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x2L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "CompanyName", "QTTabBar"
+            VALUE "FileDescription", "QTTabBar Native Deskband"
+            VALUE "FileVersion", "1.5.62.0"
+            VALUE "InternalName", "QTTabBarNative"
+            VALUE "OriginalFilename", "QTTabBarNative.dll"
+            VALUE "ProductName", "QTTabBar"
+            VALUE "ProductVersion", "1.5.62.0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+

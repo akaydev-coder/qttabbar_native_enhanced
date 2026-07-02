@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <ProjectGuid>{D5F4F666-4E5D-4D6F-9F65-3D2A37E19B63}</ProjectGuid>
+    <Keyword>AtlProject</Keyword>
+    <RootNamespace>QTTabBarNative</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseOfAtl>Dynamic</UseOfAtl>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseOfAtl>Dynamic</UseOfAtl>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseOfAtl>Dynamic</UseOfAtl>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseOfAtl>Dynamic</UseOfAtl>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="Shared" />
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)\native\QTTabBarNative\Win32\Debug\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)\native\QTTabBarNative\Win32\Release\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)\native\QTTabBarNative\x64\Debug\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)\native\QTTabBarNative\x64\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)\Intermediate\Win32\Debug\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectDir)\Intermediate\Win32\Release\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)\Intermediate\x64\Debug\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)\Intermediate\x64\Release\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalOptions>/permissive- %(AdditionalOptions)</AdditionalOptions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <ModuleDefinitionFile>QTTabBarNative.def</ModuleDefinitionFile>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <TargetEnvironment>Win32</TargetEnvironment>
+      <HeaderFileName>QTTabBarNative_i.h</HeaderFileName>
+      <InterfaceIdentifierFileName>QTTabBarNative_i.c</InterfaceIdentifierFileName>
+      <GenerateClientFiles>Stub</GenerateClientFiles>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalOptions>/permissive- %(AdditionalOptions)</AdditionalOptions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <ModuleDefinitionFile>QTTabBarNative.def</ModuleDefinitionFile>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <TargetEnvironment>Win32</TargetEnvironment>
+      <HeaderFileName>QTTabBarNative_i.h</HeaderFileName>
+      <InterfaceIdentifierFileName>QTTabBarNative_i.c</InterfaceIdentifierFileName>
+      <GenerateClientFiles>Stub</GenerateClientFiles>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalOptions>/permissive- %(AdditionalOptions)</AdditionalOptions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <ModuleDefinitionFile>QTTabBarNative.def</ModuleDefinitionFile>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <TargetEnvironment>X64</TargetEnvironment>
+      <HeaderFileName>QTTabBarNative_i.h</HeaderFileName>
+      <InterfaceIdentifierFileName>QTTabBarNative_i.c</InterfaceIdentifierFileName>
+      <GenerateClientFiles>Stub</GenerateClientFiles>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalOptions>/permissive- %(AdditionalOptions)</AdditionalOptions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <ModuleDefinitionFile>QTTabBarNative.def</ModuleDefinitionFile>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <TargetEnvironment>X64</TargetEnvironment>
+      <HeaderFileName>QTTabBarNative_i.h</HeaderFileName>
+      <InterfaceIdentifierFileName>QTTabBarNative_i.c</InterfaceIdentifierFileName>
+      <GenerateClientFiles>Stub</GenerateClientFiles>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="BreadcrumbBar.h" />
+    <ClInclude Include="AliasStoreNative.h" />
+    <ClInclude Include="AppsManagerNative.h" />
+    <ClInclude Include="ClosedTabHistoryStore.h" />
+    <ClInclude Include="Config.h" />
+    <ClInclude Include="ConfigEnums.h" />
+    <ClInclude Include="ConfigTypes.h" />
+    <ClInclude Include="FluentGlassBridge.h" />
+    <ClInclude Include="InstanceManager.h" />
+    <ClInclude Include="InstanceManagerNative.h" />
+    <ClInclude Include="HookLibraryBridge.h" />
+    <ClInclude Include="HookManagerNative.h" />
+    <ClInclude Include="HookMessages.h" />
+    <ClInclude Include="OptionsDialog.h" />
+    <ClInclude Include="PluginContracts.h" />
+    <ClInclude Include="PluginLibrary.h" />
+    <ClInclude Include="PluginManagerNative.h" />
+    <ClInclude Include="GroupsManagerNative.h" />
+    <ClInclude Include="QTButtonBar.h" />
+    <ClInclude Include="QTDesktopTool.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="framework.h" />
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="AutoLoaderNative.h" />
+    <ClInclude Include="QTTabBarClass.h" />
+    <ClInclude Include="QTSecondViewBar.h" />
+    <ClInclude Include="QTTabBarNativeGuids.h" />
+    <ClInclude Include="RecentFileHistoryNative.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="NativeTabControl.h" />
+    <ClInclude Include="TabBarHost.h" />
+    <ClInclude Include="TaskbarTabPreviewManager.h" />
+    <ClInclude Include="TabSwitchOverlay.h" />
+    <ClInclude Include="TextInputDialog.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="BreadcrumbBar.cpp" />
+    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="AliasStoreNative.cpp" />
+    <ClCompile Include="AppsManagerNative.cpp" />
+    <ClCompile Include="ClosedTabHistoryStore.cpp" />
+    <ClCompile Include="Config.cpp" />
+    <ClCompile Include="FluentGlassBridge.cpp" />
+    <ClCompile Include="HookLibraryBridge.cpp" />
+    <ClCompile Include="HookManagerNative.cpp" />
+    <ClCompile Include="InstanceManager.cpp" />
+    <ClCompile Include="InstanceManagerNative.cpp" />
+    <ClCompile Include="NativeExports.cpp" />
+    <ClCompile Include="OptionsDialog.cpp" />
+    <ClCompile Include="PluginLibrary.cpp" />
+    <ClCompile Include="PluginManagerNative.cpp" />
+    <ClCompile Include="GroupsManagerNative.cpp" />
+    <ClCompile Include="AutoLoaderNative.cpp" />
+    <ClCompile Include="QTButtonBar.cpp" />
+    <ClCompile Include="QTDesktopTool.cpp" />
+    <ClCompile Include="QTTabBarClass.cpp" />
+    <ClCompile Include="QTSecondViewBar.cpp" />
+    <ClCompile Include="NativeTabControl.cpp" />
+    <ClCompile Include="TabBarHost.cpp" />
+    <ClCompile Include="TaskbarTabPreviewManager.cpp" />
+    <ClCompile Include="TabSwitchOverlay.cpp" />
+    <ClCompile Include="TextInputDialog.cpp" />
+    <ClCompile Include="SubDirTipWindow.cpp" />
+    <ClCompile Include="ThumbnailTooltipWindow.cpp" />
+    <ClCompile Include="QTTabBarNative.cpp" />
+    <ClCompile Include="RecentFileHistoryNative.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="QTTabBarNative.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Midl Include="QTTabBarNative.idl" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="AutoLoaderNative.rgs" />
+    <None Include="QTButtonBar.rgs" />
+    <None Include="QTDesktopTool.rgs" />
+    <None Include="QTTabBarClass.rgs" />
+    <None Include="QTTabBarNative.def" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
+</Project>

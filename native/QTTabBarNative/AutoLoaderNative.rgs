@@ -1,0 +1,25 @@
+HKCR
+{
+    ForceRemove {D2BF470E-ED1C-487F-A777-2BD8835EB6CE} = s 'QTTabBar AutoLoader'
+    {
+        val MenuText = s 'QTTabBar AutoLoader'
+        val HelpText = s 'QTTabBar AutoLoader'
+        NoRemove InprocServer32
+        {
+            val = s '%MODULE%'
+            val ThreadingModel = s 'Both'
+        }
+        ForceRemove ProgID = s 'QTTabBarLib.AutoLoader'
+    }
+    ForceRemove QTTabBarLib.AutoLoader = s 'QTTabBar AutoLoader'
+    {
+        val CLSID = s '{D2BF470E-ED1C-487F-A777-2BD8835EB6CE}'
+    }
+}
+HKLM
+{
+    NoRemove 'Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Browser Helper Objects'
+    {
+        ForceRemove {D2BF470E-ED1C-487F-A777-2BD8835EB6CE}
+    }
+}

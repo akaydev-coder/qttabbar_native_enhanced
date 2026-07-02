@@ -1,0 +1,635 @@
+﻿//    This file is part of QTTabBar, a shell extension for Microsoft
+//    Windows Explorer.
+//    Copyright (C) 2007-2022  Quizo, Paul Accisano, indiff
+//
+//    QTTabBar is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+//
+//    QTTabBar is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with QTTabBar.  If not, see <http://www.gnu.org/licenses/>.
+
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.IO;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
+using BandObjectLib;
+using Microsoft.Win32;
+using QTTabBarLib.Interop;
+
+namespace QTTabBarLib {
+    public class RebarController : IDisposable {
+        private const int GWL_STYLE = -16;
+        private const int RBS_BANDBORDERS = 0x0400;
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct STYLESTRUCT {
+            public int styleOld;
+            public int styleNew;
+        }
+
+        private QTTabBarClass tabbar;
+        private IOleCommandTarget bandObjectSite;
+        private IntPtr ExplorerHandle;
+        private TextureBrush textureBrushRebar; 
+        private Bitmap bmpRebar;
+        private NativeWindowController rebarController;
+        private NativeWindowController menuController;
+        private int DefaultRebarCOLORREF = -1;
+        private bool MenuHasFocus;
+        private bool? defaultRebarBandBorders;
+        private bool? defaultTabBandChildEdge;
+        private bool adjustingRebarStyle;
+        private bool adjustingTabBandStyle;
+        private Timer fluentApplyTimer;
+        private int fluentApplyAttempts;
+
+        public IntPtr Handle { get; private set; }
+
+        public bool MenuBarShown {
+            get {
+                using(RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", false)) {
+                    return  key != null && (int)key.GetValue("AlwaysShowMenus", 0) != 0;
+                }
+            }
+            set {
+                using(RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", true)) {
+                    if(key != null) key.SetValue("AlwaysShowMenus", value ? 1 : 0);
+                }
+                EnsureMenuBarIsCorrect();
+            }
+        }
+
+        public bool Locked {
+            get {
+                REBARBANDINFO structure = new REBARBANDINFO();
+                structure.cbSize = Marshal.SizeOf(structure);
+                structure.fMask = 1;
+                IntPtr ptr2 = PInvoke.SendMessage(Handle, 0x405, IntPtr.Zero, ref structure);
+                return ptr2 != IntPtr.Zero && (structure.fStyle & 0x100) != 0;
+            }
+            set {
+                const int LockToolbarsCmdID = 0xA20C;
+                if(Locked == value) return;
+                PInvoke.SendMessage(QTUtility.IsXP ? ExplorerHandle : WindowUtils.GetShellTabWindowClass(ExplorerHandle), 
+                        WM.COMMAND, (IntPtr)LockToolbarsCmdID, IntPtr.Zero);
+            }
+        }
+
+        public RebarController(QTTabBarClass tabbar, IntPtr hwndReBar, IOleCommandTarget bandObjectSite) {
+            this.tabbar = tabbar;
+            this.bandObjectSite = bandObjectSite;
+            ExplorerHandle = PInvoke.GetAncestor(hwndReBar, 2);
+            Handle = hwndReBar;
+            rebarController = new NativeWindowController(hwndReBar);
+            rebarController.MessageCaptured += RebarMessageCaptured;
+            
+            REBARBANDINFO structure = new REBARBANDINFO();
+            structure.cbSize = Marshal.SizeOf(structure);
+            structure.fMask = RBBIM.CHILD | RBBIM.ID;
+            int num = (int)PInvoke.SendMessage(Handle, RB.GETBANDCOUNT, IntPtr.Zero, IntPtr.Zero);
+            for(int i = 0; i < num; i++) {
+                PInvoke.SendMessage(Handle, RB.GETBANDINFO, (IntPtr)i, ref structure);
+                if(PInvoke.GetClassName(structure.hwndChild) == "ToolbarWindow32" && structure.wID == 1) {
+                    menuController = new NativeWindowController(structure.hwndChild);
+                    menuController.MessageCaptured += MenuMessageCaptured;
+                    break;
+                }
+            }
+
+            if(Config.Skin.UseRebarBGColor && !FluentGlassManager.Enabled) {
+                if(DefaultRebarCOLORREF == -1) {
+                    DefaultRebarCOLORREF = (int)PInvoke.SendMessage(Handle, RB.GETBKCOLOR, IntPtr.Zero, IntPtr.Zero);
+                }
+                int num2 = QTUtility2.MakeCOLORREF(Config.Skin.RebarColor);
+                PInvoke.SendMessage(Handle, RB.SETBKCOLOR, IntPtr.Zero, (IntPtr)num2);
+            }
+
+            EnsureMenuBarIsCorrect();
+            RefreshFluentRebarLayout();
+            BeginFluentGlassAttachRetry();
+        }
+
+        private void BeginFluentGlassAttachRetry() {
+            if(!FluentGlassManager.Enabled || TryApplyFluentGlassAfterAttach()) {
+                return;
+            }
+
+            fluentApplyAttempts = 1;
+            fluentApplyTimer = new Timer { Interval = 100 };
+            fluentApplyTimer.Tick += FluentApplyTimer_Tick;
+            fluentApplyTimer.Start();
+        }
+
+        private void FluentApplyTimer_Tick(object sender, EventArgs e) {
+            fluentApplyAttempts++;
+            bool finished = !FluentGlassManager.Enabled ||
+                    !PInvoke.IsWindow(Handle) ||
+                    !PInvoke.IsWindow(tabbar.Handle) ||
+                    TryApplyFluentGlassAfterAttach() ||
+                    fluentApplyAttempts >= 10;
+            if(!finished) {
+                return;
+            }
+
+            if(fluentApplyAttempts >= 10 && !FluentGlassManager.IsAppliedTo(ExplorerHandle)) {
+                QTUtility2.log(String.Format(
+                    "FluentGlass attach retry exhausted explorer=0x{0:X} rebar=0x{1:X} tab=0x{2:X}",
+                    ExplorerHandle.ToInt64(), Handle.ToInt64(), tabbar.Handle.ToInt64()));
+            }
+            StopFluentApplyTimer();
+        }
+
+        private bool TryApplyFluentGlassAfterAttach() {
+            if(!PInvoke.IsWindow(ExplorerHandle) || !PInvoke.IsWindow(Handle) || !PInvoke.IsWindow(tabbar.Handle)) {
+                return false;
+            }
+
+            FluentGlassManager.Apply(ExplorerHandle, tabbar.Handle);
+            if(!FluentGlassManager.IsAppliedTo(ExplorerHandle)) {
+                return false;
+            }
+
+            RefreshBG();
+            return true;
+        }
+
+        private void StopFluentApplyTimer() {
+            if(fluentApplyTimer == null) {
+                return;
+            }
+            fluentApplyTimer.Stop();
+            fluentApplyTimer.Tick -= FluentApplyTimer_Tick;
+            fluentApplyTimer.Dispose();
+            fluentApplyTimer = null;
+        }
+
+        private bool IsTabBand(int bandIndex, REBARBANDINFO incoming) {
+            if(incoming.hwndChild == tabbar.Handle) {
+                return true;
+            }
+
+            REBARBANDINFO current = new REBARBANDINFO();
+            current.cbSize = Marshal.SizeOf(current);
+            current.fMask = RBBIM.CHILD;
+            return PInvoke.SendMessage(Handle, RB.GETBANDINFO, (IntPtr)bandIndex, ref current) != IntPtr.Zero &&
+                    current.hwndChild == tabbar.Handle;
+        }
+
+        private void RefreshFluentRebarLayout() {
+            if(Handle == IntPtr.Zero || !PInvoke.IsWindow(Handle)) {
+                return;
+            }
+
+            int currentStyle = unchecked((int)PInvoke.GetWindowLongPtr(Handle, GWL_STYLE).ToInt64());
+            if(!defaultRebarBandBorders.HasValue) {
+                defaultRebarBandBorders = (currentStyle & RBS_BANDBORDERS) != 0;
+            }
+
+            int desiredStyle = currentStyle;
+            if(FluentGlassManager.Enabled) {
+                desiredStyle &= ~RBS_BANDBORDERS;
+            }
+            else if(defaultRebarBandBorders.Value) {
+                desiredStyle |= RBS_BANDBORDERS;
+            }
+            else {
+                desiredStyle &= ~RBS_BANDBORDERS;
+            }
+
+            if(desiredStyle != currentStyle) {
+                adjustingRebarStyle = true;
+                try {
+                    PInvoke.SetWindowLongPtr(Handle, GWL_STYLE, (IntPtr)desiredStyle);
+                    PInvoke.SetWindowPos(Handle, IntPtr.Zero, 0, 0, 0, 0,
+                            SWP.NOMOVE | SWP.NOSIZE | SWP.NOZORDER | SWP.NOACTIVATE | SWP.FRAMECHANGED);
+                }
+                finally {
+                    adjustingRebarStyle = false;
+                }
+            }
+
+            int bandCount = (int)PInvoke.SendMessage(Handle, RB.GETBANDCOUNT, IntPtr.Zero, IntPtr.Zero);
+            for(int i = 0; i < bandCount; i++) {
+                REBARBANDINFO info = new REBARBANDINFO();
+                info.cbSize = Marshal.SizeOf(info);
+                info.fMask = RBBIM.STYLE | RBBIM.CHILD;
+                if(PInvoke.SendMessage(Handle, RB.GETBANDINFO, (IntPtr)i, ref info) == IntPtr.Zero ||
+                        info.hwndChild != tabbar.Handle) {
+                    continue;
+                }
+
+                if(!defaultTabBandChildEdge.HasValue) {
+                    defaultTabBandChildEdge = (info.fStyle & RBBS.CHILDEDGE) != 0;
+                }
+
+                int desiredBandStyle = info.fStyle;
+                if(FluentGlassManager.Enabled) {
+                    desiredBandStyle &= ~RBBS.CHILDEDGE;
+                }
+                else if(defaultTabBandChildEdge.Value) {
+                    desiredBandStyle |= RBBS.CHILDEDGE;
+                }
+                else {
+                    desiredBandStyle &= ~RBBS.CHILDEDGE;
+                }
+
+                if(desiredBandStyle != info.fStyle) {
+                    info.fMask = RBBIM.STYLE;
+                    info.fStyle = desiredBandStyle;
+                    adjustingTabBandStyle = true;
+                    try {
+                        PInvoke.SendMessage(Handle, RB.SETBANDINFO, (IntPtr)i, ref info);
+                    }
+                    finally {
+                        adjustingTabBandStyle = false;
+                    }
+                }
+                break;
+            }
+        }
+
+        private void CreateRebarImage() {
+            if(bmpRebar != null) {
+                bmpRebar.Dispose();
+                bmpRebar = null;
+            }
+            if(textureBrushRebar != null) {
+                textureBrushRebar.Dispose();
+                textureBrushRebar = null;
+            }
+            if (!File.Exists(Config.Skin.RebarImageFile)) {
+                // 加载默认的背景图
+                bmpRebar = Resources_Image.imgRebar;
+                textureBrushRebar = new TextureBrush(bmpRebar);
+            } else
+            {
+                try
+                {
+                    using (Bitmap bitmap = new Bitmap(Config.Skin.RebarImageFile))
+                    {
+                        bmpRebar = new Bitmap(bitmap, bitmap.Size);
+                        textureBrushRebar = new TextureBrush(bmpRebar);
+                        if (Path.GetExtension(Config.Skin.RebarImageFile).PathEquals(".bmp"))
+                        {
+                            bmpRebar.MakeTransparent(Color.Magenta);
+                        }
+                    }
+                }
+                catch(Exception ex)
+                {
+                    QTUtility2.MakeErrorLog(ex, "RebarController CreateRebarImage");
+                }
+            }
+            
+        }
+        /**
+         * 确认按钮栏是否正确
+         */
+        public void EnsureMenuBarIsCorrect() {
+            bool show = MenuHasFocus || MenuBarShown;
+            REBARBANDINFO structure = new REBARBANDINFO();
+            structure.cbSize = Marshal.SizeOf(structure);
+            structure.fMask = RBBIM.CHILD | RBBIM.ID;
+            int num = (int)PInvoke.SendMessage(Handle, RB.GETBANDCOUNT, IntPtr.Zero, IntPtr.Zero);
+            for(int i = 0; i < num; i++) {
+                PInvoke.SendMessage(Handle, RB.GETBANDINFO, (IntPtr)i, ref structure);
+                if(structure.hwndChild != menuController.Handle) continue;
+                PInvoke.SendMessage(Handle, RB.SHOWBAND, (IntPtr)i, show ? ((IntPtr)1) : IntPtr.Zero);
+                return;
+            }
+        }
+
+
+        protected  int CalcBandHeight(int count)
+        {
+           // return count * (Graphic.ScaleBy(ExplorerManager.WindowScaling, Config.TabHeight) - 3) + 4 + (this.IsBottomBar ? 0 : Config.TabBarPadding.Vertical);
+           return -1;
+        }
+
+
+
+        /**
+         * 刷新高度 适配4k
+         */
+        internal unsafe void RefreshHeight() {
+            // QTUtility2.log("QTTabBarClass RefreshHeight");
+            const int DBID_BANDINFOCHANGED = 0;
+            const int OLECMDEXECOPT_DODEFAULT = 0;
+            const int RBN_HEIGHTCHANGE = -831;
+            const int GWL_HWNDPARENT = -8;
+            
+            try {
+                RefreshFluentRebarLayout();
+                tabbar.SuspendLayout();
+                if(bandObjectSite != null) {
+                    Guid pguidCmdGroup = ExplorerGUIDs.CGID_DeskBand;
+                    bandObjectSite.Exec(ref pguidCmdGroup, 
+                        DBID_BANDINFOCHANGED, 
+                        OLECMDEXECOPT_DODEFAULT, 
+                        IntPtr.Zero, 
+                        IntPtr.Zero);
+                    if(QTUtility.IsXP) {
+                        RECT rect;
+                        PInvoke.GetWindowRect(ExplorerHandle, out rect);
+                        int num = (rect.Height << 0x10) | rect.Width;
+                        PInvoke.SendMessage(ExplorerHandle, 5, IntPtr.Zero, (IntPtr)num);
+                    }
+                    else {
+                        IntPtr windowLongPtr = PInvoke.GetWindowLongPtr(Handle, GWL_HWNDPARENT);
+                        NMHDR nmhdr = new NMHDR {
+                            hwndFrom = Handle,
+                            idFrom = (IntPtr)40965, // magic id
+                            code = RBN_HEIGHTCHANGE
+                        };
+
+                        if (!(windowLongPtr != IntPtr.Zero) || !PInvoke.IsWindow(windowLongPtr))
+                            return;
+                        PInvoke.SendMessage(windowLongPtr, WM.NOTIFY, nmhdr.idFrom, ref nmhdr);
+                        PInvoke.RedrawWindow(windowLongPtr, IntPtr.Zero, IntPtr.Zero, RDW.INVALIDATE | RDW.VALIDATE | RDW.ALLCHILDREN | RDW.ERASENOW);
+
+
+
+                        int bandCount = (int)PInvoke.SendMessage(rebarController.Handle, RB.GETBANDCOUNT, IntPtr.Zero, IntPtr.Zero);
+                        // graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                        RECT rectBand = new RECT();
+                        RECT rectMargin = new RECT();
+                        for (int i = 0; i < bandCount; i++)
+                        {
+                            if (PInvoke.SendMessage(rebarController.Handle, RB.GETRECT, (IntPtr)i, ref rectBand) == IntPtr.Zero)
+                            {
+                                continue;
+                            }
+                            // QTUtility2.log("Refresh Height bandIndex : " + i );
+                            PInvoke.SendMessage(rebarController.Handle, RB.GETBANDBORDERS, (IntPtr)i, ref rectMargin);
+                            rectBand.left -= !QTUtility.IsXP ? 4 : rectMargin.left;
+                            rectBand.top -= rectMargin.top;
+                            rectBand.right += rectMargin.right;
+                            rectBand.bottom += rectMargin.bottom;
+
+                            // QTUtility2.log("rectBand Height: " + rectBand.Height);
+                            // rectTargets.Add(rectBand.ToRectangle());
+                        }
+
+
+                        /*REBARBANDINFO structure = new REBARBANDINFO();
+                        structure.cbSize = Marshal.SizeOf(structure);
+                        structure.fMask = RBBIM.CHILD | RBBIM.ID;
+                        int wParam = (int)PInvoke.SendMessage(Handle, RB.GETBANDCOUNT, IntPtr.Zero, IntPtr.Zero);
+
+                        RECT rect;
+                        PInvoke.GetWindowRect(ExplorerHandle, out rect);
+                        for (int i = 0; i < wParam; i++)
+                        {
+                            PInvoke.SendMessage(Handle, RB.GETBANDINFO, (IntPtr)i, ref structure);
+                            if (structure.hwndChild != menuController.Handle) continue;
+                            // PInvoke.SendMessage(Handle, RB.SHOWBAND, (IntPtr)i, show ? ((IntPtr)1) : IntPtr.Zero);
+
+
+                            PInvoke.SendMessage(Handle, 1052, (IntPtr)wParam, ref structure);
+                            structure.cyChild = rect.Height + 100;
+                            structure.cyMinChild = rect.Height + 100;
+                            PInvoke.SendMessage(Handle, 1035, (IntPtr)wParam, ref structure);
+                        }*/
+                    }
+                }
+            }
+            catch(COMException exception) {
+                QTUtility2.MakeErrorLog(exception);
+            }
+            finally {
+                tabbar.ResumeLayout();
+            }
+        }
+
+        /// <summary>
+        /// 刷新背景颜色和图片
+        /// </summary>
+        public void RefreshBG() {
+            RefreshFluentRebarLayout();
+            if(FluentGlassManager.Enabled) {
+                if(DefaultRebarCOLORREF != -1) {
+                    PInvoke.SendMessage(Handle, RB.SETBKCOLOR, IntPtr.Zero, (IntPtr)DefaultRebarCOLORREF);
+                    DefaultRebarCOLORREF = -1;
+                }
+            }
+            else if(Config.Skin.UseRebarBGColor) {
+                // Save the default color and set the new one
+                if(DefaultRebarCOLORREF == -1) {
+                    DefaultRebarCOLORREF = (int)PInvoke.SendMessage(Handle, RB.GETBKCOLOR, IntPtr.Zero, IntPtr.Zero);
+                }
+                int c = QTUtility2.MakeCOLORREF(Config.Skin.RebarColor);
+                PInvoke.SendMessage(Handle, RB.SETBKCOLOR, IntPtr.Zero, (IntPtr)c);
+            }
+            else if(DefaultRebarCOLORREF != -1) {
+                // Restore the default BG color
+                PInvoke.SendMessage(Handle, RB.SETBKCOLOR, IntPtr.Zero, (IntPtr)DefaultRebarCOLORREF);
+                DefaultRebarCOLORREF = -1;
+            }
+
+            // Refresh the rebar
+            IntPtr hWnd = PInvoke.GetWindowLongPtr(Handle, -8);
+            if(hWnd != IntPtr.Zero) {
+                PInvoke.RedrawWindow(hWnd, IntPtr.Zero, IntPtr.Zero, 0x289);
+            }
+            // 修复刷新图片空图片情况报错
+            if(Config.Skin.UseRebarImage && Config.Skin.RebarImageFile.Length > 0 && File.Exists( Config.Skin.RebarImageFile ) ) {
+                CreateRebarImage();
+            }
+        }
+
+        private bool MenuMessageCaptured(ref Message m) {
+            const int TB_SETANCHORHIGHLIGHT = 1097;
+            if(m.Msg == TB_SETANCHORHIGHLIGHT) {
+                MenuHasFocus = (m.WParam != IntPtr.Zero);
+                EnsureMenuBarIsCorrect();
+            }
+            return false;
+        }
+
+        private bool RebarMessageCaptured(ref Message m) {
+            if(m.Msg == WM.STYLECHANGING && m.WParam.ToInt32() == GWL_STYLE && m.LParam != IntPtr.Zero) {
+                STYLESTRUCT style = (STYLESTRUCT)Marshal.PtrToStructure(m.LParam, typeof(STYLESTRUCT));
+                if(!adjustingRebarStyle) {
+                    defaultRebarBandBorders = (style.styleNew & RBS_BANDBORDERS) != 0;
+                }
+                if(FluentGlassManager.Enabled) {
+                    style.styleNew &= ~RBS_BANDBORDERS;
+                    Marshal.StructureToPtr(style, m.LParam, false);
+                }
+                return false;
+            }
+
+            // Make sure the menu bar obeys the Explorer setting.
+            // Was this really so hard, Microsoft?
+            if(m.Msg == RB.SETBANDINFO) {
+                REBARBANDINFO pInfo = (REBARBANDINFO)Marshal.PtrToStructure(m.LParam, typeof(REBARBANDINFO));
+                bool infoChanged = false;
+                if((PInvoke.GetClassName(pInfo.hwndChild) == "ToolbarWindow32") && (pInfo.wID == 1)) {
+                    if(MenuHasFocus || MenuBarShown) {
+                        pInfo.fStyle &= ~RBBS.HIDDEN;
+                    }
+                    else {
+                        pInfo.fStyle |= RBBS.HIDDEN;
+                    }
+                    infoChanged = true;
+                }
+                if((pInfo.fMask & RBBIM.STYLE) != 0 && IsTabBand(m.WParam.ToInt32(), pInfo)) {
+                    if(!adjustingTabBandStyle) {
+                        defaultTabBandChildEdge = (pInfo.fStyle & RBBS.CHILDEDGE) != 0;
+                    }
+                    if(FluentGlassManager.Enabled) {
+                        pInfo.fStyle &= ~RBBS.CHILDEDGE;
+                        infoChanged = true;
+                    }
+                }
+                if(infoChanged) {
+                    Marshal.StructureToPtr(pInfo, m.LParam, false);
+                }
+                return false;
+            }
+
+            if(m.Msg == WM.ERASEBKGND && FluentGlassManager.SuppressManagedBackgroundFor(ExplorerHandle)) {
+                m.Result = (IntPtr)1;
+                return true;
+            }
+
+            if(m.Msg == WM.ERASEBKGND && (Config.Skin.UseRebarBGColor || Config.Skin.UseRebarImage)) {
+                bool fFilled = false;
+                using(Graphics graphics = Graphics.FromHdc(m.WParam)) {
+                    RECT rect;
+                    PInvoke.GetWindowRect(Handle, out rect);
+                    Rectangle rectRebar = new Rectangle(0, 0, rect.Width, rect.Height);
+
+                    // Fill the Rebar background color
+                    if(Config.Skin.UseRebarBGColor) {
+                        using(SolidBrush brush = new SolidBrush(Config.Skin.RebarColor)) {
+                            graphics.FillRectangle(brush, rectRebar);
+                            fFilled = true;
+                        }
+                    }
+                    else if(Config.Skin.RebarStretchMode == StretchMode.Real) {
+                        rebarController.DefWndProc(ref m);
+                    }
+
+                    // Draw the Rebar image
+                    if(VisualStyleRenderer.IsSupported && Config.Skin.UseRebarImage && Config.Skin.RebarImageFile.Length > 0) {
+                        if(bmpRebar == null) {
+                            CreateRebarImage();
+                        }
+                        if(bmpRebar != null) {
+                            List<Rectangle> rectTargets = new List<Rectangle>();
+                            if(Config.Skin.RebarImageSeperateBars) {
+                                int bandCount = (int)PInvoke.SendMessage(rebarController.Handle, RB.GETBANDCOUNT, IntPtr.Zero, IntPtr.Zero);
+                                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                                RECT rectBand = new RECT();
+                                RECT rectMargin = new RECT();
+                                for(int i = 0; i < bandCount; i++) {
+                                    if(PInvoke.SendMessage(rebarController.Handle, RB.GETRECT, (IntPtr)i, ref rectBand) == IntPtr.Zero) {
+                                        continue;
+                                    }
+                                    PInvoke.SendMessage(rebarController.Handle, RB.GETBANDBORDERS, (IntPtr)i, ref rectMargin);
+                                    rectBand.left -= !QTUtility.IsXP ? 4 : rectMargin.left;
+                                    rectBand.top -= rectMargin.top;
+                                    rectBand.right += rectMargin.right;
+                                    rectBand.bottom += rectMargin.bottom;
+                                    rectTargets.Add(rectBand.ToRectangle());
+                                }
+                            }
+                            else {
+                                rectTargets.Add(rectRebar);
+                            }
+
+                            foreach(Rectangle destRect in rectTargets) {
+                                switch(Config.Skin.RebarStretchMode) {
+                                    case StretchMode.Real:
+                                        Rectangle rectDest2 = new Rectangle(new Point(0, 0), destRect.Size);
+                                        Rectangle rectBmp = new Rectangle(new Point(0, 0), bmpRebar.Size);
+                                        rectBmp.Intersect(rectDest2);
+                                        rectDest2.Intersect(rectBmp);
+                                        rectDest2.Offset(destRect.Location);
+                                        graphics.DrawImage(bmpRebar, rectDest2, rectBmp, GraphicsUnit.Pixel);
+                                        break;
+                                        
+                                    case StretchMode.Tile:
+                                        textureBrushRebar = textureBrushRebar ?? new TextureBrush(bmpRebar);
+                                        textureBrushRebar.TranslateTransform(destRect.X, destRect.Y);
+                                        graphics.FillRectangle(textureBrushRebar, destRect);
+                                        textureBrushRebar.ResetTransform();
+                                        break;
+
+                                    default: // Full
+                                        // todo: make this a function
+                                        graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                                        Padding margin = Config.Skin.RebarSizeMargin;
+                                        int left = margin.Left;
+                                        int top = margin.Top;
+                                        int right = margin.Right;
+                                        int bottom = margin.Bottom;
+                                        int vertical = margin.Vertical;
+                                        int horizontal = margin.Horizontal;
+                                        int width = bmpRebar.Width;
+                                        int height = bmpRebar.Height;
+                                        Rectangle[] dstRects = new Rectangle[] {
+                                            new Rectangle(destRect.X, destRect.Y, left, top),
+                                            new Rectangle(destRect.X + left, destRect.Y, destRect.Width - horizontal, top), 
+                                            new Rectangle(destRect.Right - right, destRect.Y, right, top), 
+                                            new Rectangle(destRect.X, destRect.Y + top, left, destRect.Height - vertical), 
+                                            new Rectangle(destRect.X + left, destRect.Y + top, destRect.Width - horizontal, destRect.Height - vertical), 
+                                            new Rectangle(destRect.Right - right, destRect.Y + top, right, destRect.Height - vertical),
+                                            new Rectangle(destRect.X, destRect.Bottom - bottom, left, bottom), 
+                                            new Rectangle(destRect.X + left, destRect.Bottom - bottom, destRect.Width - horizontal, bottom),
+                                            new Rectangle(destRect.Right - right, destRect.Bottom - bottom, right, bottom)
+                                        };
+                                        Rectangle[] srcRects = new Rectangle[] {
+                                            new Rectangle(0, 0, left, top),
+                                            new Rectangle(left, 0, width - horizontal, top),
+                                            new Rectangle(width - right, 0, right, top),
+                                            new Rectangle(0, top, left, height - vertical),
+                                            new Rectangle(left, top, width - horizontal, height - vertical),
+                                            new Rectangle(width - right, top, right, height - vertical),
+                                            new Rectangle(0, height - bottom, left, bottom),
+                                            new Rectangle(left, height - bottom, width - horizontal, bottom),
+                                            new Rectangle(width - right, height - bottom, right, bottom),                                
+                                        };
+                                        for(int i = 0; i < 9; i++) {
+                                            graphics.DrawImage(bmpRebar, dstRects[i], srcRects[i], GraphicsUnit.Pixel);
+                                        }
+                                        break;
+                                }   
+                            }
+                            fFilled = true;
+                        }
+                    }
+                }
+                if(fFilled) {
+                    m.Result = (IntPtr)1;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public void Dispose() {
+            StopFluentApplyTimer();
+            if(bmpRebar != null) {
+                bmpRebar.Dispose();
+                bmpRebar = null;
+            }
+            if(textureBrushRebar != null) {
+                textureBrushRebar.Dispose();
+                textureBrushRebar = null;
+            }
+        }
+    }
+}

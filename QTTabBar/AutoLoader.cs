@@ -1,0 +1,173 @@
+﻿//    This file is part of QTTabBar, a shell extension for Microsoft
+//    Windows Explorer.
+//    Copyright (C) 2007-2022 indiff  Quizo, Paul Accisano
+//
+//    QTTabBar is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+//
+//    QTTabBar is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with QTTabBar.  If not, see <http://www.gnu.org/licenses/>.
+
+using System;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
+using BandObjectLib;
+using Microsoft.Win32;
+using SHDocVw;
+
+namespace QTTabBarLib {
+
+    [Guid("D2BF470E-ED1C-487F-A777-2BD8835EB6CE"), ComVisible(true), ClassInterface(ClassInterfaceType.None)]
+    public class AutoLoader : IObjectWithSite {
+        private IWebBrowser2 explorer;       
+        private Timer activationTimer;
+        private int activationAttempts;
+        private static int crashDiagnosticsInstalled;
+        private const string BHOKEYNAME = @"Software\Microsoft\Windows\CurrentVersion\Explorer\Browser Helper Objects\";
+        private const int E_FAIL = unchecked((int)0x80004005);
+
+        [ComRegisterFunction]
+        public static void Register(Type t) {
+            string name = t.GUID.ToString("B");
+            using(RegistryKey key = Registry.ClassesRoot.CreateSubKey(@"CLSID\" + name)) {
+                key.SetValue(null, "QTTabBar AutoLoader");
+                key.SetValue("MenuText", "QTTabBar AutoLoader");
+                key.SetValue("HelpText", "QTTabBar AutoLoader");
+            }
+            Registry.LocalMachine.CreateSubKey(BHOKEYNAME + name);
+            QCommandBarVertical.EnsureRegistered();
+            QTUtility2.flog( "AutoLoader 注册表 QTTabBar 自动加载(安装)");
+        }
+
+        [ComUnregisterFunction]
+        public static void Unregister(Type t) {
+            using(RegistryKey key = Registry.LocalMachine.CreateSubKey(BHOKEYNAME)) {
+                key.DeleteSubKey(t.GUID.ToString("B"), false);
+            }
+            QTUtility2.flog("AutoLoader 注册表 QTTabBar 自动加载(卸载)");
+        }
+
+        public int SetSite(object site) {
+            InstallCrashDiagnostics();
+            // SetProcessDPIAware是Vista以上才有的函数，这样直接调用会使得程序不兼容XP
+            // PInvoke.SetProcessDPIAware();
+            // QTUtility2.log("QTUtility AutoLoader SetSite SetProcessDPIAware 不兼容XP");
+            QTUtility2.log("SetSite");
+            explorer = site as IWebBrowser2;
+            if(explorer == null) {
+                StopActivationTimer();
+            }
+            // QTUtility2.flog("QTTabBar AutoLoader SetSite ");
+            /*if(explorer == null || Process.GetCurrentProcess().ProcessName == "iexplore") {
+                QTUtility2.log("QTTabBar AutoLoader SetSite Throw Exception ");
+                // QTUtility2.flog("QTTabBar AutoLoader SetSite Throw Exception ");
+                // 基于指定的 IErrorInfo 接口，用特定失败 HRESULT 引发异常
+                Marshal.ThrowExceptionForHR(E_FAIL);
+            }
+            else {*/
+
+            if (explorer != null && Process.GetCurrentProcess().ProcessName.ToLower() != "iexplore")
+            {
+                QTUtility2.log("QTTabBar AutoLoader SetSite ActivateIt ");
+                QCommandBarVertical.EnsureUserExplorerBarRegistration();
+                // QTUtility2.flog("QTTabBar AutoLoader SetSite ActivateIt ");
+                ActivateIt();
+            }
+
+            return 0;
+        }
+
+        private static void InstallCrashDiagnostics() {
+            if(System.Threading.Interlocked.Exchange(ref crashDiagnosticsInstalled, 1) != 0) return;
+            AppDomain.CurrentDomain.UnhandledException += delegate(object sender, UnhandledExceptionEventArgs e) {
+                try {
+                    QTUtility2.MakeErrorLog(e.ExceptionObject as Exception,
+                            "AppDomain unhandled exception; terminating=" + e.IsTerminating);
+                }
+                catch {
+                }
+            };
+            Application.ThreadException += delegate(object sender, System.Threading.ThreadExceptionEventArgs e) {
+                try {
+                    QTUtility2.MakeErrorLog(e.Exception, "Windows Forms thread exception");
+                }
+                catch {
+                }
+            };
+            QTUtility2.flog("QTTabBar crash diagnostics installed");
+        }
+
+        public int GetSite(ref Guid guid, out object ppvSite) {
+            ppvSite = explorer;
+            return 0;
+        }
+
+        private void ActivateIt() {
+            string installDateString;
+            DateTime installDate;
+            string minDate = DateTime.MinValue.ToString();
+            using(RegistryKey key = Registry.LocalMachine.OpenSubKey(RegConst.Root)) {
+                installDateString = key == null ? minDate : (string)key.GetValue("InstallDate", minDate);
+                installDate = DateTime.Parse(installDateString);
+            }
+            using(RegistryKey key = Registry.CurrentUser.CreateSubKey(RegConst.Root)) {
+                DateTime lastActivation = DateTime.Parse((string)key.GetValue("ActivationDate", minDate));
+                if(installDate.CompareTo(lastActivation) <= 0) return;
+
+                key.SetValue("ActivationDate", installDateString);
+                QTUtility2.flog("QTTabBar AutoLoader add ActivationDate");
+            }
+
+            ScheduleFirstActivation();
+        }
+
+        private void ScheduleFirstActivation() {
+            if(activationTimer != null || explorer == null) return;
+
+            activationAttempts = 0;
+            activationTimer = new Timer { Interval = 250 };
+            activationTimer.Tick += activationTimer_Tick;
+            activationTimer.Start();
+            QTUtility2.flog("QTTabBar AutoLoader first activation scheduled");
+        }
+
+        private void activationTimer_Tick(object sender, EventArgs e) {
+            if(explorer == null || InstanceManager.GetThreadTabBar() != null) {
+                StopActivationTimer();
+                return;
+            }
+
+            try {
+                activationAttempts++;
+                object tabBarClsid = typeof(QTTabBarClass).GUID.ToString("B");
+                object show = true;
+                object size = null;
+                explorer.ShowBrowserBar(ref tabBarClsid, ref show, ref size);
+                QTUtility2.flog("QTTabBar AutoLoader first activation ShowBrowserBar attempt " + activationAttempts);
+            }
+            catch(Exception ex) {
+                QTUtility2.MakeErrorLog(ex, "AutoLoader first activation ShowBrowserBar");
+            }
+
+            if(activationAttempts >= 40) {
+                StopActivationTimer();
+            }
+        }
+
+        private void StopActivationTimer() {
+            if(activationTimer == null) return;
+            activationTimer.Stop();
+            activationTimer.Tick -= activationTimer_Tick;
+            activationTimer.Dispose();
+            activationTimer = null;
+        }
+    }
+}

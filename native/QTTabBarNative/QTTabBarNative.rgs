@@ -1,0 +1,9 @@
+HKCR
+{
+    NoRemove AppID
+    {
+        ForceRemove {53A08D7D-6A5C-466E-B706-280BF1C4D775} = s 'QTTabBarNative'
+        {
+        }
+    }
+}

@@ -1,0 +1,24 @@
+HKCR
+{
+    ForceRemove {D2BF470E-ED1C-487F-A333-2BD8835EB6CE} = s 'QTTabBar'
+    {
+        val AppID = s '{53A08D7D-6A5C-466E-B706-280BF1C4D775}'
+        val MenuText = s 'QTTabBar'
+        val HelpText = s 'QTTabBar'
+        NoRemove 'Implemented Categories'
+        {
+            ForceRemove '{00021492-0000-0000-C000-000000000046}'
+            ForceRemove '{62C8FE65-4EBB-45E7-B440-6E39B2CDBF29}'
+        }
+        NoRemove InprocServer32
+        {
+            val = s '%MODULE%'
+            val ThreadingModel = s 'Both'
+        }
+        ForceRemove ProgID = s 'QTTabBarLib.QTTabBarClass'
+    }
+    ForceRemove QTTabBarLib.QTTabBarClass = s 'QTTabBar'
+    {
+        val CLSID = s '{D2BF470E-ED1C-487F-A333-2BD8835EB6CE}'
+    }
+}

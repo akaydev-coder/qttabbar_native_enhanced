@@ -1,0 +1,27 @@
+LIBRARY "QTTabBarNative"
+EXPORTS
+    DllCanUnloadNow      PRIVATE
+    DllGetClassObject    PRIVATE
+    DllRegisterServer    PRIVATE
+    DllUnregisterServer  PRIVATE
+    DllInstall           PRIVATE
+    QTTabBarNative_RefreshPlugins
+    QTTabBarNative_GetPluginCount
+    QTTabBarNative_GetPluginMetadata
+    QTTabBarNative_SetPluginEnabled
+    QTTabBarNative_IsPluginEnabled
+    QTTabBarNative_CreatePluginInstance
+    QTTabBarNative_DestroyPluginInstance
+    QTTabBarNative_PluginOnMenuClick
+    QTTabBarNative_PluginOnOption
+    QTTabBarNative_PluginOnShortcut
+    QTTabBarNative_PluginOpen
+    QTTabBarNative_PluginQueryShortcuts
+    QTTabBarNative_PluginHasOption
+    QTTabBarNative_PluginClose
+    QTTabBarNative_InitializeHookLibrary
+    QTTabBarNative_ShutdownHookLibrary
+    QTTabBarNative_ApplyFluentGlass
+    QTTabBarNative_DisableFluentGlass
+    QTTabBarNative_InitShellBrowserHook
+    QTTabBarNative_ActivateAutoLoader

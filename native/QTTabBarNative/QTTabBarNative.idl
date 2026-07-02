@@ -1,0 +1,58 @@
+import "oaidl.idl";
+import "ocidl.idl";
+
+[uuid(7AB1C387-4B4C-457D-91C7-54B18A9764B2), version(1.0)]
+library QTTabBarNativeLib
+{
+    importlib("stdole2.tlb");
+
+    [uuid(E4F0E46A-1EAC-4F67-8C47-58C672A6433B)]
+    interface IQTTabBarClass : IUnknown
+    {
+    };
+
+    [uuid(E4F0E46A-1EAC-4F67-8C47-58C672A6433C)]
+    interface IQTButtonBar : IUnknown
+    {
+    };
+
+    [uuid(D2BF470E-ED1C-487F-A333-2BD8835EB6CE)]
+    coclass QTTabBarClass
+    {
+        [default] interface IQTTabBarClass;
+    };
+
+    [uuid(724B8F87-69C4-4B78-944F-F13D2AD33B71)]
+    interface IQTSecondViewBar : IUnknown
+    {
+    };
+
+    [uuid(D2BF470E-ED1C-487F-A88A-2BD8835EB6CE)]
+    coclass QTSecondViewBar
+    {
+        [default] interface IQTSecondViewBar;
+    };
+
+    [uuid(D2BF470E-ED1C-487F-A666-2BD8835EB6CE)]
+    coclass QTButtonBar
+    {
+        [default] interface IQTButtonBar;
+    };
+
+    [uuid(FA1C427D-ACAB-4CFB-AC87-0180258FF0C4)]
+    interface IQTDesktopTool : IUnknown
+    {
+    };
+
+    [uuid(D2BF470E-ED1C-487F-A555-2BD8835EB6CE)]
+    coclass QTDesktopTool
+    {
+        [default] interface IQTDesktopTool;
+    };
+
+    [uuid(D2BF470E-ED1C-487F-A777-2BD8835EB6CE)]
+    coclass AutoLoaderNative
+    {
+        [default] interface IObjectWithSite;
+    };
+};

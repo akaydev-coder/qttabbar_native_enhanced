@@ -1,0 +1,11 @@
+* text=auto
+
+*.sln text eol=crlf
+*.csproj text eol=crlf
+*.vcxproj text eol=crlf
+*.wixproj text eol=crlf
+*.wxs text eol=crlf
+*.wxl text eol=crlf
+*.bat text eol=crlf
+*.ps1 text eol=crlf
+

@@ -1,0 +1,55 @@
+# Visual Studio and MSBuild
+.vs/
+**/bin/
+**/obj/
+**/Debug/
+**/Release/
+**/x64/
+**/Win32/
+*.user
+*.suo
+*.sdf
+*.opensdf
+*.VC.db
+*.VC.VC.opendb
+*.pdb
+*.ilk
+*.exp
+*.lib
+*.tlog
+*.lastbuildstate
+
+# WiX and installer outputs
+*.msi
+*.wixobj
+*.wixpdb
+*.cab
+Installer/bin/
+Installer/obj/
+
+# Test and analysis output
+TestResults/
+coverage/
+*.trx
+*.log
+*.dmp
+*.il
+*.res
+verify_*/
+compare_*/
+bundle_extract_*/
+msi_extract_*/
+.analysis/
+_research/
+
+# Local packages and archives
+packages/
+*.zip
+*.rar
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.tmp
