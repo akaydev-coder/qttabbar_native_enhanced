@@ -8,7 +8,7 @@ An enhanced native/managed QTTabBar fork for the classic Windows Explorer interf
 
 ## Stable release
 
-Current version: **1.5.62.0 Stable**
+Current version: **1.5.70.0 Stable**
 
 Download the installer from [GitHub Releases](https://github.com/akaydev-coder/qttabbar_native_enhanced/releases/latest).
 
@@ -22,7 +22,7 @@ Download the installer from [GitHub Releases](https://github.com/akaydev-coder/q
 - Per-tab taskbar thumbnails and full-size DWM live previews
 - Taskbar thumbnail activation and close-button support
 - Explorer background images configured through `C:\ProgramData\QTTabBar\config.ini`
-- Isolated background renderer that leaves legacy Shell hooks disabled by default
+- Background renderer owned by the stable native bridge; the legacy hook DLL remains unloaded by default
 - Stable options dialog lifecycle and runtime settings refresh
 - Explorer registration, toolbar persistence, focus and Win+E capture fixes
 
@@ -35,7 +35,7 @@ Windows 11 may require a classic Explorer restoration solution. Test changes in 
 
 ## Installation
 
-1. Download `QTTabBar Setup - 1.5.62.0 Stable.exe` from the latest release.
+1. Download `QTTabBar Setup - 1.5.70.0 Stable.exe` from the latest release.
 2. Run the installer as an administrator.
 3. Restart Windows when requested.
 4. In Explorer, enable **QTTabBar** under **View > Toolbars**.
@@ -45,7 +45,7 @@ Error logs are written to `%APPDATA%\QTTabBar\QTTabBarException.log`.
 
 ## Explorer background
 
-The installer creates `C:\ProgramData\QTTabBar\config.ini` and a default `libai.png` image. The background renderer is independent from the disabled legacy Shell hooks.
+The installer creates `C:\ProgramData\QTTabBar\config.ini` and a default `libai.png` image. The background renderer runs directly inside `QTTabBarNative.dll`; it does not load the legacy `QTHookLib` in background-only mode. Images are decoded through Windows Imaging Component into premultiplied `32bppPBGRA` surfaces before only the required `dui70.dll` import slots are patched.
 
 ```ini
 [hook]
@@ -54,12 +54,23 @@ enabled=false
 [image]
 enabled=true
 random=false
+folder=Image
+custom=false
 posType=3
 imgAlpha=255
 imgPath=%ProgramData%\QTTabBar\libai.png
 ```
 
 `posType` values: `0` top-left, `1` top-right, `2` bottom-left, `3` bottom-right, `4` centered, `5` stretch, `6` zoom-fill.
+
+Place additional PNG/BMP/JPG/JPEG files in the configured `folder`. With `custom=true`, a section named after an Explorer path can select one of those files:
+
+```ini
+[C:\Users\Public\Pictures]
+img=example.png
+```
+
+Hold Escape while Explorer starts to bypass background initialization for recovery.
 
 ## Building
 
@@ -95,4 +106,3 @@ Major integration, debugging and implementation assistance for this enhanced edi
 ## License
 
 This project is distributed under the [GNU General Public License v3.0](LICENSE.txt). Existing copyright and attribution notices in inherited source files remain in effect.
-

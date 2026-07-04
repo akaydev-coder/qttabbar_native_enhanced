@@ -427,7 +427,6 @@ namespace QTTabBarLib {
         public TaskbarTabPreviewManager(Action<int> activateCallback, Action<int> closeCallback) {
             this.activateCallback = activateCallback;
             this.closeCallback = closeCallback;
-            QTUtility2.log("TaskbarTabPreviewManager build=1.5.62.0 Stable mode=isolated-explorer-background deferred-thumbnail-close sharp-offset-live-preview owned-proxies fixed-versatile-width");
         }
 
         public void Update(IntPtr ownerExplorerHandle, bool enable, IList<Entry> entries) {

@@ -188,6 +188,8 @@
     <ClInclude Include="InstanceManager.h" />
     <ClInclude Include="InstanceManagerNative.h" />
     <ClInclude Include="HookLibraryBridge.h" />
+    <ClInclude Include="..\..\QTHookLib\ExplorerBackgroundRenderer.h" />
+    <ClInclude Include="..\..\QTHookLib\ScopedBackgroundHooks.h" />
     <ClInclude Include="HookManagerNative.h" />
     <ClInclude Include="HookMessages.h" />
     <ClInclude Include="OptionsDialog.h" />
@@ -227,6 +229,12 @@
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="FluentGlassBridge.cpp" />
     <ClCompile Include="HookLibraryBridge.cpp" />
+    <ClCompile Include="..\..\QTHookLib\ExplorerBackgroundRenderer.cpp">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\QTHookLib\ScopedBackgroundHooks.cpp">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="HookManagerNative.cpp" />
     <ClCompile Include="InstanceManager.cpp" />
     <ClCompile Include="InstanceManagerNative.cpp" />
@@ -252,6 +260,11 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="QTTabBarNative.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\MinHook\libMinHook.vcxproj">
+      <Project>{65021938-D251-46FA-BC3D-85C385D4C06D}</Project>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Midl Include="QTTabBarNative.idl" />

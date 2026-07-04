@@ -18,9 +18,12 @@ public:
 
     HRESULT Initialize(const HookCallbacks& callbacks, const wchar_t* libraryPath);
     HRESULT InitializeBackground(const HookCallbacks& callbacks, const wchar_t* libraryPath);
+    HRESULT InitializeBackgroundRenderer(const HookCallbacks& callbacks);
+    HRESULT InstallBackgroundHooks();
     void Shutdown();
     HRESULT InitShellBrowserHook(IUnknown* shellBrowser);
     HRESULT RegisterBackgroundWindow(HWND window);
+    HRESULT UpdateBackgroundWindow(HWND window, const wchar_t* path);
 
 private:
     HookLibraryBridge() = default;
@@ -34,6 +37,8 @@ private:
 
     HookCallbacks callbacks_{};
     HMODULE module_ = nullptr;
+    bool backgroundRendererInitialized_ = false;
+    bool backgroundInitialized_ = false;
     bool initializationFailed_ = false;
 };
 

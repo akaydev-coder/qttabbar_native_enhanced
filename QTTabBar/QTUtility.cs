@@ -42,7 +42,7 @@ using System.Text;
 namespace QTTabBarLib {
     internal static class QTUtility {
         internal static readonly Version BetaRevision = new Version(0, 0);
-        internal static readonly Version CurrentVersion = new Version(1, 5, 62, 0);
+        internal static readonly Version CurrentVersion = new Version(1, 5, 79, 0);
         internal static readonly string BuildVerion = string.Empty;
         internal const int FIRST_MOUSE_ONLY_ACTION = 1000;
         internal static readonly string REG_PERSONALIZE = @"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize";

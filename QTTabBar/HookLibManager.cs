@@ -28,6 +28,7 @@ namespace QTTabBarLib {
     public static class HookLibManager {
         private static bool fShellBrowserIsHooked;
         private static bool fHookLibraryLoaded;
+        private static bool fBackgroundRendererLoaded;
         private static int[] hookStatus = Enumerable.Repeat(-1, Enum.GetNames(typeof(Hooks)).Length).ToArray();
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -55,6 +56,12 @@ namespace QTTabBarLib {
         private static extern int QTTabBarNative_InitializeBackgroundLibrary(ref HookCallbacks callbacks, string libraryPath);
 
         [DllImport("QTTabBarNative.dll", CallingConvention = CallingConvention.StdCall)]
+        private static extern int QTTabBarNative_InitializeBackgroundRenderer(ref HookCallbacks callbacks);
+
+        [DllImport("QTTabBarNative.dll", CallingConvention = CallingConvention.StdCall)]
+        private static extern int QTTabBarNative_InstallBackgroundHooks();
+
+        [DllImport("QTTabBarNative.dll", CallingConvention = CallingConvention.StdCall)]
         private static extern void QTTabBarNative_ShutdownHookLibrary();
 
         [DllImport("QTTabBarNative.dll", CallingConvention = CallingConvention.StdCall)]
@@ -62,6 +69,10 @@ namespace QTTabBarLib {
 
         [DllImport("QTTabBarNative.dll", CallingConvention = CallingConvention.StdCall)]
         private static extern int QTTabBarNative_RegisterBackgroundWindow(IntPtr window);
+
+        [DllImport("QTTabBarNative.dll", CallingConvention = CallingConvention.StdCall,
+            CharSet = CharSet.Unicode)]
+        private static extern int QTTabBarNative_UpdateBackgroundWindow(IntPtr window, string path);
 
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
         private static extern uint GetPrivateProfileString(string section, string key,
@@ -180,6 +191,7 @@ namespace QTTabBarLib {
                     QTTabBarNative_ShutdownHookLibrary();
                 }
                 fHookLibraryLoaded = false;
+                fBackgroundRendererLoaded = false;
                 LoadedHook = false;
                 QTUtility2.flog("Legacy QTHookLib disabled by safe mode; Explorer background is not enabled");
                 return;
@@ -193,9 +205,6 @@ namespace QTTabBarLib {
                     return;
                 }
                 
-                if(backgroundOnly) {
-                    QTUtility2.flog("Loading isolated Explorer background renderer; legacy Shell hooks remain disabled");
-                }
                 ManagementObjectSearcher searcher = backgroundOnly
                         ? null
                         : new ManagementObjectSearcher("SELECT * FROM Win32_OperatingSystem");
@@ -237,6 +246,7 @@ namespace QTTabBarLib {
                 {
                     QTTabBarNative_ShutdownHookLibrary();
                     fHookLibraryLoaded = false;
+                    fBackgroundRendererLoaded = false;
                     LoadedHook = false;
                 }
                 return;
@@ -244,27 +254,17 @@ namespace QTTabBarLib {
 
             if (!shouldLoadHookLibrary)
             {
+                fBackgroundRendererLoaded = false;
                 LoadedHook = false;
                 return;
             }
 
-            if (!File.Exists(Path.Combine(installPath, filename))) // 如果文件不存在则设置为不自动加载
+            if (!backgroundOnly && !File.Exists(Path.Combine(installPath, filename))) // 如果文件不存在则设置为不自动加载
             {
                 QTUtility2.flog("not exists file , close auto hook " + Path.Combine(installPath, filename));
                 Config.Window.AutoHookWindow = false;
                 LoadedHook = false;
                 return;
-            }
-            QTUtility2.flog("load library " + Path.Combine(installPath, filename) );
-            string bridgePath = Path.Combine(installPath, "QTTabBarNative.dll");
-            try
-            {
-                string bridgeVersion = System.Diagnostics.FileVersionInfo.GetVersionInfo(bridgePath).FileVersion;
-                QTUtility2.flog("hook bridge " + bridgePath + " version " + bridgeVersion);
-            }
-            catch (Exception ex)
-            {
-                QTUtility2.MakeErrorLog(ex, "Could not read the native hook bridge version.");
             }
             if(!FluentGlassManager.EnsureNativeModuleLoaded()) {
                 QTUtility2.log("Hook library skipped: QTTabBarNative.dll could not be loaded from ProgramData.");
@@ -276,9 +276,19 @@ namespace QTTabBarLib {
             int hr = -1;
             try
             {
-                hr = backgroundOnly
-                        ? QTTabBarNative_InitializeBackgroundLibrary(ref nativeCallbacks, Path.Combine(installPath, filename))
-                        : QTTabBarNative_InitializeHookLibrary(ref nativeCallbacks, Path.Combine(installPath, filename));
+                if(backgroundOnly) {
+                    hr = QTTabBarNative_InitializeBackgroundRenderer(ref nativeCallbacks);
+                    if(hr == 0) {
+                        int hookHr = QTTabBarNative_InstallBackgroundHooks();
+                        if(hookHr != 0) {
+                            hr = hookHr;
+                        }
+                    }
+                }
+                else {
+                    hr = QTTabBarNative_InitializeHookLibrary(ref nativeCallbacks,
+                            Path.Combine(installPath, filename));
+                }
             }
             catch (DllNotFoundException ex)
             {
@@ -305,16 +315,14 @@ namespace QTTabBarLib {
             if (hr == 0)
             {
                 fHookLibraryLoaded = true;
+                fBackgroundRendererLoaded = backgroundOnly;
                 LoadedHook = true;
-                QTUtility2.log(backgroundOnly
-                        ? "Explorer background renderer initialize success"
-                        : "HookLib Initialize success");
-                // MessageBox.Show("HookLib Initialize success");
                 return;
             }
             QTUtility2.MakeErrorLog(null, "HookLib Initialize failed: 0x" + hr.ToString("X8"));
             LoadedHook = false;
             fHookLibraryLoaded = false;
+            fBackgroundRendererLoaded = false;
         }
 
         private static bool IsLegacyHookExplicitlyEnabled(string installPath)
@@ -351,15 +359,22 @@ namespace QTTabBarLib {
                 if(File.Exists(imagePath)) return true;
             }
 
-            string imageDirectory = Path.Combine(installPath, "Image");
+            value.Clear();
+            GetPrivateProfileString("image", "folder", "Image", value,
+                    (uint)value.Capacity, configPath);
+            string imageDirectory = Environment.ExpandEnvironmentVariables(
+                    value.ToString().Trim().Trim('"'));
+            if(String.IsNullOrEmpty(imageDirectory)) imageDirectory = "Image";
+            if(!Path.IsPathRooted(imageDirectory)) imageDirectory = Path.Combine(installPath, imageDirectory);
             if(!Directory.Exists(imageDirectory)) return false;
             return Directory.EnumerateFiles(imageDirectory).Any(path =>
                     path.EndsWith(".png", StringComparison.OrdinalIgnoreCase) ||
+                    path.EndsWith(".bmp", StringComparison.OrdinalIgnoreCase) ||
                     path.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) ||
                     path.EndsWith(".jpeg", StringComparison.OrdinalIgnoreCase));
         }
 
-        internal static void RegisterBackgroundWindow(IntPtr window)
+        internal static void RegisterBackgroundWindow(IntPtr window, string path = null)
         {
             if(!fHookLibraryLoaded || window == IntPtr.Zero) return;
             try {
@@ -368,7 +383,9 @@ namespace QTTabBarLib {
                     QTUtility2.log("RegisterBackgroundWindow failed: 0x" + result.ToString("X8"));
                 }
                 else {
-                    QTUtility2.flog("RegisterBackgroundWindow success hwnd=0x" + window.ToInt64().ToString("X"));
+                    if(!String.IsNullOrEmpty(path)) {
+                        UpdateBackgroundWindow(window, path);
+                    }
                 }
             }
             catch(Exception ex) {
@@ -376,6 +393,19 @@ namespace QTTabBarLib {
             }
         }
 
+        internal static void UpdateBackgroundWindow(IntPtr window, string path)
+        {
+            if(!fHookLibraryLoaded || window == IntPtr.Zero) return;
+            try {
+                int result = QTTabBarNative_UpdateBackgroundWindow(window, path ?? String.Empty);
+                if(result != 0) {
+                    QTUtility2.log("UpdateBackgroundWindow failed: 0x" + result.ToString("X8"));
+                }
+            }
+            catch(Exception ex) {
+                QTUtility2.MakeErrorLog(ex, "UpdateBackgroundWindow");
+            }
+        }
 
         private static void HookResult(int hookId, int retcode, IntPtr context) {
             try {
@@ -432,7 +462,14 @@ namespace QTTabBarLib {
         {
             lock (typeof(HookLibManager))
             {
-                if(fShellBrowserIsHooked || !fHookLibraryLoaded) return;
+                if(fShellBrowserIsHooked || !fHookLibraryLoaded || fBackgroundRendererLoaded)
+                {
+                    if(fBackgroundRendererLoaded)
+                    {
+                        QTUtility2.flog("InitShellBrowserHook skipped for isolated background renderer");
+                    }
+                    return;
+                }
                 IntPtr pShellBrowser = Marshal.GetComInterfaceForObject(shellBrowser, typeof(IShellBrowser));
                 if(pShellBrowser == IntPtr.Zero) return;
                 int retcode = -1;

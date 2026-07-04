@@ -106,6 +106,17 @@ namespace QTTabBarLib {
                 QTUtility2.log("new ExtendedItemsView");
                 CurrentListView = new ExtendedItemsView(ShellBrowser, hwndShellView, hwndListView, hwndSubDirTipMessageReflect);
             }
+            if(!fIsSysListView && hwndListView != IntPtr.Zero) {
+                try {
+                    using(IDLWrapper path = ShellBrowser.GetShellPath()) {
+                        HookLibManager.UpdateBackgroundWindow(hwndListView,
+                            path != null && path.Available ? path.Path : String.Empty);
+                    }
+                }
+                catch(Exception ex) {
+                    QTUtility2.MakeErrorLog(ex, "Explorer background initial path");
+                }
+            }
             CurrentListView.ListViewDestroyed += ListView_Destroyed;
             ListViewChanged(this, null);
         }

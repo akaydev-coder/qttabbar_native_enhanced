@@ -3122,6 +3122,10 @@ namespace QTTabBarLib {
                     tabControl1.SetRedraw(true);
                     ApplyFluentGlass();
                     ScheduleFluentGlassRefresh();
+                    if(listViewManager != null && listViewManager.CurrentListView != null) {
+                        HookLibManager.UpdateBackgroundWindow(
+                            listViewManager.CurrentListView.Handle, path);
+                    }
                     FirstNavigationCompleted = true;
                     RefreshTaskbarTabPreviews(true);
                     // this.listView

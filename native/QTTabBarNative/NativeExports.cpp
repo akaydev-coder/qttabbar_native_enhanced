@@ -6,6 +6,7 @@
 
 #include "HookLibraryBridge.h"
 #include "FluentGlassBridge.h"
+#include "..\..\QTHookLib\ExplorerBackgroundRenderer.h"
 
 using namespace qttabbar::plugins;
 
@@ -110,6 +111,29 @@ __declspec(dllexport) int __stdcall QTTabBarNative_InitializeBackgroundLibrary(
     return qttabbar::hooks::HookLibraryBridge::Instance().InitializeBackground(local, libraryPath);
 }
 
+__declspec(dllexport) int __stdcall QTTabBarNative_InitializeBackgroundRenderer(
+        const qttabbar::hooks::HookCallbacks* callbacks) {
+    if (callbacks == nullptr) {
+        return E_POINTER;
+    }
+    __try {
+        qttabbar::hooks::HookCallbacks local = *callbacks;
+        return qttabbar::hooks::HookLibraryBridge::Instance().InitializeBackgroundRenderer(local);
+    }
+    __except(EXCEPTION_EXECUTE_HANDLER) {
+        return static_cast<int>(GetExceptionCode());
+    }
+}
+
+__declspec(dllexport) int __stdcall QTTabBarNative_InstallBackgroundHooks() {
+    __try {
+        return qttabbar::hooks::HookLibraryBridge::Instance().InstallBackgroundHooks();
+    }
+    __except(EXCEPTION_EXECUTE_HANDLER) {
+        return static_cast<int>(GetExceptionCode());
+    }
+}
+
 __declspec(dllexport) void __stdcall QTTabBarNative_ShutdownHookLibrary() {
     qttabbar::hooks::HookLibraryBridge::Instance().Shutdown();
 }
@@ -148,6 +172,11 @@ __declspec(dllexport) int __stdcall QTTabBarNative_InitShellBrowserHook(IUnknown
 
 __declspec(dllexport) int __stdcall QTTabBarNative_RegisterBackgroundWindow(HWND window) {
     return qttabbar::hooks::HookLibraryBridge::Instance().RegisterBackgroundWindow(window);
+}
+
+__declspec(dllexport) int __stdcall QTTabBarNative_UpdateBackgroundWindow(HWND window,
+                                                                          const wchar_t* path) {
+    return qttabbar::hooks::HookLibraryBridge::Instance().UpdateBackgroundWindow(window, path);
 }
 
 __declspec(dllexport) HRESULT __stdcall QTTabBarNative_ActivateAutoLoader(IUnknown* site) {

@@ -162,10 +162,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ExplorerBackgroundRenderer.cpp" />
+    <ClCompile Include="ScopedBackgroundHooks.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CComPtr.h" />
+    <ClInclude Include="ExplorerBackgroundRenderer.h" />
+    <ClInclude Include="ScopedBackgroundHooks.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MinHook\libMinHook.vcxproj">

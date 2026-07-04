@@ -35,6 +35,8 @@
 #pragma comment(lib, "GdiPlus.lib")
 
 #include "CComPtr.h"
+#include "ExplorerBackgroundRenderer.h"
+#include "ScopedBackgroundHooks.h"
 #include "..\MinHook\MinHook.h"
 
 
@@ -198,6 +200,7 @@ struct CallbackStruct {
     bool (*fpNewWindow)(LPCITEMIDLIST pIDL);
 };
 CallbackStruct callbacks;
+volatile LONG g_backgroundInitializationState = 0;
 
 // Other stuff
 HMODULE hModAutomation = NULL;
@@ -535,11 +538,14 @@ extern "C" __declspec(dllexport) int InitializeBackground(CallbackStruct* cb);
 extern "C" __declspec(dllexport) int Dispose();
 extern "C" __declspec(dllexport) int InitShellBrowserHook(IShellBrowser* psb);
 extern "C" __declspec(dllexport) int RegisterBackgroundWindow(HWND hwnd);
+extern "C" __declspec(dllexport) int UpdateBackgroundWindow(HWND hwnd, LPCWSTR path);
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved) {
     switch (ul_reason_for_call) {
         case DLL_PROCESS_DETACH:
-            return Dispose();
+            // Hook shutdown is performed explicitly by HookLibraryBridge before
+            // FreeLibrary. Avoid MinHook/GDI cleanup while the loader lock is held.
+            break;
 
         case DLL_PROCESS_ATTACH:
         case DLL_THREAD_ATTACH:
@@ -670,37 +676,36 @@ int Initialize(CallbackStruct* cb) {
 
 
 int InitializeBackground(CallbackStruct* cb) {
-    volatile static long initialized;
-    if (InterlockedIncrement(&initialized) != 1) {
-        initialized = 1;
+    const LONG state = InterlockedCompareExchange(&g_backgroundInitializationState, 1, 0);
+    if(state == 2) {
         return MH_OK;
     }
-
-    if (!cb) return E_INVALIDARG;
-
-    srand((int)time(0));
-    MH_STATUS ret = MH_Initialize();
-    if (ret != MH_OK && ret != MH_ERROR_ALREADY_INITIALIZED) return ret;
-
-    callbacks = *cb;
-    if (m_gdiplusToken == 0) {
-        Gdiplus::GdiplusStartupInput startupInput;
-        if (Gdiplus::GdiplusStartup(&m_gdiplusToken, &startupInput, nullptr) != Gdiplus::Ok) {
-            m_gdiplusToken = 0;
-            return ERROR_DLL_INIT_FAILED;
-        }
+    if(state != 0) {
+        return HRESULT_FROM_WIN32(ERROR_BUSY);
+    }
+    if(!cb) {
+        InterlockedExchange(&g_backgroundInitializationState, 0);
+        return E_INVALIDARG;
     }
 
-    // Background-only mode intentionally avoids the legacy Shell, window capture,
-    // navigation and drag/drop hooks. These four hooks are the complete drawing
-    // path used by a DirectUIHWND registered through RegisterBackgroundWindow.
-    CREATE_HOOK(&DestroyWindow, DestroyWindow)
-    CREATE_HOOK(&BeginPaint, BeginPaint)
-    CREATE_HOOK(&FillRect, FillRect)
-    CREATE_HOOK(&CreateCompatibleDC, CreateCompatibleDC)
-    LoadSettings(true);
+    // Build and validate the complete immutable image snapshot before any
+    // process-wide drawing function is intercepted.
+    const HRESULT rendererResult = qttabbar::background::Initialize(g_hModule);
+    if(rendererResult != S_OK) {
+        InterlockedExchange(&g_backgroundInitializationState, 0);
+        return rendererResult;
+    }
 
-    return MH_OK;
+    const HRESULT hookResult = qttabbar::background::hooks::Install();
+    if(FAILED(hookResult)) {
+        qttabbar::background::Shutdown();
+        InterlockedExchange(&g_backgroundInitializationState, 0);
+        return hookResult;
+    }
+
+    callbacks = *cb;
+    InterlockedExchange(&g_backgroundInitializationState, 2);
+    return S_OK;
 }
 
 
@@ -740,6 +745,9 @@ int InitShellBrowserHook(IShellBrowser* psb) {
 }
 
 int RegisterBackgroundWindow(HWND hwnd) {
+    if(qttabbar::background::IsActive()) {
+        return qttabbar::background::RegisterWindow(hwnd, nullptr);
+    }
     if (!IsWindow(hwnd)) return E_INVALIDARG;
 
     wchar_t className[64] = {};
@@ -759,8 +767,20 @@ int RegisterBackgroundWindow(HWND hwnd) {
     return S_OK;
 }
 
+int UpdateBackgroundWindow(HWND hwnd, LPCWSTR path) {
+    if(!qttabbar::background::IsActive()) {
+        return E_NOTIMPL;
+    }
+    return qttabbar::background::UpdateWindow(hwnd, path);
+}
+
 int Dispose() {
-    // Uninitialize MinHook.
+    if(qttabbar::background::IsActive()) {
+        qttabbar::background::hooks::Remove();
+        qttabbar::background::Shutdown();
+        InterlockedExchange(&g_backgroundInitializationState, 0);
+    }
+    // Uninitialize MinHook after renderer state is no longer reachable by hooks.
     MH_Uninitialize();
 
     // Free the Automation library
@@ -915,7 +935,6 @@ HDC WINAPI DetourBeginPaint(HWND hWnd, LPPAINTSTRUCT lpPaint)
 int WINAPI DetourFillRect(HDC hDC, const RECT* lprc, HBRUSH hbr)
 {
     int ret = fpFillRect(hDC, lprc, hbr);
-
 
 	// Box1(L"DetourFillRect in ");
 	auto iter = m_duiList.find(GetCurrentThreadId());
@@ -1083,7 +1102,6 @@ HDC WINAPI DetourCreateCompatibleDC(HDC hDC)
     }
     return retDC;
 }
-
 
 // The purpose of this hook is to intercept the creation of the NameSpaceTreeControl object, and 
 // send a reference to the control to QTTabBar.  We can use this reference to hit test the

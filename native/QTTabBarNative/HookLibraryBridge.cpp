@@ -1,6 +1,8 @@
 #include "pch.h"
 
 #include "HookLibraryBridge.h"
+#include "..\..\QTHookLib\ExplorerBackgroundRenderer.h"
+#include "..\..\QTHookLib\ScopedBackgroundHooks.h"
 
 #include <shlwapi.h>
 
@@ -20,6 +22,7 @@ using InitializeFn = int(__cdecl*)(CallbackStruct*);
 using DisposeFn = int(__cdecl*)();
 using InitShellBrowserHookFn = int(__cdecl*)(IShellBrowser*);
 using RegisterBackgroundWindowFn = int(__cdecl*)(HWND);
+using UpdateBackgroundWindowFn = int(__cdecl*)(HWND, LPCWSTR);
 
 int InitializeWithSeh(InitializeFn initialize, CallbackStruct* callbacks, DWORD& exceptionCode) noexcept {
     exceptionCode = ERROR_SUCCESS;
@@ -43,6 +46,15 @@ bool DisposeWithSeh(DisposeFn dispose, DWORD& exceptionCode) noexcept {
 }
 
 std::mutex g_mutex;
+
+HMODULE CurrentModule() noexcept {
+    HMODULE module = nullptr;
+    const DWORD flags = GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS |
+        GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT;
+    ::GetModuleHandleExW(flags,
+        reinterpret_cast<LPCWSTR>(&CurrentModule), &module);
+    return module;
+}
 }  // namespace
 
 HookLibraryBridge& HookLibraryBridge::Instance() {
@@ -56,7 +68,56 @@ HRESULT HookLibraryBridge::Initialize(const HookCallbacks& callbacks, const wcha
 
 HRESULT HookLibraryBridge::InitializeBackground(const HookCallbacks& callbacks,
                                                 const wchar_t* libraryPath) {
-    return InitializeEntry(callbacks, libraryPath, "InitializeBackground");
+    (void)libraryPath;
+    HRESULT result = InitializeBackgroundRenderer(callbacks);
+    return SUCCEEDED(result) ? InstallBackgroundHooks() : result;
+}
+
+HRESULT HookLibraryBridge::InitializeBackgroundRenderer(const HookCallbacks& callbacks) {
+    std::scoped_lock lock(g_mutex);
+
+    if (backgroundRendererInitialized_) {
+        callbacks_ = callbacks;
+        return S_OK;
+    }
+    if (module_ != nullptr || initializationFailed_) {
+        return E_UNEXPECTED;
+    }
+
+    HMODULE const currentModule = CurrentModule();
+    if (currentModule == nullptr) {
+        return HRESULT_FROM_WIN32(::GetLastError());
+    }
+
+    const HRESULT rendererResult = qttabbar::background::Initialize(currentModule);
+    if (rendererResult != S_OK) {
+        return rendererResult;
+    }
+
+    callbacks_ = callbacks;
+    backgroundRendererInitialized_ = true;
+    return S_OK;
+}
+
+HRESULT HookLibraryBridge::InstallBackgroundHooks() {
+    std::scoped_lock lock(g_mutex);
+
+    if (backgroundInitialized_) {
+        return S_OK;
+    }
+    if (!backgroundRendererInitialized_ || module_ != nullptr || initializationFailed_) {
+        return E_UNEXPECTED;
+    }
+
+    const HRESULT hookResult = qttabbar::background::hooks::Install();
+    if (FAILED(hookResult)) {
+        qttabbar::background::Shutdown();
+        backgroundRendererInitialized_ = false;
+        return hookResult;
+    }
+
+    backgroundInitialized_ = true;
+    return S_OK;
 }
 
 HRESULT HookLibraryBridge::InitializeEntry(const HookCallbacks& callbacks,
@@ -111,6 +172,10 @@ HRESULT HookLibraryBridge::InitializeEntry(const HookCallbacks& callbacks,
         if (exceptionCode != ERROR_SUCCESS) {
             return static_cast<HRESULT>(exceptionCode);
         }
+        const HRESULT initializationResult = static_cast<HRESULT>(result);
+        if (FAILED(initializationResult)) {
+            return initializationResult;
+        }
         return HRESULT_FROM_WIN32(ERROR_INVALID_FUNCTION);
     }
 
@@ -121,6 +186,14 @@ HRESULT HookLibraryBridge::InitializeEntry(const HookCallbacks& callbacks,
 
 void HookLibraryBridge::Shutdown() {
     std::scoped_lock lock(g_mutex);
+    if (backgroundInitialized_) {
+        qttabbar::background::hooks::Remove();
+        backgroundInitialized_ = false;
+    }
+    if (backgroundRendererInitialized_) {
+        qttabbar::background::Shutdown();
+        backgroundRendererInitialized_ = false;
+    }
     if (module_ != nullptr) {
         if (auto dispose = reinterpret_cast<DisposeFn>(::GetProcAddress(module_, "Dispose"))) {
             DWORD exceptionCode = ERROR_SUCCESS;
@@ -154,7 +227,13 @@ HRESULT HookLibraryBridge::InitShellBrowserHook(IUnknown* shellBrowser) {
 }
 
 HRESULT HookLibraryBridge::RegisterBackgroundWindow(HWND window) {
-    if (module_ == nullptr || !::IsWindow(window)) {
+    if (!::IsWindow(window)) {
+        return E_FAIL;
+    }
+    if (backgroundRendererInitialized_) {
+        return qttabbar::background::RegisterWindow(window, nullptr);
+    }
+    if (module_ == nullptr) {
         return E_FAIL;
     }
     auto registerWindow = reinterpret_cast<RegisterBackgroundWindowFn>(
@@ -163,6 +242,25 @@ HRESULT HookLibraryBridge::RegisterBackgroundWindow(HWND window) {
         return HRESULT_FROM_WIN32(ERROR_PROC_NOT_FOUND);
     }
     return registerWindow(window) == 0 ? S_OK : E_FAIL;
+}
+
+HRESULT HookLibraryBridge::UpdateBackgroundWindow(HWND window, const wchar_t* path) {
+    if (!::IsWindow(window)) {
+        return E_FAIL;
+    }
+    if (backgroundRendererInitialized_) {
+        return qttabbar::background::UpdateWindow(window, path == nullptr ? L"" : path);
+    }
+    if (module_ == nullptr) {
+        return E_FAIL;
+    }
+    auto updateWindow = reinterpret_cast<UpdateBackgroundWindowFn>(
+        ::GetProcAddress(module_, "UpdateBackgroundWindow"));
+    if (updateWindow == nullptr) {
+        return HRESULT_FROM_WIN32(ERROR_PROC_NOT_FOUND);
+    }
+    const int result = updateWindow(window, path == nullptr ? L"" : path);
+    return result == 0 ? S_OK : static_cast<HRESULT>(result);
 }
 
 void __cdecl HookLibraryBridge::ForwardHookResult(int hookId, int retcode) {

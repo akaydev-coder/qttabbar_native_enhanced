@@ -14,10 +14,10 @@ QTTabBar Native Enhanced combines and extends work from several generations of Q
 
 - **Akay Devel Coder** - project owner, product direction, integration decisions, visual design and extensive Windows/VM testing
 - **OpenAI Codex** - major integration, debugging, native/managed implementation and release-engineering assistance under the project owner's direction
+- **Maplespe / ExplorerBgTool** - inspiration for configurable and path-specific Explorer background images; this project uses an independently reworked renderer integrated with QTTabBar's targeted window registration
 
 The attribution list is intentionally open for correction and expansion as additional upstream history is identified.
 
 ## Third-party components
 
 This repository contains or references third-party components including MinHook, WiX build definitions and NotifyPropertyWeaver. Their original license and attribution terms continue to apply.
-
