@@ -513,6 +513,8 @@
     <Compile Include="QTabControl.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="TabSkinGeometry.cs" />
+    <Compile Include="TabButtonImageGeometry.cs" />
     <Compile Include="QTabItem.cs" />
     <Compile Include="QTButtonBar.cs">
       <SubType>UserControl</SubType>

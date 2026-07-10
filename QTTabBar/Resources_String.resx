@@ -177,6 +177,9 @@
   <data name="Options_Page06_Appearance" xml:space="preserve">
     <value>Change the appearance of tabs or the tab bar.;Tab image;Use custom tab image:;Sizing margins:;Overlap area:;Content margins:;Hit test transparent areas;Tab size;Height:;Min Width:;Max Width:;Sizing mode:;Full width;Same size;Tab text;Text Colors:;Shadow Colors:;Active Color;Inactive Color;Mouseover Color;Text Font:;Alignment:;Left;Center;Toolbar Background;Image;Solid color;Image each bar separately;Stretch mode:;Sizing margins:;Skin file;Import Skin...;Export Skin...;Stretch;True size;Tile</value>
   </data>
+  <data name="Options_TabButtonImages" xml:space="preserve">
+    <value>Tab button images;Use custom close-button image:;Close-button offset (X, Y):;Use custom lock icon:;Lock-icon offset (X, Y):</value>
+  </data>
   <data name="Options_Page07_Mouse" xml:space="preserve">
     <value>Assign commands to different mouse actions.;To add a mouse binding, perform a mouse action on the plus icon to the left of the appropriate target type.  To remove a binding, select it in the list and press the Delete key.;Other mouse options;Mouse wheel scrolls the window under the mouse;Mouse Chord;Action;Anywhere;Tab;Tab Bar Background;Folder Link;File or Folder;Explorer Background;Left Click;Right Click;Middle Click;Double Click;X1 Click;X2 Click;This mouse button cannot be used for this target.;The valid mouse buttons for this target are:;Invalid Button</value>
   </data>

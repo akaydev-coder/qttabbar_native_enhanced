@@ -214,7 +214,7 @@ namespace QTTabBarLib {
 
         private void SetStyleFlags()
         {
-            if (ShellBrowser == null) return;  // qt desktop tool ÆôÓÃ¿ÕÖ¸ÕëÎÊÌâ https://www.yuque.com/indiff/lc0r1g/kqgkr0
+            if (ShellBrowser == null) return;  // qt desktop tool ï¿½ï¿½ï¿½Ã¿ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ https://www.yuque.com/indiff/lc0r1g/kqgkr0
             if(ShellBrowser.ViewMode != FVM.DETAILS) return;
             uint flags = 0;
             if(Config.Tweaks.DetailsGridLines) {
@@ -339,10 +339,12 @@ namespace QTTabBarLib {
             PInvoke.ClientToScreen(Handle, ref ret);
             return ret;
         }
-        // Ê¹ÓÃ¼ýÍ·¼üÊ±ºò»·ÈÆÑ¡ÔñÎÄ¼þ¼Ð
+        // Ê¹ï¿½Ã¼ï¿½Í·ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½Ñ¡ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½
         protected override bool HandleCursorLoop(Keys key) {
             int focusedIdx = ShellBrowser.GetFocusedIndex();
             int itemCount = ShellBrowser.GetItemCount();
+            if(itemCount <= 0) return false;
+            if(focusedIdx < 0 || focusedIdx >= itemCount) return SelectCursorLoopFallback(key);
             int selectMe = -1;
             FVM viewMode = ShellBrowser.ViewMode;
             if(viewMode == FVM.TILE && QTUtility.IsXP) {
@@ -451,7 +453,7 @@ namespace QTTabBarLib {
             }
         }
 
-        // ´¦Àí×Ô¶¨Òå»æÖÆ
+        // ï¿½ï¿½ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         private bool HandleCustomDraw(ref Message msg) {
             // TODO this needs to be cleaned
             if(Config.Tweaks.AlternateRowColors && (ShellBrowser.ViewMode == FVM.DETAILS)) {

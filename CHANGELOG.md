@@ -1,5 +1,35 @@
 # Changelog
 
+## 1.5.84.0 Stable - 2026-07-10
+
+- Restores cursor-loop arrow-key selection when Explorer does not report a focused item yet.
+- Splits tab text shadows into active, inactive, and mouseover state toggles.
+- Clarifies the automatic tab text color override option in Appearance.
+- Fixes the inverted "Cycle selection with F2 while renaming" tweak in the Explorer tab view.
+
+## 1.5.83.0 Preview - 2026-07-06
+
+- Starts Versatile Bar reordering directly from each icon or separator while the left mouse button is held.
+- Uses the live Windows mouse-button state so ToolStrip item event routing cannot suppress the drag gesture.
+
+## 1.5.82.0 Preview - 2026-07-05
+
+- Adds drag-and-drop reordering for icons and separators on the vertical Versatile Bar.
+- Shows a precise insertion marker while dragging and persists the customized item order.
+- Lets externally dropped files and folders be inserted at a chosen position instead of always appending them.
+
+## 1.5.81.0 Preview - 2026-07-05
+
+- Adds configurable custom images and X/Y offsets for the tab close button and locked-tab icon.
+- Supports a single close-button image or horizontal/vertical four-state image strips (normal, hover, pressed, alternate).
+- Scales oversized images to the available tab height, supports PNG alpha and BMP magenta transparency, and safely falls back to built-in resources.
+
+## 1.5.80.0 Preview - 2026-07-05
+
+- Implements tab-skin content margins for text, folder icons, lock glyphs, and close buttons.
+- Implements configurable tab overlap in single-row and multi-row layouts with matching draw-order hit testing.
+- Implements alpha-aware hit testing against the rendered nine-slice tab skin and fixes overlap-value validation.
+
 ## 1.5.79.0 Stable - 2026-07-04
 
 - Promotes the exact-window `BeginPaint`/`FillRect` Explorer background renderer to production.

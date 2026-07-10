@@ -109,6 +109,9 @@ struct SkinSettings {
     ColorValue tabShadInactiveColor{0xFFF5F6F7};
     ColorValue tabShadHotColor{0xFFF5F6F7};
     bool tabTitleShadows = false;
+    bool tabActiveTitleShadow = true;
+    bool tabInactiveTitleShadow = true;
+    bool tabHotTitleShadow = true;
     bool tabTextCentered = true;
     bool useRebarBGColor = true;
     ColorValue rebarColor{0xFFF5F6F7};

@@ -1,8 +1,8 @@
 /* File Info 
  * Author:      indiff
- * CreateTime:  2021/1/5ÏÂÎç1:58:08 
+ * CreateTime:  2021/1/5ï¿½ï¿½ï¿½ï¿½1:58:08
  * LastEditor:  indiff
- * ModifyTime:  2021/8/28ÏÂÎç7:47:22 
+ * ModifyTime:  2021/8/28ï¿½ï¿½ï¿½ï¿½7:47:22
  * Description: 
 */
 //    This file is part of QTTabBar, a shell extension for Microsoft
@@ -66,7 +66,7 @@ namespace QTTabBarLib {
     }
 
    /* 
-    * @ÃèÊö: ±êÇ©Î»ÖÃ
+    * @ï¿½ï¿½ï¿½ï¿½: ï¿½ï¿½Ç©Î»ï¿½ï¿½
     */     
     public enum TabPos {
         Rightmost,
@@ -77,7 +77,7 @@ namespace QTTabBarLib {
     }
 
    /* 
-    * @ÃèÊö: À­ÉìÄ£Ê½
+    * @ï¿½ï¿½ï¿½ï¿½: ï¿½ï¿½ï¿½ï¿½Ä£Ê½
     */   
     public enum StretchMode {
         Full,
@@ -86,7 +86,7 @@ namespace QTTabBarLib {
     }
 
    /* 
-    * @ÃèÊö: Êó±êµÄÄ¿±ê
+    * @ï¿½ï¿½ï¿½ï¿½: ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½
     */   
     public enum MouseTarget {
         Anywhere,
@@ -98,7 +98,7 @@ namespace QTTabBarLib {
     }
 
    /* 
-    * @ÃèÊö: Êó±êÏÒ
+    * @ï¿½ï¿½ï¿½ï¿½: ï¿½ï¿½ï¿½ï¿½ï¿½
     */  
     [Flags]
     public enum MouseChord {
@@ -115,7 +115,7 @@ namespace QTTabBarLib {
     }
 
     /* 
-    * @ÃèÊö: °ó¶¨¶¯×÷
+    * @ï¿½ï¿½ï¿½ï¿½: ï¿½ó¶¨¶ï¿½ï¿½ï¿½
     */  
     // WARNING
     // reordering these will break existing settings.
@@ -146,7 +146,7 @@ namespace QTTabBarLib {
         BrowseFolder,
         CreateNewGroup,
         /***** add by indiff end *****/
-       // AddToGroup,  // ÐÂÔöµ½±êÇ©×é £¬ Ìí¼ÓÒ»¸öÐÂ²Ù×÷ÓÐÎÊÌâ
+       // AddToGroup,  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç©ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Â²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         ShowOptions,
         ShowToolbarMenu,
         ShowTabMenuCurrent,
@@ -228,18 +228,18 @@ namespace QTTabBarLib {
     [Serializable]
     public class Config {
 		// Shortcuts to the loaded config, for convenience.
-        public static _Window Window    { get { return ConfigManager.LoadedConfig.window; } }	/*´°¿ÚÐÐÎª*/
-        public static _Tabs Tabs        { get { return ConfigManager.LoadedConfig.tabs; } }		/*±êÇ©ÐÐÎª*/
-        public static _Tweaks Tweaks    { get { return ConfigManager.LoadedConfig.tweaks; } }	/*µ÷Õû¹¤¾ß*/
-        public static _Tips Tips        { get { return ConfigManager.LoadedConfig.tips; } }		/*Ô¤ÀÀÌáÊ¾*/
-        public static _Misc Misc        { get { return ConfigManager.LoadedConfig.misc; } }		/*³£¹æÑ¡Ïî*/
-        public static _Skin Skin        { get { return ConfigManager.LoadedConfig.skin; } }		/*±êÇ©Íâ¹Û*/
-        public static _BBar BBar        { get { return ConfigManager.LoadedConfig.bbar; } }		/*°´Å¥Ñ¡Ïî*/
-        public static _Mouse Mouse      { get { return ConfigManager.LoadedConfig.mouse; } }	/*Êó±ê²Ù×÷*/
-        public static _Keys Keys        { get { return ConfigManager.LoadedConfig.keys; } }		/*¿ì½Ý²Ù×÷*/
-        public static _Plugin Plugin    { get { return ConfigManager.LoadedConfig.plugin; } }	/*²å¼þ¹ÜÀí*/
-        public static _Lang Lang        { get { return ConfigManager.LoadedConfig.lang; } }		/*ÓïÑÔÅäÖÃ*/
-        public static _Desktop Desktop { get { return ConfigManager.LoadedConfig.desktop; } }   /*¹ØÓÚÐÅÏ¢*/
+        public static _Window Window    { get { return ConfigManager.LoadedConfig.window; } }	/*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îª*/
+        public static _Tabs Tabs        { get { return ConfigManager.LoadedConfig.tabs; } }		/*ï¿½ï¿½Ç©ï¿½ï¿½Îª*/
+        public static _Tweaks Tweaks    { get { return ConfigManager.LoadedConfig.tweaks; } }	/*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
+        public static _Tips Tips        { get { return ConfigManager.LoadedConfig.tips; } }		/*Ô¤ï¿½ï¿½ï¿½ï¿½Ê¾*/
+        public static _Misc Misc        { get { return ConfigManager.LoadedConfig.misc; } }		/*ï¿½ï¿½ï¿½ï¿½Ñ¡ï¿½ï¿½*/
+        public static _Skin Skin        { get { return ConfigManager.LoadedConfig.skin; } }		/*ï¿½ï¿½Ç©ï¿½ï¿½ï¿½*/
+        public static _BBar BBar        { get { return ConfigManager.LoadedConfig.bbar; } }		/*ï¿½ï¿½Å¥Ñ¡ï¿½ï¿½*/
+        public static _Mouse Mouse      { get { return ConfigManager.LoadedConfig.mouse; } }	/*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
+        public static _Keys Keys        { get { return ConfigManager.LoadedConfig.keys; } }		/*ï¿½ï¿½Ý²ï¿½ï¿½ï¿½*/
+        public static _Plugin Plugin    { get { return ConfigManager.LoadedConfig.plugin; } }	/*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
+        public static _Lang Lang        { get { return ConfigManager.LoadedConfig.lang; } }		/*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
+        public static _Desktop Desktop { get { return ConfigManager.LoadedConfig.desktop; } }   /*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢*/
 
         public _Window window   { get; set; }
         public _Tabs tabs       { get; set; }
@@ -272,7 +272,7 @@ namespace QTTabBarLib {
         [Serializable]
         public class _Window {
             public bool CaptureNewWindows        { get; set; }
-            public bool CaptureWeChatSelection   { get; set; } // ÊÇ·ñ²¶»ñÎ¢ÐÅ¡¢qq¡¢¶¤¶¤µÄ´ò¿ªÎÄ¼þÑ¡ÖÐ×´Ì¬
+            public bool CaptureWeChatSelection   { get; set; } // ï¿½Ç·ñ²¶»ï¿½Î¢ï¿½Å¡ï¿½qqï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä´ï¿½ï¿½Ä¼ï¿½Ñ¡ï¿½ï¿½×´Ì¬
             public bool RestoreSession           { get; set; }
             public bool RestoreOnlyLocked        { get; set; }
             public bool CloseBtnClosesUnlocked   { get; set; }
@@ -310,16 +310,16 @@ namespace QTTabBarLib {
                 CloseBtnClosesSingleTab = true;
                 TrayOnClose = false;
                 TrayOnMinimize = false;
-                // Ä¬ÈÏ¹Ø±Õ×Ô¶¯Æô¶¯hook
+                // Ä¬ï¿½Ï¹Ø±ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½ï¿½hook
                 AutoHookWindow = false;
   //              string idl = Environment.OSVersion.Version >= new Version(6, 1)
   //                       ? "::{031E4825-7B94-4DC3-B131-E946B44C8DD5}"  // Libraries
   //                     : "::{20D04FE0-3AEA-1069-A2D8-08002B30309D}"; // Computer
-                string idl = "::{20D04FE0-3AEA-1069-A2D8-08002B30309D}"; // ÎÒµÄµçÄÔ£¬ Ä¬ÈÏ´ò¿ª
+                string idl = "::{20D04FE0-3AEA-1069-A2D8-08002B30309D}"; // ï¿½ÒµÄµï¿½ï¿½Ô£ï¿½ Ä¬ï¿½Ï´ï¿½
                 using(IDLWrapper w = new IDLWrapper(idl)) {
                     DefaultLocation = w.IDL;
                 }
-                // ²»ÏÔÊ¾µ¼º½Ê§°ÜµÄÌáÊ¾¿ò
+                // ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½Ê§ï¿½Üµï¿½ï¿½ï¿½Ê¾ï¿½ï¿½
                 ShowFailNavMsg = false;
             }
         }
@@ -362,23 +362,23 @@ namespace QTTabBarLib {
                 ActiveTabOnBottomRow = true;*/
 
                 /* qwop's default's value.*/
-                NewTabPosition = TabPos.Rightmost;  // ÐÂ±êÇ©ÔÚ×îÓÒ²à
-                NextAfterClosed = TabPos.LastActive; // ¹Ø±Õ±êÇ©Ê±ºòÇÐ»»µ¼
-                ActivateNewTab = true;  // ÊÇ·ñÁ¢¼´ÇÐ»»µ½ÐÂ±êÇ©
-                NeverOpenSame = true;   //  ÖØÓÃÐÂ±êÇ©
-                RenameAmbTabs = true;  // Ä£ºýÖØÃüÃû±êÇ©
-                DragOverTabOpensSDT = false; // ÍÏ×§±êÇ©ºóµÄ²Ù×÷
-                ShowFolderIcon = true;  // ÏÔÊ¾Çý¶¯Æ÷Í¼±ê
-                ShowSubDirTipOnTab = false;  // ÔÚÎÄ¼þ¼ÐÏÔÊ¾×Ó±êÇ©
-                ShowDriveLetters = false; // ÏÔÊ¾Çý¶¯Æ÷×Ö·û
-                ShowCloseButtons = true;  // ÏÔÊ¾¹Ø±Õ°´Å¥
-                CloseBtnsWithAlt = false; // Ö»ÓÐalt°´×¡½øÐÐ¹Ø±Õ
-                CloseBtnsOnHover = false;  // ½öÊó±êÐü¸¡¹Ø±Õ
-                ShowNavButtons = false;  // ÔÚ±êÇ©ÏÔÊ¾µ¼º½°´Å¥ (	(Ä¬ÈÏÅäÖÃ¹Ø±Õ°´Å¥ÏÔÊ¾)±êÇ©À¸ÓÒ²àµÄÁ½¸ö°´Å¥ÄÜ·ñÌí¼ÓÒ»¸öÑ¡ÏîÒÔ¿ØÖÆÊÇ·ñÈ¥µôÄØ¡£#28£©
-                NavButtonsOnRight = true; // ÔÚ×îÓÒ±ß
-                MultipleTabRows = true; // ÔÊÐí¶àÐÐ±êÇ©
-                ActiveTabOnBottomRow = false; // Ê¼ÖÕ½«»î¶¯±êÇ©ÖÃÓÚµ×²¿ÐÐ
-                NeedPlusButton = true; // ÊÇ·ñÏÔÊ¾À¶É«ÐÂÔö±êÇ©°´Å¥
+                NewTabPosition = TabPos.Rightmost;  // ï¿½Â±ï¿½Ç©ï¿½ï¿½ï¿½ï¿½ï¿½Ò²ï¿½
+                NextAfterClosed = TabPos.LastActive; // ï¿½Ø±Õ±ï¿½Ç©Ê±ï¿½ï¿½ï¿½Ð»ï¿½ï¿½ï¿½
+                ActivateNewTab = true;  // ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð»ï¿½ï¿½ï¿½ï¿½Â±ï¿½Ç©
+                NeverOpenSame = true;   //  ï¿½ï¿½ï¿½ï¿½ï¿½Â±ï¿½Ç©
+                RenameAmbTabs = true;  // Ä£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç©
+                DragOverTabOpensSDT = false; // ï¿½ï¿½×§ï¿½ï¿½Ç©ï¿½ï¿½Ä²ï¿½ï¿½ï¿½
+                ShowFolderIcon = true;  // ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½
+                ShowSubDirTipOnTab = false;  // ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½Ó±ï¿½Ç©
+                ShowDriveLetters = false; // ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½
+                ShowCloseButtons = true;  // ï¿½ï¿½Ê¾ï¿½Ø±Õ°ï¿½Å¥
+                CloseBtnsWithAlt = false; // Ö»ï¿½ï¿½altï¿½ï¿½×¡ï¿½ï¿½ï¿½Ð¹Ø±ï¿½
+                CloseBtnsOnHover = false;  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø±ï¿½
+                ShowNavButtons = false;  // ï¿½Ú±ï¿½Ç©ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å¥ (	(Ä¬ï¿½ï¿½ï¿½ï¿½ï¿½Ã¹Ø±Õ°ï¿½Å¥ï¿½ï¿½Ê¾)ï¿½ï¿½Ç©ï¿½ï¿½ï¿½Ò²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å¥ï¿½Ü·ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Ñ¡ï¿½ï¿½ï¿½Ô¿ï¿½ï¿½ï¿½ï¿½Ç·ï¿½È¥ï¿½ï¿½ï¿½Ø¡ï¿½#28ï¿½ï¿½
+                NavButtonsOnRight = true; // ï¿½ï¿½ï¿½ï¿½ï¿½Ò±ï¿½
+                MultipleTabRows = true; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð±ï¿½Ç©
+                ActiveTabOnBottomRow = false; // Ê¼ï¿½Õ½ï¿½ï¿½î¶¯ï¿½ï¿½Ç©ï¿½ï¿½ï¿½Úµ×²ï¿½ï¿½ï¿½
+                NeedPlusButton = true; // ï¿½Ç·ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç©ï¿½ï¿½Å¥
             }
         }
 
@@ -416,24 +416,24 @@ namespace QTTabBarLib {
                 /* qwop's default value.*/
                 if (QTUtility.IsWin7)
                 {
-                    AlwaysShowHeaders = true;  // ÏÔÊ¾ÁÐ±êÌâ
+                    AlwaysShowHeaders = true;  // ï¿½ï¿½Ê¾ï¿½Ð±ï¿½ï¿½ï¿½
                 }
                 else {
-                    AlwaysShowHeaders = false;  // ÏÔÊ¾ÁÐ±êÌâ
+                    AlwaysShowHeaders = false;  // ï¿½ï¿½Ê¾ï¿½Ð±ï¿½ï¿½ï¿½
                 }
                 
-                RedirectLibraryFolders = false; // Ê¹ÓÃ¿âÎÄ¼þ¼Ð
-                KillExtWhileRenaming = true;  // ÖØÃüÃûÊ±ºò£¬²»Ê¹ÓÃÀ©Õ¹Ãû
-                F2Selection = false; // ½ûÓÃF2ÖØÃüÃûÖÜÆÚÑ¡Ôñ
-                WrapArrowKeySelection = true; // Ê¹ÓÃ¼ýÍ·¼üÊ±ºò»·ÈÆÑ¡ÔñÎÄ¼þ¼Ð
-                BackspaceUpLevel = true;  // backupspace ¼ü»Øµ½ÉÏÒ»¼¶Ä¿Â¼
-                HorizontalScroll = true;  // Í¬Ê±°´×¡shift¹öÂÖË®Æ½¹ö¶¯
-                ForceSysListView = false; // ÆôÓÃ¾É°æÁÐ±íÊÓÍ¼¿Ø¼þ
-                ToggleFullRowSelect = QTUtility.IsXP; // ÏêÏ¸ÊÓÍ¼Ñ¡ÖÐÕûÐÐ
-                DetailsGridLines = false;  // Íø¸ñÏß
-                AlternateRowColors = false;// ½»ÌæÐÐÑÕÉ«
-                AltRowForegroundColor = SystemColors.WindowText; // Ç°¾°É«
-                AltRowBackgroundColor = QTUtility2.MakeColor(0xfaf5f1); // ±³¾°É«
+                RedirectLibraryFolders = false; // Ê¹ï¿½Ã¿ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½
+                KillExtWhileRenaming = true;  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ò£¬²ï¿½Ê¹ï¿½ï¿½ï¿½ï¿½Õ¹ï¿½ï¿½
+                F2Selection = false; // ï¿½ï¿½ï¿½ï¿½F2ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¡ï¿½ï¿½
+                WrapArrowKeySelection = true; // Ê¹ï¿½Ã¼ï¿½Í·ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½Ñ¡ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½
+                BackspaceUpLevel = true;  // backupspace ï¿½ï¿½ï¿½Øµï¿½ï¿½ï¿½Ò»ï¿½ï¿½Ä¿Â¼
+                HorizontalScroll = true;  // Í¬Ê±ï¿½ï¿½×¡shiftï¿½ï¿½ï¿½ï¿½Ë®Æ½ï¿½ï¿½ï¿½ï¿½
+                ForceSysListView = false; // ï¿½ï¿½ï¿½Ã¾É°ï¿½ï¿½Ð±ï¿½ï¿½ï¿½Í¼ï¿½Ø¼ï¿½
+                ToggleFullRowSelect = QTUtility.IsXP; // ï¿½ï¿½Ï¸ï¿½ï¿½Í¼Ñ¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+                DetailsGridLines = false;  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+                AlternateRowColors = false;// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É«
+                AltRowForegroundColor = SystemColors.WindowText; // Ç°ï¿½ï¿½É«
+                AltRowBackgroundColor = QTUtility2.MakeColor(0xfaf5f1); // ï¿½ï¿½ï¿½ï¿½É«
             }
         }
 
@@ -466,23 +466,23 @@ namespace QTTabBarLib {
                  TextExt = new List<string> {".txt", ".ini", ".inf" ,".cs", ".log", ".js", ".vbs"};
                  ImageExt = ThumbnailTooltipForm.MakeDefaultImgExts();*/
 
-                ShowSubDirTips = true;  // ÊÇ·ñÏÔÊ¾×ÓÄ¿Â¼ÌáÊ¾
-                SubDirTipsPreview = true;  // ×ÓÄ¿Â¼ÌáÊ¾Ô¤ÀÀ
-                SubDirTipsFiles = true;  // ×ÓÄ¿Â¼ÌáÊ¾ÎÄ¼þ
-                SubDirTipsWithShift = false ; // ½öµ±shift¼ü°´ÏÂÏÔÊ¾×ÓÄ¿Â¼
+                ShowSubDirTips = true;  // ï¿½Ç·ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½Ä¿Â¼ï¿½ï¿½Ê¾
+                SubDirTipsPreview = true;  // ï¿½ï¿½Ä¿Â¼ï¿½ï¿½Ê¾Ô¤ï¿½ï¿½
+                SubDirTipsFiles = true;  // ï¿½ï¿½Ä¿Â¼ï¿½ï¿½Ê¾ï¿½Ä¼ï¿½
+                SubDirTipsWithShift = false ; // ï¿½ï¿½ï¿½ï¿½shiftï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½Ä¿Â¼
                 ShowTooltipPreviews = true;  
-                ShowPreviewInfo = true; // ÆôÓÃÎÄ¼þÔ¤ÀÀ
-                ShowPreviewsWithShift = true; // ½öµ±shift½¡°´ÏÂ, ÆôÓÃÎÄ¼þÔ¤ÀÀ
+                ShowPreviewInfo = true; // ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½Ô¤ï¿½ï¿½
+                ShowPreviewsWithShift = true; // ï¿½ï¿½ï¿½ï¿½shiftï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½Ô¤ï¿½ï¿½
                 
-                // Ô¤ÀÀµÄ¿í¸ß
+                // Ô¤ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½
                 PreviewMaxWidth = 600;
                 PreviewMaxHeight = 400;
                 //  PreviewMaxWidth = 512;
                 // PreviewMaxHeight = 256;
-                //  ×ÖÌåÅäÖÃ
+                //  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                 PreviewFont = Control.DefaultFont;
                 PreviewFont = new Font(Control.DefaultFont.FontFamily, 9f);
-                // ÎÄ±¾ÀàÐÍÀ©Õ¹Ãû Ìí¼Ó yml yaml ÎÄ¼þÖ§³Ö
+                // ï¿½Ä±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ¹ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ yml yaml ï¿½Ä¼ï¿½Ö§ï¿½ï¿½
                 TextExt = new List<string> { 
                     ".txt",".rtf"
                     ,".ini", ".inf",".properties", ".ruleset", ".settings"
@@ -508,7 +508,7 @@ namespace QTTabBarLib {
                     ,".jsp", ".asp", ".php",".aspx"
                     ,".resx",".xaml",  ".config", ".manifest", ".csproj", ".vbproj"
                 };
-                // ÅäÖÃÄ¬ÈÏµÄÍ¼ÏñÀ©Õ¹Ãû
+                // ï¿½ï¿½ï¿½ï¿½Ä¬ï¿½Ïµï¿½Í¼ï¿½ï¿½ï¿½ï¿½Õ¹ï¿½ï¿½
                 ImageExt = ThumbnailTooltipForm.MakeDefaultImgExts();
             }
         }
@@ -533,9 +533,9 @@ namespace QTTabBarLib {
                 FileHistoryCount = 15;
                 NetworkTimeout = 0;
                 AutoUpdate = true;
-                // Ä¬ÈÏ¹Ø±ÕÉùÒô²¥·Å
+                // Ä¬ï¿½Ï¹Ø±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                 SoundBox = false;
-                // Ä¬ÈÏ²»ÆôÓÃÈÕÖ¾¹¦ÄÜ 
+                // Ä¬ï¿½Ï²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¾ï¿½ï¿½ï¿½ï¿½
                 EnableLog = false;
             }
         }
@@ -546,6 +546,14 @@ namespace QTTabBarLib {
             public string TabImageFile           { get; set; }
             public bool UsePlusButtonImage        { get; set; }
             public string PlusButtonImageFile     { get; set; }
+            public bool UseCloseButtonImage       { get; set; }
+            public string CloseButtonImageFile    { get; set; }
+            public int CloseButtonImageOffsetX    { get; set; }
+            public int CloseButtonImageOffsetY    { get; set; }
+            public bool UseLockIconImage          { get; set; }
+            public string LockIconImageFile       { get; set; }
+            public int LockIconImageOffsetX       { get; set; }
+            public int LockIconImageOffsetY       { get; set; }
             public Padding TabSizeMargin         { get; set; }
             public Padding TabContentMargin      { get; set; }
             public int OverlapPixels             { get; set; }
@@ -563,6 +571,9 @@ namespace QTTabBarLib {
             public Color TabShadInactiveColor    { get; set; }
             public Color TabShadHotColor         { get; set; }
             public bool TabTitleShadows          { get; set; }
+            public bool TabActiveTitleShadow     { get; set; }
+            public bool TabInactiveTitleShadow   { get; set; }
+            public bool TabHotTitleShadow        { get; set; }
             public bool TabTextCentered          { get; set; }
             public bool UseRebarBGColor          { get; set; }
             public Color RebarColor              { get; set; }
@@ -602,6 +613,9 @@ namespace QTTabBarLib {
                  TabShadInactiveColor = Color.White;
                  TabShadHotColor = Color.White;
                  TabTitleShadows = false;
+                 TabActiveTitleShadow = true;
+                 TabInactiveTitleShadow = true;
+                 TabHotTitleShadow = true;
                  TabTextCentered = false;
                  UseRebarBGColor = false;
                  RebarColor = Color.Gray;
@@ -613,20 +627,28 @@ namespace QTTabBarLib {
                  ActiveTabInBold = false;*/
 
                 /* qwop's default value. */
-                UseTabSkin = false;  // ±êÇ©±³¾°
-                TabImageFile = "";  // ±êÇ©±³¾°ÎÄ¼þ
+                UseTabSkin = false;  // ï¿½ï¿½Ç©ï¿½ï¿½ï¿½ï¿½
+                TabImageFile = "";  // ï¿½ï¿½Ç©ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½
                 UsePlusButtonImage = false;
                 PlusButtonImageFile = "";
-                TabSizeMargin = Padding.Empty;  // ÉèÖÃ±ßÔµ
-                TabContentMargin = Padding.Empty; // ÄÚÈÝ±ßÔµ
+                UseCloseButtonImage = false;
+                CloseButtonImageFile = "";
+                CloseButtonImageOffsetX = 0;
+                CloseButtonImageOffsetY = 0;
+                UseLockIconImage = false;
+                LockIconImageFile = "";
+                LockIconImageOffsetX = 0;
+                LockIconImageOffsetY = 0;
+                TabSizeMargin = Padding.Empty;  // ï¿½ï¿½ï¿½Ã±ï¿½Ôµ
+                TabContentMargin = Padding.Empty; // ï¿½ï¿½ï¿½Ý±ï¿½Ôµ
                 OverlapPixels = 0;  // 
                 HitTestTransparent = false;
-                TabHeight = 30;  // ¸ß¶È
-                TabMinWidth = 100;  // ×îÐ¡¿í¶È
-                TabMaxWidth = 200;  // ×î´ó¿í¶È
+                TabHeight = 30;  // ï¿½ß¶ï¿½
+                TabMinWidth = 100;  // ï¿½ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½
+                TabMaxWidth = 200;  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                 FixedWidthTabs = false;
                 TabTextFont = new Font(Control.DefaultFont.FontFamily, 9f);
-                ToolBarTextColor = Color.Black;  // ¹¤¾ßÀ¸ÎÄ±¾ÑÕÉ«
+                ToolBarTextColor = Color.Black;  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä±ï¿½ï¿½ï¿½É«
                 TabTextActiveColor = Color.Black;
                 TabTextInactiveColor = Color.Black;
                 TabTextHotColor = Color.Black;
@@ -636,14 +658,17 @@ namespace QTTabBarLib {
                 TabShadHotColor = Color.WhiteSmoke;
                 RebarColor = Color.WhiteSmoke;
                 // RebarColor = Color.FromArgb(230,230,230);
-                // ÉèÖÃ±êÇ©±³¾°É«
+                // ï¿½ï¿½ï¿½Ã±ï¿½Ç©ï¿½ï¿½ï¿½ï¿½É«
                 // RebarColor = Color.FromArgb(245, 246, 247);
-                TabTitleShadows = false;  // ±êÇ©ÎÄ±¾ÒõÓ°ÊÇ·ñÆôÓÃ
-                TabTextCentered = true; // ±êÇ©ÎÄ±¾ÊÇ·ñ¾ÓÖÐ
-                UseRebarBGColor = true;  // ÊÇ·ñÆôÓÃÅäÖÃ±³¾°ÑÕÉ«
-                UseRebarImage = false;  // ÊÇ·ñ¹¤¾ßÀ¸×Ô¶¨ÒåÍ¼Æ¬,ÆôÓÃ×Ô¶¨ÒåÍ¼Æ¬
-                RebarStretchMode = StretchMode.Tile;  // ²¼¾Ö·½Ê½
-                RebarImageFile = "";  // ¹¤¾ßÀ¸×Ô¶¨ÒåÍ¼Æ¬
+                TabTitleShadows = false;  // ï¿½ï¿½Ç©ï¿½Ä±ï¿½ï¿½ï¿½Ó°ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½
+                TabActiveTitleShadow = true;
+                TabInactiveTitleShadow = true;
+                TabHotTitleShadow = true;
+                TabTextCentered = true; // ï¿½ï¿½Ç©ï¿½Ä±ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½
+                UseRebarBGColor = true;  // ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã±ï¿½ï¿½ï¿½ï¿½ï¿½É«
+                UseRebarImage = false;  // ï¿½Ç·ñ¹¤¾ï¿½ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½Í¼Æ¬,ï¿½ï¿½ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½Í¼Æ¬
+                RebarStretchMode = StretchMode.Tile;  // ï¿½ï¿½ï¿½Ö·ï¿½Ê½
+                RebarImageFile = "";  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½Í¼Æ¬
                 RebarImageSeperateBars = false;
                 RebarSizeMargin = Padding.Empty;
                 UseFluentExplorerGlass = true;
@@ -654,12 +679,12 @@ namespace QTTabBarLib {
                 FluentGlassApplyBorderColor = true;
                 FluentGlassSuppressQtChildErase = true;
                 ActiveTabInBold = true;
-                SkinAutoColorChangeClose = false;  // ÊÇ·ñ¹Ø±Õ×Ô¶¯±äÉ«£¿
+                SkinAutoColorChangeClose = false;  // ï¿½Ç·ï¿½Ø±ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½É«ï¿½ï¿½
                 DrawHorizontalExplorerBarBgColor = false; // 
                 DrawVerticalExplorerBarBgColor = false; // 
             }
 			
-			// ÇÐ»»°µÉ«Ö÷ÌâÄ£Ê½Ê±ºòÇÐ»»ÑÕÉ«
+			// ï¿½Ð»ï¿½ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½Ä£Ê½Ê±ï¿½ï¿½ï¿½Ð»ï¿½ï¿½ï¿½É«
             internal void SwitchNighMode(bool isNighMode)
             {
                 if (this.SkinAutoColorChangeClose)
@@ -670,10 +695,10 @@ namespace QTTabBarLib {
                 if (isNighMode)
                 {
                     QTUtility2.log("change nightMode white skinChanged " + this.SkinAutoColorChangeClose);
-                    // UseTabSkin = false;  // ±êÇ©±³¾°
-                    // TabImageFile = "";  // ±êÇ©±³¾°ÎÄ¼þ
-                    // TabSizeMargin = Padding.Empty;  // ÉèÖÃ±ßÔµ
-                    // TabContentMargin = Padding.Empty; // ÄÚÈÝ±ßÔµ
+                    // UseTabSkin = false;  // ï¿½ï¿½Ç©ï¿½ï¿½ï¿½ï¿½
+                    // TabImageFile = "";  // ï¿½ï¿½Ç©ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½
+                    // TabSizeMargin = Padding.Empty;  // ï¿½ï¿½ï¿½Ã±ï¿½Ôµ
+                    // TabContentMargin = Padding.Empty; // ï¿½ï¿½ï¿½Ý±ï¿½Ôµ
                     // OverlapPixels = 0;  // 
                     // HitTestTransparent = false;
                     // TabHeight = 24;
@@ -694,21 +719,21 @@ namespace QTTabBarLib {
                     // TabTextCentered = false;
                     // UseRebarBGColor = false;
                     // RebarColor = Color.FromArgb(230,230,230);
-                    // ÉèÖÃ±êÇ©±³¾°É«
+                    // ï¿½ï¿½ï¿½Ã±ï¿½Ç©ï¿½ï¿½ï¿½ï¿½É«
                     
-                    // UseRebarImage = false;  // ÊÇ·ñ¹¤¾ßÀ¸×Ô¶¨ÒåÍ¼Æ¬,ÆôÓÃ×Ô¶¨ÒåÍ¼Æ¬
+                    // UseRebarImage = false;  // ï¿½Ç·ñ¹¤¾ï¿½ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½Í¼Æ¬,ï¿½ï¿½ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½Í¼Æ¬
                     // RebarStretchMode = StretchMode.Tile;
-                    // RebarImageFile = "";  // ¹¤¾ßÀ¸×Ô¶¨ÒåÍ¼Æ¬
+                    // RebarImageFile = "";  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½Í¼Æ¬
                     // RebarImageSeperateBars = false;
                     // RebarSizeMargin = Padding.Empty;
                     // ActiveTabInBold = true;
                 }
                 else
                 {
-                    // UseTabSkin = false;  // ±êÇ©±³¾°
-                    // TabImageFile = "";  // ±êÇ©±³¾°ÎÄ¼þ
-                    // TabSizeMargin = Padding.Empty;  // ÉèÖÃ±ßÔµ
-                    // TabContentMargin = Padding.Empty; // ÄÚÈÝ±ßÔµ
+                    // UseTabSkin = false;  // ï¿½ï¿½Ç©ï¿½ï¿½ï¿½ï¿½
+                    // TabImageFile = "";  // ï¿½ï¿½Ç©ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½
+                    // TabSizeMargin = Padding.Empty;  // ï¿½ï¿½ï¿½Ã±ï¿½Ôµ
+                    // TabContentMargin = Padding.Empty; // ï¿½ï¿½ï¿½Ý±ï¿½Ôµ
                     // OverlapPixels = 0;  // 
                     // HitTestTransparent = false;
                     // TabHeight = 24;
@@ -731,10 +756,10 @@ namespace QTTabBarLib {
                     // TabTextCentered = false;
                     UseRebarBGColor = true;
                     // // RebarColor = Color.FromArgb(230,230,230);
-                    // // ÉèÖÃ±êÇ©±³¾°É«
-                    // UseRebarImage = false;  // ÊÇ·ñ¹¤¾ßÀ¸×Ô¶¨ÒåÍ¼Æ¬,ÆôÓÃ×Ô¶¨ÒåÍ¼Æ¬
+                    // // ï¿½ï¿½ï¿½Ã±ï¿½Ç©ï¿½ï¿½ï¿½ï¿½É«
+                    // UseRebarImage = false;  // ï¿½Ç·ñ¹¤¾ï¿½ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½Í¼Æ¬,ï¿½ï¿½ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½Í¼Æ¬
                     // RebarStretchMode = StretchMode.Tile;
-                    // RebarImageFile = "";  // ¹¤¾ßÀ¸×Ô¶¨ÒåÍ¼Æ¬
+                    // RebarImageFile = "";  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½Í¼Æ¬
                     // RebarImageSeperateBars = false;
                     // RebarSizeMargin = Padding.Empty;
                     // ActiveTabInBold = true;
@@ -769,15 +794,15 @@ namespace QTTabBarLib {
                 ButtonIndexes	=	QTUtility.IsXP
                         // ? new int[] { 1, 2, 0, 3, 4, 5, 0, 6, 7, 0, 11, 13, 12, 14, 15, 0, 21, 9, 20  }
                         // : new System.Int32[] { 3, 4, 5, 0, 6, 7, 0, 17, 11, 12, 14, 15, 13, 0, 21, 9, 19, 10 };
-                // È¥µô·Ö¸îÏß
+                // È¥ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½
                         ? new int[] { 1, 2,  3, 4, 5,  6, 7,  11, 13, 12, 14, 15,  21, 9, 20  }
                         : new System.Int32[] { 3, 4, 5, 6, 7,  17, 11, 12, 14, 15, 13,  21, 9, 19, 10 };
                 ActivePluginIDs = new string[0];
-                LargeButtons	= true;  // ÊÇ·ñÏÔÊ¾´ó°´Å¥
-                LockSearchBarWidth	=	true;  // Ëø¶¨ËÑË÷¿ò´óÐ¡
-                LockDropDownButtons	=	true;  // Ëø¶¨ÏÂÀ­°´Å¥²Ëµ¥Ë³Ðò
-                ShowButtonLabels	=	true; // ÊÇ·ñÏÔÊ¾°´Å¥±êÇ©
-                ImageStripPath	=	"";  // ×Ô¶¨ÒåÍ¼Æ¬Â·¾¶
+                LargeButtons	= true;  // ï¿½Ç·ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½Å¥
+                LockSearchBarWidth	=	true;  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¡
+                LockDropDownButtons	=	true;  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å¥ï¿½Ëµï¿½Ë³ï¿½ï¿½
+                ShowButtonLabels	=	true; // ï¿½Ç·ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½Å¥ï¿½ï¿½Ç©
+                ImageStripPath	=	"";  // ï¿½Ô¶ï¿½ï¿½ï¿½Í¼Æ¬Â·ï¿½ï¿½
             }
         }
 
@@ -822,43 +847,43 @@ namespace QTTabBarLib {
 
                 /* qwop's default value. */
                 MouseScrollsHotWnd = false;
-                // È«¾ÖÊó±ê¶¯×÷
+                // È«ï¿½ï¿½ï¿½ï¿½ê¶¯ï¿½ï¿½
                 GlobalMouseActions = new Dictionary<MouseChord, BindAction> {
                     {MouseChord.X1, BindAction.GoBack},
                     {MouseChord.X2, BindAction.GoForward},
                     {MouseChord.X1 | MouseChord.Ctrl, BindAction.GoFirst},
                     {MouseChord.X2 | MouseChord.Ctrl, BindAction.GoLast}
                 };
-               // ±êÇ©¶¯×÷
+               // ï¿½ï¿½Ç©ï¿½ï¿½ï¿½ï¿½
                 TabActions = new Dictionary<MouseChord, BindAction> { 
                     {MouseChord.Middle, BindAction.CloseTab},
                     {MouseChord.Ctrl | MouseChord.Left, BindAction.LockTab},
                     {MouseChord.Double, BindAction.UpOneLevelTab},
                 };
-                // ±êÇ©Bar´¦¶¯×÷
+                // ï¿½ï¿½Ç©Barï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                BarActions = new Dictionary<MouseChord, BindAction> {
                     {MouseChord.Double, BindAction.NewTab},
                     {MouseChord.Middle, BindAction.RestoreLastClosed},
                     {MouseChord.Ctrl | MouseChord.Middle, BindAction.TearOffCurrent}
                 };
-                // ÎÄ¼þ¼ÐÁ´½Ó¶¯×÷
+                // ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¶ï¿½ï¿½ï¿½
                 LinkActions = new Dictionary<MouseChord, BindAction> {
                     {MouseChord.None, BindAction.ItemsOpenInNewTabNoSel},
                     {MouseChord.Middle, BindAction.ItemOpenInNewTab},
                     {MouseChord.Ctrl | MouseChord.Middle, BindAction.ItemOpenInNewWindow}
                 };
-                // ×ÊÔ´¹ÜÀíÆ÷ÏîÄ¿¿Õ°×´¦
+                // ï¿½ï¿½Ô´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½Õ°×´ï¿½
                ItemActions = new Dictionary<MouseChord, BindAction> {
                     {MouseChord.Middle, BindAction.ItemOpenInNewTab},
                     {MouseChord.Ctrl | MouseChord.Middle, BindAction.ItemOpenInNewTabNoSel}                        
                 };
 
-               // ×ÊÔ´¹ÜÀíÆ÷¿Õ°×´¦
+               // ï¿½ï¿½Ô´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ°×´ï¿½
                MarginActions = new Dictionary<MouseChord, BindAction> {
                     { MouseChord.Double, BindAction.UpOneLevel}
                     // add by qwop //
                     ,{ MouseChord.Middle, BindAction.BrowseFolder}
-                    // ctrl + Ë«»÷ ´ò¿ªÃüÁîÌáÊ¾·û
+                    // ctrl + Ë«ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½
                     ,{ ( MouseChord) 66, BindAction.OpenCmd } // ===  {MouseChord.Ctrl | MouseChord.Double, BindAction.OpenCmd}
                     ,{ MouseChord.Ctrl | MouseChord.Middle, BindAction.ItemsOpenInNewTabNoSel}
                     // add by qwop //
@@ -873,75 +898,75 @@ namespace QTTabBarLib {
             public bool UseTabSwitcher           { get; set; }
 
             public _Keys() {
-                // ³õÊ¼»¯Ä¬ÈÏµÄ¿ì½Ý¼ü×ÖµäÏî
+                // ï¿½ï¿½Ê¼ï¿½ï¿½Ä¬ï¿½ÏµÄ¿ï¿½Ý¼ï¿½ï¿½Öµï¿½ï¿½ï¿½
                 var dict = new Dictionary<BindAction, Keys> {
-                    // ºóÍË²Ù×÷
+                    // ï¿½ï¿½ï¿½Ë²ï¿½ï¿½ï¿½
                     {BindAction.GoBack,             Key.Left  | Key.Alt},
-                    // Ç°½ø²Ù×÷
+                    // Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                     {BindAction.GoForward,          Key.Right | Key.Alt},
-                    // Ìø×ªµÚÒ»¸ö
+                    // ï¿½ï¿½×ªï¿½ï¿½Ò»ï¿½ï¿½
                     {BindAction.GoFirst,            Key.Left  | Key.Control | Key.Alt},
-                    // Ìø×ª×îºóÒ»¸ö
+                    // ï¿½ï¿½×ªï¿½ï¿½ï¿½Ò»ï¿½ï¿½
                     {BindAction.GoLast,             Key.Right | Key.Control | Key.Alt},
-                    // ÏÂÒ»¸ö±êÇ©
+                    // ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Ç©
                     {BindAction.NextTab,            Key.Tab   | Key.Control},
-                    // ÉÏÒ»¸ö±êÇ©
+                    // ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Ç©
                     {BindAction.PreviousTab,        Key.Tab   | Key.Control | Key.Shift},
-                    //  ÐÂ½¨±êÇ©
+                    //  ï¿½Â½ï¿½ï¿½ï¿½Ç©
                     {BindAction.NewTab,             Key.T     | Key.Control},
-                    // ÐÂ´°¿Ú
+                    // ï¿½Â´ï¿½ï¿½ï¿½
                     {BindAction.NewWindow,          Key.T     | Key.Control | Key.Shift},
-                    // ¹Ø±Õ±êÇ©
+                    // ï¿½Ø±Õ±ï¿½Ç©
                     {BindAction.CloseCurrent,       Key.W     | Key.Control},
-                    // ¹Ø±ÕÆäËû±êÇ©
+                    // ï¿½Ø±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç©
                     {BindAction.CloseAllButCurrent, Key.W     | Key.Control | Key.Shift},
-                    // »Ö¸´¹Ø±ÕµÄ±êÇ©
+                    // ï¿½Ö¸ï¿½ï¿½Ø±ÕµÄ±ï¿½Ç©
                     {BindAction.RestoreLastClosed,  Key.Z     | Key.Control | Key.Shift},
-                    // È¡ÏûËø¶¨¼üÅÌ¿ì½Ý¼ü
+                    // È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì¿ï¿½Ý¼ï¿½
                    // {BindAction.LockCurrent,        Key.L     | Key.Control},
                    // {BindAction.LockAll,            Key.L     | Key.Control | Key.Shift},
                     {BindAction.BrowseFolder,       Key.O     | Key.Control},
-                    // ´ò¿ªÑ¡Ïî
+                    // ï¿½ï¿½Ñ¡ï¿½ï¿½
                     {BindAction.ShowOptions,        Key.O     | Key.Alt},
-                    // ÏÔÊ¾¹¤¾ßÀ¸²Ëµ¥
+                    // ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ëµï¿½
                     {BindAction.ShowToolbarMenu,    Key.Oemcomma  | Key.Alt},
-                    // ÏÔÊ¾±êÇ©²Ëµ¥
+                    // ï¿½ï¿½Ê¾ï¿½ï¿½Ç©ï¿½Ëµï¿½
                     {BindAction.ShowTabMenuCurrent, Key.OemPeriod | Key.Alt},
-                    // ÏÔÊ¾±êÇ©×é²Ëµ¥
+                    // ï¿½ï¿½Ê¾ï¿½ï¿½Ç©ï¿½ï¿½Ëµï¿½
                     {BindAction.ShowGroupMenu,      Key.G     | Key.Alt},
-                    // ÏÔÊ¾ÓÃ»§Ó¦ÓÃ³ÌÐò²Ëµ¥
+                    // ï¿½ï¿½Ê¾ï¿½Ã»ï¿½Ó¦ï¿½Ã³ï¿½ï¿½ï¿½Ëµï¿½
                     {BindAction.ShowUserAppsMenu,   Key.H     | Key.Alt},
-                    // ÏÔÊ¾×î½ü±êÇ©²Ëµ¥
+                    // ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½Ç©ï¿½Ëµï¿½
                     {BindAction.ShowRecentTabsMenu, Key.U     | Key.Alt},
-                    // ÏÔÊ¾×î½üÎÄ¼þ²Ëµ¥
+                    // ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½Ëµï¿½
                     {BindAction.ShowRecentFilesMenu,Key.F     | Key.Alt},
-                    // Bug fix ÈÈ¼ü³åÍ»£¬ µ÷Õû by indiff 
+                    // Bug fix ï¿½È¼ï¿½ï¿½ï¿½Í»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ by indiff
                     // {BindAction.NewFile,            Key.N     | Key.Control},
                     {BindAction.NewFile,            Key.N     | Key.Control | Key.Alt},
                     // {BindAction.NewFolder,          Key.N     | Key.Control | Key.Shift},
-                   //  {BindAction.NewFolder,          Key.N     | Key.Shift }, // ÏµÍ³Ä¬ÈÏ×Ô´ø
-                   // ´´½¨±êÇ©×é
+                   //  {BindAction.NewFolder,          Key.N     | Key.Shift }, // ÏµÍ³Ä¬ï¿½ï¿½ï¿½Ô´ï¿½
+                   // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç©ï¿½ï¿½
                    {BindAction.CreateNewGroup,     Key.D    | Key.Control},
-                   // Ìí¼Óµ½±êÇ©×é
+                   // ï¿½ï¿½ï¿½Óµï¿½ï¿½ï¿½Ç©ï¿½ï¿½
                  //  {BindAction.AddToGroup,         Key.D    | Key.Control  },
                    // {BindAction.AddToGroup,         Key.G    | Key.Control | Key.Alt },
                 };
-                // ÐÞ¸´Êý×éÔ½½çÎÊÌâ by indiff
+                // ï¿½Þ¸ï¿½ï¿½ï¿½ï¿½ï¿½Ô½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ by indiff
                 var keyboardActionCount = (int)BindAction.KEYBOARD_ACTION_COUNT;
                 Shortcuts = new int[keyboardActionCount];
-                // ²å¼þ¿ì½Ý¼ü
+                // ï¿½ï¿½ï¿½ï¿½ï¿½Ý¼ï¿½
                 PluginShortcuts = new Dictionary<string, int[]>();
                 foreach(var pair in dict)
                 {
                     var pairKey = (int)pair.Key;
-                    // ÐÞ¸´Êý×éÔ½½çÎÊÌâ by indiff
+                    // ï¿½Þ¸ï¿½ï¿½ï¿½ï¿½ï¿½Ô½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ by indiff
                     if (pairKey > keyboardActionCount - 1)
                     {
                         continue;
                     }
                     Shortcuts[pairKey] = (int)pair.Value | QTUtility.FLAG_KEYENABLED;
                 }
-                // ÆôÓÃ±êÇ©ÇÐ»»Æ÷
+                // ï¿½ï¿½ï¿½Ã±ï¿½Ç©ï¿½Ð»ï¿½ï¿½ï¿½
                 UseTabSwitcher = true;
             }
         }
@@ -973,7 +998,7 @@ namespace QTTabBarLib {
                 if (uiCulture.Equals("zh-CN") || lUiCulture.Equals("zh") || lUiCulture.Equals("cn"))
                 {
                     BuiltInLangSelectedIndex = 1;
-                    BuiltInLang = "¼òÌåÖÐÎÄ";
+                    BuiltInLang = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
                 }
                 else if (uiCulture.Equals("de_DE") || lUiCulture.Equals("de"))
                 {
@@ -1001,7 +1026,7 @@ namespace QTTabBarLib {
                     BuiltInLang = "Turkish";
                 }
                 else if (uiCulture.Equals("ru_RU") || lUiCulture.Equals("ru"))
-                {  // Ð¡Ð´ÅÐ¶Ï¶íÂÞË¹
+                {  // Ð¡Ð´ï¿½Ð¶Ï¶ï¿½ï¿½ï¿½Ë¹
                     BuiltInLangSelectedIndex = 7;
                     BuiltInLang = "Russian";
                 }
@@ -1034,7 +1059,7 @@ namespace QTTabBarLib {
             public bool OneClickMenu             { get; set; }
             public bool EnableAppShortcuts       { get; set; }
             public int Width                     { get; set; }
-            public int lstSelectedIndex          { get; set; } /*×îºóÑ¡ÖÐµÄ²Ëµ¥Ïî.*/
+            public int lstSelectedIndex          { get; set; } /*ï¿½ï¿½ï¿½Ñ¡ï¿½ÐµÄ²Ëµï¿½ï¿½ï¿½.*/
             public _Desktop() {
                 FirstItem = 0;
                 SecondItem = 1;
@@ -1059,7 +1084,7 @@ namespace QTTabBarLib {
                 // qwop's default value.
                 Width = 12;
 
-                // ×îºóÑ¡ÖÐµÄ²Ëµ¥Ë÷Òý£¬Ä¬ÈÏÎª0. ÏÂ´Î´ò¿ªµÄÊ±ºò×Ô¶¯¶¨Î»µ½¸ÃË÷Òý
+                // ï¿½ï¿½ï¿½Ñ¡ï¿½ÐµÄ²Ëµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¬ï¿½ï¿½Îª0. ï¿½Â´Î´ò¿ªµï¿½Ê±ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                 lstSelectedIndex = 0;
             }
         }
@@ -1070,9 +1095,9 @@ namespace QTTabBarLib {
 
         public static void Initialize() {
             LoadedConfig = new Config();
-            QTUtility2.log("³õÊ¼»¯ÅäÖÃÐÅÏ¢³É¹¦");
+            QTUtility2.log("ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½É¹ï¿½");
             ReadConfig();
-            QTUtility2.log("×¢²á±í¶ÁÈ¡ÅäÖÃÐÅÏ¢³É¹¦");
+            QTUtility2.log("×¢ï¿½ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½É¹ï¿½");
         }
 
         public static void UpdateConfig(bool fBroadcast = true) {
@@ -1177,10 +1202,10 @@ namespace QTTabBarLib {
                 Config.Misc.FileHistoryCount = QTUtility.ValidateMinMax(Config.Misc.FileHistoryCount, 1, 30);
                 Config.Misc.NetworkTimeout = QTUtility.ValidateMinMax(Config.Misc.NetworkTimeout, 0, 120);
                 Config.Skin.TabHeight = QTUtility.ValidateMinMax(Config.Skin.TabHeight, 10, 50);
-                // µ÷Õû±êÇ©×îÐ¡¿í¶È
+                // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç©ï¿½ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½
 				Config.Skin.TabMinWidth = QTUtility.ValidateMinMax(Config.Skin.TabMinWidth, 10, 999);
                 Config.Skin.TabMaxWidth = QTUtility.ValidateMinMax(Config.Skin.TabMaxWidth, 50, 999);
-                Config.Skin.OverlapPixels = QTUtility.ValidateMinMax(Config.Skin.TabHeight, 0, 20);
+                Config.Skin.OverlapPixels = QTUtility.ValidateMinMax(Config.Skin.OverlapPixels, 0, 20);
                 Config.Skin.TabTextFont = Config.Skin.TabTextFont ?? Control.DefaultFont;
                 Config.Skin.FluentGlassAddressMode = QTUtility.ValidateMinMax(Config.Skin.FluentGlassAddressMode, 0, 2);
                 Config.Skin.FluentGlassAddressExtraPixels = QTUtility.ValidateMinMax(Config.Skin.FluentGlassAddressExtraPixels, 0, 400);
@@ -1203,6 +1228,16 @@ namespace QTTabBarLib {
                 if(string.IsNullOrEmpty(Config.Skin.PlusButtonImageFile) || !File.Exists(Config.Skin.PlusButtonImageFile)) {
                     Config.Skin.PlusButtonImageFile = "";
                 }
+                if(string.IsNullOrEmpty(Config.Skin.CloseButtonImageFile) || !File.Exists(Config.Skin.CloseButtonImageFile)) {
+                    Config.Skin.CloseButtonImageFile = "";
+                }
+                if(string.IsNullOrEmpty(Config.Skin.LockIconImageFile) || !File.Exists(Config.Skin.LockIconImageFile)) {
+                    Config.Skin.LockIconImageFile = "";
+                }
+                Config.Skin.CloseButtonImageOffsetX = QTUtility.ValidateMinMax(Config.Skin.CloseButtonImageOffsetX, -50, 50);
+                Config.Skin.CloseButtonImageOffsetY = QTUtility.ValidateMinMax(Config.Skin.CloseButtonImageOffsetY, -50, 50);
+                Config.Skin.LockIconImageOffsetX = QTUtility.ValidateMinMax(Config.Skin.LockIconImageOffsetX, -50, 50);
+                Config.Skin.LockIconImageOffsetY = QTUtility.ValidateMinMax(Config.Skin.LockIconImageOffsetY, -50, 50);
                 using(IDLWrapper wrapper = new IDLWrapper(Config.Skin.RebarImageFile)) {
                     if(!wrapper.Available) Config.Skin.RebarImageFile = "";
                 }

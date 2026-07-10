@@ -62,6 +62,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <CheckBox x:Name="chkUseTabSkin"
                 Content="{qt:Resx Key=Options_Page06_Appearance, Index=2}"
@@ -149,6 +150,73 @@
                 SelectedPath="{Binding Path=PlusButtonImageFile}"/>
         </Grid>
         <Label
+            Content="{qt:Resx Key=Options_TabButtonImages, Index=0}"
+            Style="{StaticResource SectionHeaderStyle}"/>
+        <Grid Margin="13,1,0,1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <CheckBox x:Name="chkUseCloseButtonImage"
+                Content="{qt:Resx Key=Options_TabButtonImages, Index=1}"
+                IsChecked="{Binding Path=UseCloseButtonImage}"
+                Margin="0,0,15,0"
+                VerticalAlignment="Center"/>
+            <qt:FileFolderEntryBox
+                FilterText="{qt:Resx Key=FileFilters, Index=0}"
+                FilterExtensions="*.png;*.bmp;*.gif;*.jpg"
+                Grid.Column="1"
+                IsEnabled="{Binding Path=IsChecked, ElementName=chkUseCloseButtonImage}"
+                Margin="0,2"
+                SelectedPath="{Binding Path=CloseButtonImageFile}"/>
+            <Label
+                Content="{qt:Resx Key=Options_TabButtonImages, Index=2}"
+                Grid.Row="1"
+                Height="18"
+                Margin="18,2,5,2"
+                Padding="0"/>
+            <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal" Margin="0,1"
+                IsEnabled="{Binding Path=IsChecked, ElementName=chkUseCloseButtonImage}">
+                <qt:Spinner Min="-50" Max="50" Value="{Binding Path=CloseButtonImageOffsetX}" Width="55"/>
+                <Label Content="X" Padding="5,1"/>
+                <qt:Spinner Min="-50" Max="50" Value="{Binding Path=CloseButtonImageOffsetY}" Width="55"/>
+                <Label Content="Y" Padding="5,1"/>
+            </StackPanel>
+            <CheckBox x:Name="chkUseLockIconImage"
+                Content="{qt:Resx Key=Options_TabButtonImages, Index=3}"
+                Grid.Row="2"
+                IsChecked="{Binding Path=UseLockIconImage}"
+                Margin="0,5,15,0"
+                VerticalAlignment="Center"/>
+            <qt:FileFolderEntryBox
+                FilterText="{qt:Resx Key=FileFilters, Index=0}"
+                FilterExtensions="*.png;*.bmp;*.gif;*.jpg"
+                Grid.Column="1"
+                Grid.Row="2"
+                IsEnabled="{Binding Path=IsChecked, ElementName=chkUseLockIconImage}"
+                Margin="0,5,0,2"
+                SelectedPath="{Binding Path=LockIconImageFile}"/>
+            <Label
+                Content="{qt:Resx Key=Options_TabButtonImages, Index=4}"
+                Grid.Row="3"
+                Height="18"
+                Margin="18,2,5,2"
+                Padding="0"/>
+            <StackPanel Grid.Column="1" Grid.Row="3" Orientation="Horizontal" Margin="0,1"
+                IsEnabled="{Binding Path=IsChecked, ElementName=chkUseLockIconImage}">
+                <qt:Spinner Min="-50" Max="50" Value="{Binding Path=LockIconImageOffsetX}" Width="55"/>
+                <Label Content="X" Padding="5,1"/>
+                <qt:Spinner Min="-50" Max="50" Value="{Binding Path=LockIconImageOffsetY}" Width="55"/>
+                <Label Content="Y" Padding="5,1"/>
+            </StackPanel>
+        </Grid>
+        <Label
             Content="{qt:Resx Key=Options_Page06_Appearance, Index=7}"
             Style="{StaticResource SectionHeaderStyle}"/>
         <Grid
@@ -232,6 +300,7 @@
                 </Style>
             </Grid.Resources>
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
@@ -374,6 +443,33 @@
                     </ContextMenu>
                 </ToggleButton.ContextMenu>
             </ToggleButton>
+            <StackPanel
+                Grid.Column="1"
+                Grid.ColumnSpan="4"
+                Grid.Row="2"
+                Orientation="Horizontal"
+                IsEnabled="{Binding ElementName=chkTextShadow, Path=IsChecked}"
+                Margin="0,0,0,4">
+                <TextBlock
+                    Text="Draw shadow for:"
+                    VerticalAlignment="Center"
+                    Margin="0,0,8,0"/>
+                <CheckBox
+                    Content="Active"
+                    IsChecked="{Binding Path=TabActiveTitleShadow}"
+                    Margin="0,0,10,0"
+                    VerticalAlignment="Center"/>
+                <CheckBox
+                    Content="Inactive"
+                    IsChecked="{Binding Path=TabInactiveTitleShadow}"
+                    Margin="0,0,10,0"
+                    VerticalAlignment="Center"/>
+                <CheckBox
+                    Content="Mouseover"
+                    IsChecked="{Binding Path=TabHotTitleShadow}"
+                    Margin="0,0,10,0"
+                    VerticalAlignment="Center"/>
+            </StackPanel>
             <Label
                 Content="{qt:Resx Key=Options_Page06_Appearance, Index=20}"
                 Grid.Column="3"
@@ -412,7 +508,7 @@
                     Margin="6, 3"
                     VerticalAlignment="Center"/>
 				<CheckBox x:Name="SkinAutoColorChangeClose"
-							Content="Close Auto Color"
+							Content="Disable auto text color"
 							Height="16"
 							Margin="6, 3"
 							IsChecked="{Binding Path=SkinAutoColorChangeClose}"/>	
@@ -424,6 +520,7 @@
         <Grid
             Margin="13,1,0,1">
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>

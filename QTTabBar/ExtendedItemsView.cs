@@ -145,6 +145,8 @@ namespace QTTabBarLib {
         protected override bool HandleCursorLoop(Keys key) {
             int focusedIdx = ShellBrowser.GetFocusedIndex();
             int itemCount = ShellBrowser.GetItemCount();
+            if(itemCount <= 0) return false;
+            if(focusedIdx < 0 || focusedIdx >= itemCount) return SelectCursorLoopFallback(key);
             int selectMe = -1;
             FVM viewMode = ShellBrowser.ViewMode;
             switch(viewMode) {
@@ -181,7 +183,7 @@ namespace QTTabBarLib {
                         if(elem == null) return -1;
                         return viewMode == FVM.LIST ? elem.GetRowCount() : elem.GetColumnCount();
                     });
-                    if(pageCount == -1) return false;
+                    if(pageCount <= 0) return false;
                     int page = focusedIdx % pageCount;
                     if(key == KeyNextItem && (page == pageCount - 1 || focusedIdx == itemCount - 1)) {
                         selectMe = focusedIdx - page;

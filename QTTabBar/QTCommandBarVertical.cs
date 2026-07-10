@@ -22,6 +22,7 @@ namespace QTTabBarLib {
         private const string ExplorerBarsKey = @"Software\Microsoft\Internet Explorer\Explorer Bars\";
         private const int DefaultIconSize = 24;
         private const int BarPropping = 13;
+        private const string InternalItemDragFormat = "QTTabBar.NativeEnhanced.VersatileItem";
         private static readonly byte[] DefaultBarSize = { 0x44, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00 };
 
         private IContainer components;
@@ -42,6 +43,9 @@ namespace QTTabBarLib {
         private bool subscribedToApplicationChanges;
         private bool fixingBarWidth;
         private bool widthFixPending;
+        private Point dragStartPoint;
+        private VersatileItem dragCandidate;
+        private int dragInsertionIndex = -1;
 
         private enum VersatileItemKind {
             Separator,
@@ -274,8 +278,13 @@ namespace QTTabBarLib {
             MinSize = new Size(16, BarThickness);
             MaxSize = new Size(-1, BarThickness);
             toolStrip.DragEnter += toolStrip_DragEnter;
+            toolStrip.DragOver += toolStrip_DragOver;
+            toolStrip.DragLeave += toolStrip_DragLeave;
             toolStrip.DragDrop += toolStrip_DragDrop;
             toolStrip.MouseDown += toolStrip_MouseDown;
+            toolStrip.MouseMove += toolStrip_MouseMove;
+            toolStrip.MouseUp += toolStrip_MouseUp;
+            toolStrip.Paint += toolStrip_Paint;
             toolStrip.MouseEnter += delegate {
                 if(items.Count == 0) RefreshItems();
             };
@@ -680,12 +689,14 @@ namespace QTTabBarLib {
 
         private ToolStripItem CreateToolStripItem(VersatileItem item, bool menuItem) {
             if(item.Kind == VersatileItemKind.Separator) {
-                return new ToolStripSeparator {
+                ToolStripItem separator = new ToolStripSeparator {
                         AutoSize = menuItem,
                         Margin = menuItem ? Padding.Empty : new Padding(0, 2, 0, 2),
                         Size = menuItem ? Size.Empty : new Size(BarThickness - 4, 5),
                         Tag = item
                 };
+                if(!menuItem) AttachItemDragHandlers(separator);
+                return separator;
             }
             if(item.Kind == VersatileItemKind.Folder || item.Children.Count > 0 || IsDropDownBuiltIn(item)) {
                 ToolStripDropDownItem button = menuItem
@@ -703,6 +714,7 @@ namespace QTTabBarLib {
                     button.Margin = Padding.Empty;
                     button.Padding = new Padding(2);
                     button.Size = new Size(BarThickness - 4, BarThickness - 2);
+                    AttachItemDragHandlers(button);
                 }
                 PopulateDropDown(button, item);
                 return button;
@@ -719,6 +731,7 @@ namespace QTTabBarLib {
             if(!menuItem) {
                 result.Margin = Padding.Empty;
                 result.Padding = new Padding(2);
+                AttachItemDragHandlers(result);
             }
             result.Click += item_Click;
             return result;
@@ -960,30 +973,193 @@ namespace QTTabBarLib {
         }
 
         private void toolStrip_DragEnter(object sender, DragEventArgs e) {
-            e.Effect = e.Data != null && e.Data.GetDataPresent(DataFormats.FileDrop)
-                    ? DragDropEffects.Copy
-                    : DragDropEffects.None;
+            e.Effect = GetDropEffect(e.Data);
+            UpdateDragInsertion(e);
+        }
+
+        private void toolStrip_DragOver(object sender, DragEventArgs e) {
+            e.Effect = GetDropEffect(e.Data);
+            UpdateDragInsertion(e);
+        }
+
+        private void toolStrip_DragLeave(object sender, EventArgs e) {
+            ClearDragInsertion();
         }
 
         private void toolStrip_DragDrop(object sender, DragEventArgs e) {
-            string[] paths = e.Data == null ? null : e.Data.GetData(DataFormats.FileDrop) as string[];
-            if(paths == null || paths.Length == 0) return;
-            bool changed = false;
-            foreach(string path in paths.Where(path => !string.IsNullOrEmpty(path))) {
-                if(items.Any(item => string.Equals(item.Path, path, StringComparison.OrdinalIgnoreCase))) continue;
-                items.Add(CreatePathItem(Path.GetFileName(path.TrimEnd('\\')), path));
-                changed = true;
+            try {
+                int insertionIndex = GetInsertionIndex(toolStrip.PointToClient(new Point(e.X, e.Y)));
+                VersatileItem movedItem = GetDraggedItem(e.Data);
+                if(movedItem != null) {
+                    MoveItem(movedItem, insertionIndex);
+                    return;
+                }
+
+                string[] paths = e.Data == null ? null : e.Data.GetData(DataFormats.FileDrop) as string[];
+                if(paths == null || paths.Length == 0) return;
+                bool changed = false;
+                int targetIndex = Math.Max(0, Math.Min(insertionIndex, items.Count));
+                foreach(string path in paths.Where(path => !string.IsNullOrEmpty(path))) {
+                    if(items.Any(item => string.Equals(item.Path, path, StringComparison.OrdinalIgnoreCase))) continue;
+                    items.Insert(targetIndex++, CreatePathItem(Path.GetFileName(path.TrimEnd('\\')), path));
+                    changed = true;
+                }
+                if(!changed) return;
+                followsApplicationList = false;
+                SaveItems();
+                RebuildToolStrip();
             }
-            if(!changed) return;
-            followsApplicationList = false;
-            SaveItems();
-            RebuildToolStrip();
+            catch(Exception ex) {
+                QTUtility2.MakeErrorLog(ex, "QTCommandBarVertical DragDrop");
+            }
+            finally {
+                ClearDragInsertion();
+            }
         }
 
         private void toolStrip_MouseDown(object sender, MouseEventArgs e) {
             if(e.Button == MouseButtons.Right) {
                 SetContextItem(e.Location);
             }
+            else if(e.Button == MouseButtons.Left) {
+                ToolStripItem control = toolStrip.GetItemAt(e.Location);
+                BeginItemDrag(control == null ? null : control.Tag as VersatileItem, e.Location);
+            }
+        }
+
+        private void toolStrip_MouseMove(object sender, MouseEventArgs e) {
+            TryStartItemDrag(e.Location);
+        }
+
+        private void toolStrip_MouseUp(object sender, MouseEventArgs e) {
+            dragCandidate = null;
+        }
+
+        private void AttachItemDragHandlers(ToolStripItem control) {
+            control.MouseDown += versatileItem_MouseDown;
+            control.MouseMove += versatileItem_MouseMove;
+            control.MouseUp += versatileItem_MouseUp;
+        }
+
+        private void versatileItem_MouseDown(object sender, MouseEventArgs e) {
+            if(e.Button != MouseButtons.Left) return;
+            ToolStripItem control = sender as ToolStripItem;
+            BeginItemDrag(control == null ? null : control.Tag as VersatileItem,
+                    toolStrip.PointToClient(Cursor.Position));
+        }
+
+        private void versatileItem_MouseMove(object sender, MouseEventArgs e) {
+            TryStartItemDrag(toolStrip.PointToClient(Cursor.Position));
+        }
+
+        private void versatileItem_MouseUp(object sender, MouseEventArgs e) {
+            dragCandidate = null;
+        }
+
+        private void BeginItemDrag(VersatileItem item, Point location) {
+            dragCandidate = item;
+            dragStartPoint = location;
+        }
+
+        private void TryStartItemDrag(Point location) {
+            if((Control.MouseButtons & MouseButtons.Left) == 0 || dragCandidate == null) return;
+            Size dragSize = SystemInformation.DragSize;
+            Rectangle dragBounds = new Rectangle(
+                    dragStartPoint.X - dragSize.Width / 2,
+                    dragStartPoint.Y - dragSize.Height / 2,
+                    dragSize.Width,
+                    dragSize.Height);
+            if(dragBounds.Contains(location)) return;
+
+            VersatileItem item = dragCandidate;
+            dragCandidate = null;
+            try {
+                DataObject data = new DataObject();
+                data.SetData(InternalItemDragFormat, false, item);
+                toolStrip.DoDragDrop(data, DragDropEffects.Move);
+            }
+            catch(Exception ex) {
+                QTUtility2.MakeErrorLog(ex, "QTCommandBarVertical Begin Drag");
+            }
+            finally {
+                ClearDragInsertion();
+            }
+        }
+
+        private void toolStrip_Paint(object sender, PaintEventArgs e) {
+            if(dragInsertionIndex < 0) return;
+            int y = GetInsertionLineY(dragInsertionIndex);
+            using(Pen pen = new Pen(SystemColors.Highlight, 2f)) {
+                e.Graphics.DrawLine(pen, 2, y, Math.Max(2, toolStrip.ClientSize.Width - 3), y);
+            }
+        }
+
+        private DragDropEffects GetDropEffect(IDataObject data) {
+            try {
+                if(GetDraggedItem(data) != null) return DragDropEffects.Move;
+                return data != null && data.GetDataPresent(DataFormats.FileDrop)
+                        ? DragDropEffects.Copy
+                        : DragDropEffects.None;
+            }
+            catch(Exception ex) {
+                QTUtility2.MakeErrorLog(ex, "QTCommandBarVertical Get Drop Effect");
+                return DragDropEffects.None;
+            }
+        }
+
+        private VersatileItem GetDraggedItem(IDataObject data) {
+            if(data == null || !data.GetDataPresent(InternalItemDragFormat)) return null;
+            VersatileItem item = data.GetData(InternalItemDragFormat) as VersatileItem;
+            return item != null && items.Contains(item) ? item : null;
+        }
+
+        private void UpdateDragInsertion(DragEventArgs e) {
+            int newIndex = e.Effect == DragDropEffects.None
+                    ? -1
+                    : GetInsertionIndex(toolStrip.PointToClient(new Point(e.X, e.Y)));
+            if(newIndex == dragInsertionIndex) return;
+            dragInsertionIndex = newIndex;
+            toolStrip.Invalidate();
+        }
+
+        private void ClearDragInsertion() {
+            if(dragInsertionIndex < 0) return;
+            dragInsertionIndex = -1;
+            toolStrip.Invalidate();
+        }
+
+        private int GetInsertionIndex(Point location) {
+            for(int i = 0; i < toolStrip.Items.Count; i++) {
+                Rectangle bounds = toolStrip.Items[i].Bounds;
+                if(location.Y < bounds.Top + bounds.Height / 2) return i;
+            }
+            return items.Count;
+        }
+
+        private int GetInsertionLineY(int insertionIndex) {
+            if(toolStrip.Items.Count == 0) return Math.Max(1, toolStrip.Padding.Top);
+            if(insertionIndex <= 0) return Math.Max(1, toolStrip.Items[0].Bounds.Top);
+            if(insertionIndex >= toolStrip.Items.Count) {
+                return Math.Min(toolStrip.ClientSize.Height - 2,
+                        toolStrip.Items[toolStrip.Items.Count - 1].Bounds.Bottom);
+            }
+            return toolStrip.Items[insertionIndex].Bounds.Top;
+        }
+
+        private void MoveItem(VersatileItem item, int insertionIndex) {
+            int sourceIndex = items.IndexOf(item);
+            if(sourceIndex < 0) return;
+
+            int targetIndex = Math.Max(0, Math.Min(insertionIndex, items.Count));
+            items.RemoveAt(sourceIndex);
+            if(sourceIndex < targetIndex) targetIndex--;
+            targetIndex = Math.Max(0, Math.Min(targetIndex, items.Count));
+            items.Insert(targetIndex, item);
+            if(targetIndex == sourceIndex) return;
+
+            followsApplicationList = false;
+            SaveItems();
+            RebuildToolStrip();
         }
 
         private void barContextMenu_Opening(object sender, CancelEventArgs e) {

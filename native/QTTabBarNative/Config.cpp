@@ -864,6 +864,9 @@ void ReadSkinSettings(HKEY key, SkinSettings& settings) {
     if (auto jsonValue = ReadJsonValue(key, L"TabShadInactiveColor")) settings.tabShadInactiveColor = ParseColor(*jsonValue);
     if (auto jsonValue = ReadJsonValue(key, L"TabShadHotColor")) settings.tabShadHotColor = ParseColor(*jsonValue);
     if (ReadDwordValue(key, L"TabTitleShadows", &value)) settings.tabTitleShadows = value != 0;
+    if (ReadDwordValue(key, L"TabActiveTitleShadow", &value)) settings.tabActiveTitleShadow = value != 0;
+    if (ReadDwordValue(key, L"TabInactiveTitleShadow", &value)) settings.tabInactiveTitleShadow = value != 0;
+    if (ReadDwordValue(key, L"TabHotTitleShadow", &value)) settings.tabHotTitleShadow = value != 0;
     if (ReadDwordValue(key, L"TabTextCentered", &value)) settings.tabTextCentered = value != 0;
     if (ReadDwordValue(key, L"UseRebarBGColor", &value)) settings.useRebarBGColor = value != 0;
     if (auto jsonValue = ReadJsonValue(key, L"RebarColor")) settings.rebarColor = ParseColor(*jsonValue);
@@ -904,6 +907,9 @@ void WriteSkinSettings(HKEY key, const SkinSettings& settings) {
     WriteJsonValue(key, L"TabShadInactiveColor", SerializeColor(settings.tabShadInactiveColor));
     WriteJsonValue(key, L"TabShadHotColor", SerializeColor(settings.tabShadHotColor));
     WriteDwordValue(key, L"TabTitleShadows", (settings.tabTitleShadows ? 1u : 0u));
+    WriteDwordValue(key, L"TabActiveTitleShadow", (settings.tabActiveTitleShadow ? 1u : 0u));
+    WriteDwordValue(key, L"TabInactiveTitleShadow", (settings.tabInactiveTitleShadow ? 1u : 0u));
+    WriteDwordValue(key, L"TabHotTitleShadow", (settings.tabHotTitleShadow ? 1u : 0u));
     WriteDwordValue(key, L"TabTextCentered", (settings.tabTextCentered ? 1u : 0u));
     WriteDwordValue(key, L"UseRebarBGColor", (settings.useRebarBGColor ? 1u : 0u));
     WriteJsonValue(key, L"RebarColor", SerializeColor(settings.rebarColor));

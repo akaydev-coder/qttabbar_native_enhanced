@@ -188,6 +188,9 @@ Por favor, especifique arquivo de imagem 432 x 40 px.;Resultados da Pesquisa em;
   <data name="Options_Page06_Appearance" xml:space="preserve">
     <value>Altere a aparência das abas ou da barra de abas.;Imagem da aba;Imagem da aba personalizada:;Tamanho da margens:;Sobreposição da área:;Conteúdo da margens:;Acertar áreas transparentes de teste;Tamanho da aba;Altura:;Largura mín.:;Largura máx.:;Modo de tamanho:;Largura completa;Mesmo tamanho;Texto da aba;Cores do texto:;Cores de sombra:;Cor ativa;Cor inativa;Cor do realce;Fonte de texto:;Alinhamento:;Esquerda;Centro;Fundo da barra de ferramentas;Imagem;Cor sólida;Imagem para cada barra separada;Modo de esticar:;Tamanho das margens:;Arquivo de skin;Importar skin...;Exportar skin...;Esticar;Tamanho verdadeiro;Lado a lado</value>
   </data>
+  <data name="Options_TabButtonImages" xml:space="preserve">
+    <value>Tab button images;Use custom close-button image:;Close-button offset (X, Y):;Use custom lock icon:;Lock-icon offset (X, Y):</value>
+  </data>
   <data name="Options_Page07_Mouse" xml:space="preserve">
     <value>Atribui comandos a diferentes ações do mouse.;Para adicionar um vinculo do mouse, execute uma ação do mouse no ícone de adição à esquerda do tipo de destino apropriado. Para remover um vinculo, selecione-a na lista e pressione a tecla Delete.;Outras opções do mouse;Roda do mouse rola a janela sob o mouse;Acordar mouse;Ação;Em qualquer lugar;Aba;Histórico da barra de abas;Link de Pasta;Arquivo ou Pasta;Fundo do Explorer;Clique Direito;Clique direito;Clique do Meio;Duplo Clique;X1 Clique;X2 Clique;Este botão do mouse não pode ser usado para este alvo.;Os botões válidos do mouse para este alvo são:;Botão inválido</value>
   </data>

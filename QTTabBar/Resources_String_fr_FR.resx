@@ -188,6 +188,9 @@ Veuillez préciser 432 x 40 px fichier d'image.;Résultats de la recherche dans;
   <data name="Options_Page06_Appearance" xml:space="preserve">
     <value>Modifiez l'apparence des onglets ou de la barre d'onglets.;Image de l'onglet;Utiliser une image de l'onglet personnalisé:;Marges de dimensionnement:;Zone de chevauchement:;Marges de contenu:;Testez les zones transparentes;Taille de l'onglet;Hauteur:;Largeur minimale:;Largeur maximale:;Mode mise à l'échelle:;Pleine largeur;Même taille;Texte de l'onglet;Couleurs du texte :;Couleurs de l'ombre :;Couleur active;Couleur inactive;Couleur de la souris;Police de texte:;Alignement:;Gauche;Centrer;Arrière-plan de la barre d'outils;Image;Couleur unie;Image sur chaque barre séparément;Mode étirement:;Dimensionnement des marges;Thème;Importer un thème...;Exporter un thème...;Extensible;Taille réelle;Tuile</value>
   </data>
+  <data name="Options_TabButtonImages" xml:space="preserve">
+    <value>Tab button images;Use custom close-button image:;Close-button offset (X, Y):;Use custom lock icon:;Lock-icon offset (X, Y):</value>
+  </data>
   <data name="Options_Page07_Mouse" xml:space="preserve">
     <value>Attribuez des commandes à différentes actions de la souris.;Pour ajouter un raccourci de souris, effectuez une action de la souris sur l'icône plus à gauche du type de cible approprié. Pour supprimer une liaison, sélectionnez-la dans la liste et appuyez sur la touche Suppr.;Autres options de souris;La molette de la souris fait défiler la fenêtre sous la souris;Accord de souris;Action;Partout;Onglet;Arrière-plan de l'onglet;Lien de dossier;Fichier ou dossier;Arrière-plan de l'explorateur;Clique gauche;Clique droit;Clique milieu;Double clique;X1 clique;X2 clique;Ce bouton de la souris ne peut pas être utilisé pour cette cible.;Les boutons de souris valides pour cette cible sont:;Bouton invalide</value>
   </data>

@@ -188,6 +188,9 @@ Lütfen 432 x 40 px resim dosyası seçin.;Arama sonuçları;kısayol;Dosya seç
   <data name="Options_Page06_Appearance" xml:space="preserve">
     <value>Sekmelerin veya sekme barının görünümünü değiştirin.;Sekme resmi;Özel sekme resmini kullan:;Boyutlandırma kenar boşlukları:;Örtüşme alanı:;İçerik kenar boşlukları:;Saydam alanları test edin;Sekme boyutu;Yükseklik:;Minimum Genişlik:;Maksimum genişlik:;Boyutlandırma modu:;Esnek genişlik;Sabit boyut;Sekme metni;Metin Renkleri:;Gölge Renkleri:;Aktif Renk;Etkin Olmayan Renk;Fare Üzerindeki Renk;Metin Yazı Tipi:;Hizalama:;Sol;Merkez;Araç barı Arka Planı;Resim;Renk;Her barı ayrı ayrı görüntüleyin;Uzatma modu:;Boyutlandırma kenar boşlukları:;Kaplama dosyası;Temayı İçe aktar...;Temayı dışa aktar...;Uzatılmış;Gerçek boyut;Döşeme</value>
   </data>
+  <data name="Options_TabButtonImages" xml:space="preserve">
+    <value>Tab button images;Use custom close-button image:;Close-button offset (X, Y):;Use custom lock icon:;Lock-icon offset (X, Y):</value>
+  </data>
   <data name="Options_Page07_Mouse" xml:space="preserve">
     <value>Farklı fare eylemlerine komutlar atayın.;Bir fare bağı eklemek için, uygun hedef türünün solundaki artı simgesi üzerinde bir fare eylemi gerçekleştirin. Bir bağı kaldırmak için listeden seçin ve Sil tuşuna basın.;Diğer fare seçenekleri;Fare tekerleği, farenin altındaki pencereyi kaydırır;Hedef fare eylemi;Eylem;Herhangi bir yer;Sekme;Sekme barı Arka Planı;Klasör Bağlantısı;Dosya veya Klasör;Gezgin Arka Planı;Sol tık;Sağ tık;Orta tıklama;Çift tıklama;X1 Tıklama;X2 Tıklama;Bu fare düğmesi bu hedef için kullanılamaz.;Bu hedef için geçerli fare düğmeleri şunlardır:;Geçersiz Düğme</value>
   </data>

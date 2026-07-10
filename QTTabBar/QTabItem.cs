@@ -399,15 +399,16 @@ namespace QTTabBarLib {
 
         public void RefreshRectangle() {
             using(Graphics graphics = Owner.CreateGraphics()) {
-                float num = 6f;
+                float margin = Owner.TabContentMargin.Horizontal;
+                float num = 6f + margin;
                 if(Owner.DrawFolderImage) {
-                    num = 26f;
+                    num = 26f + margin;
                 }
                 else if(tabLocked) {
-                    num = 13f;
+                    num = Owner.LockIconReservedWidth + margin;
                 }
                 if((Owner.EnableCloseButton && !Owner.TabCloseButtonOnHover) && !Owner.TabCloseButtonOnAlt) {
-                    num += 17f;
+                    num += Owner.CloseButtonReservedWidth;
                 }
                 TitleTextSize = GetTextSize(titleText, graphics, true);
                 SubTitleTextSize = SizeF.Empty;

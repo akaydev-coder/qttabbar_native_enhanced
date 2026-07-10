@@ -180,6 +180,9 @@
   <data name="Options_Page06_Appearance" xml:space="preserve">
     <value>更改标签和标签栏的外观;标签背景;自定义图片：;设置边缘：;重叠区：;内容边缘：;命中测试透明区域;标签大小;高度：;最小宽度：;最大宽度：;宽度模式：;适配宽度;同样大小;颜色字体;文字颜色：;阴影颜色：;激活的颜色;无效的颜色;鼠标悬停颜色;文本字体：;对齐方式：;居左;居中;工具栏背景;自定义图片;填充颜色;图片按每个工具栏区域填充;图片位置：;设置边缘：;皮肤文件;导入皮肤...;导出皮肤...;拉伸;适应;平铺</value>
   </data>
+  <data name="Options_TabButtonImages" xml:space="preserve">
+    <value>Tab button images;Use custom close-button image:;Close-button offset (X, Y):;Use custom lock icon:;Lock-icon offset (X, Y):</value>
+  </data>
   <data name="Options_Page07_Mouse" xml:space="preserve">
     <value>分配到不同的鼠标操作的命令;在左侧加号图标目标类型点击左键绑定合适的鼠标动作若要删除绑定，在列表中选择它，然后按Delete键;其他鼠标选项;滚动鼠标滚轮的鼠标下的窗口;目标和鼠标动作;对应的执行行为;任何地方;标签;标签栏空白处;文件夹链接;文件或文件夹;资源管理器空白处;左键;右键点击;中击;双击;X1的点击;X2的点击;您的鼠标动作无法适用于该目标;该目标有效地鼠标操作为：;无效的鼠标动作</value>
   </data>

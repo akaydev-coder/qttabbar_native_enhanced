@@ -4,6 +4,7 @@
     <AssemblyName>QTTabBar.Tests</AssemblyName>
     <RootNamespace>QTTabBar.Tests</RootNamespace>
     <IsPackable>false</IsPackable>
+    <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,5 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\QTTabBar\QTTabBar.csproj" />
+    <Compile Include="..\QTTabBar\TabSkinGeometry.cs" Link="TabSkinGeometry.cs" />
+    <Compile Include="..\QTTabBar\TabButtonImageGeometry.cs" Link="TabButtonImageGeometry.cs" />
   </ItemGroup>
 </Project>
