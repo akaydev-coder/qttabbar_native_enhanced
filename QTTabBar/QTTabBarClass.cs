@@ -4128,6 +4128,7 @@ namespace QTTabBarLib {
                 case Keys.F2:
                     if(Config.Tweaks.F2Selection) {
                         listView.HandleF2();
+                        return true;
                     }
                     return false;
 

@@ -747,6 +747,7 @@ namespace QTTabBarLib {
             else if(key == VK_F2) { //F2
                 if(Config.Tweaks.F2Selection) {
                     slvDesktop.HandleF2();
+                    return true;
                 }
                 return false;
             }

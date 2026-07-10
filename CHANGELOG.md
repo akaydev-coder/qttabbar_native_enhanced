@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.5.85.0 Stable - 2026-07-10
+
+- Fixes F2 rename-selection cycling so the tweak is enabled when checked and disabled when unchecked.
+- Applies the same F2 rename-selection cycling behavior to the Desktop list view.
+
 ## 1.5.84.0 Stable - 2026-07-10
 
 - Restores cursor-loop arrow-key selection when Explorer does not report a focused item yet.

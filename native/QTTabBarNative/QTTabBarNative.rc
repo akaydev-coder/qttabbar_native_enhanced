@@ -288,8 +288,8 @@ BEGIN
 END
 
 VS_VERSION_INFO VERSIONINFO
-FILEVERSION 1,5,84,0
-PRODUCTVERSION 1,5,84,0
+FILEVERSION 1,5,85,0
+PRODUCTVERSION 1,5,85,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -306,11 +306,11 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "QTTabBar"
             VALUE "FileDescription", "QTTabBar Native Deskband"
-            VALUE "FileVersion", "1.5.84.0"
+            VALUE "FileVersion", "1.5.85.0"
             VALUE "InternalName", "QTTabBarNative"
             VALUE "OriginalFilename", "QTTabBarNative.dll"
             VALUE "ProductName", "QTTabBar"
-            VALUE "ProductVersion", "1.5.84.0"
+            VALUE "ProductVersion", "1.5.85.0"
         END
     END
     BLOCK "VarFileInfo"
@@ -318,5 +318,4 @@ BEGIN
         VALUE "Translation", 0x409, 1200
     END
 END
-
 
