@@ -1,5 +1,75 @@
 # Changelog
 
+## 1.6.0.0 Stable - 2026-07-14
+
+- Updates the integrated German language resources from the corrected language file so the Options dialog labels line up with their intended controls again.
+- Ships the restored native/managed stable baseline with the initial Explorer middle-click fix as the next stable release.
+
+## 1.5.99.0 Stable - 2026-07-14
+
+- Initializes the active Explorer folder view on first attach instead of only after a previous view existed, allowing File/Folder middle-click to resolve items immediately on the initial "This PC" page.
+
+## 1.5.98.0 Stable - 2026-07-14
+
+- Restores synchronous AutoLoader activation for the first Explorer instance and only records ActivationDate after ShowBrowserBar succeeds, preventing a missed timer from leaving the initial window without a real QTTabBar host.
+
+## 1.5.97.0 Stable - 2026-07-14
+
+- Falls back to the full Explorer window when the active ShellTabWindowClass has not exposed its initial SHELLDLL_DefView yet, matching the working upstream ListView discovery path more closely.
+- Makes main ListView event registration idempotent during recapture so middle-click handlers cannot stack up or remain stale after view changes.
+
+## 1.5.96.0 Stable - 2026-07-13
+
+- Reads AutoHookWindow directly from the registry during hook startup so the first Explorer instance cannot fall back to background-renderer-only mode before config binding finishes.
+- Captures the initial item view from the active ShellTabWindowClass container first, improving File/Folder middle-click handling on the initial "This PC" view.
+
+## 1.5.95.0 Stable - 2026-07-13
+
+- Keeps the full Explorer hook active when AutoHookWindow is enabled, even if the Explorer background renderer is also enabled.
+- Prevents the background-renderer-only mode from suppressing ShellBrowser hooks needed by file and folder middle-click handling.
+
+## 1.5.94.0 Stable - 2026-07-13
+
+- Treats access-denied Shell Link target resolution as a recoverable condition, so protected or unreadable links no longer get misclassified as dead folder links.
+- Falls back to the original shell item when a link target cannot be resolved instead of creating an empty PIDL wrapper.
+
+## 1.5.93.0 Stable - 2026-07-13
+
+- Reverts the 1.5.92 full-hook/background-mode experiment because it did not improve File/Folder middle-click capture and could add startup side effects.
+- Restores the upstream niklas2233/v1.5.7 item-view middle-click dispatch semantics while keeping the folder-tree middle-click guard.
+
+## 1.5.92.0 Stable - 2026-07-13
+
+- Restores the upstream native-tab ListView lookup path so the active Explorer file view is captured immediately after startup.
+- Loads the full hook library when AutoHookWindow is enabled instead of staying in background-renderer-only mode.
+
+## 1.5.91.0 Stable - 2026-07-13
+
+- Ports the robust native-tab ListView monitor from niklas2233/qttabbar v1.5.7 so Explorer item-view middle-clicks are handled by the direct view subclass immediately after startup.
+- Removes the 1.5.90 startup recapture timer and global FolderView middle-click fallback that could block Explorer.
+
+## 1.5.90.0 Stable - 2026-07-13
+
+- Recaptures Explorer's item view shortly after startup and lazily before FolderView middle-click handling, so File/Folder middle-click no longer depends on first using the folder tree.
+
+## 1.5.89.0 Stable - 2026-07-13
+
+- Prevents stale serialized cross-process actions from blocking Explorer startup or flooding the exception log.
+- Updates the internal QTTabBar version constant used by diagnostic logs.
+
+## 1.5.88.0 Stable - 2026-07-13
+
+- Fixes initial File/Folder middle-click handling by routing Explorer FolderView middle clicks before the TreeView fallback and limiting TreeView hit tests to real tree targets.
+
+## 1.5.87.0 Stable - 2026-07-13
+
+- Fixes File/Folder middle-click on DirectUI item views by honoring the configured mouse item action, accepting child-window hit targets, and falling back to Explorer's focused item when the hit test cannot resolve the clicked item.
+
+## 1.5.86.0 Stable - 2026-07-13
+
+- Fixes File/Folder middle-click actions in modern Explorer item views by consuming handled middle clicks and accepting DirectUI child-window hits.
+- Reduces the first-start Versatile Bar white-panel flash by passing the fixed vertical bar size to Explorer when the bar is auto-shown.
+
 ## 1.5.85.0 Stable - 2026-07-10
 
 - Fixes F2 rename-selection cycling so the tweak is enabled when checked and disabled when unchecked.

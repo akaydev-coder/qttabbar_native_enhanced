@@ -359,7 +359,12 @@ namespace QTTabBarLib {
         }
 
         public IDLWrapper ResolveTargetIfLink() {
-            return IsLink ? new IDLWrapper(ShellMethods.GetLinkTargetIDL(Path)) : null;
+            if(!IsLink) {
+                return null;
+            }
+
+            IntPtr targetIDL = ShellMethods.GetLinkTargetIDL(Path);
+            return targetIDL != IntPtr.Zero ? new IDLWrapper(targetIDL) : null;
         }
         
         public static void SaveCache(RegistryKey rkUser) {
@@ -616,6 +621,9 @@ namespace QTTabBarLib {
                         return false;
                     }
                     string linkTargetPath = ShellMethods.GetLinkTargetPath(Path);
+                    if(string.IsNullOrEmpty(linkTargetPath)) {
+                        return false;
+                    }
                     if(FileExists(linkTargetPath)) {
                         return false;
                     }

@@ -30,6 +30,13 @@ using BandObjectLib;
 
 namespace QTTabBarLib.Interop {
     public static class ShellMethods {
+        private const int E_ACCESSDENIED = unchecked((int)0x80070005);
+
+        private static bool IsRecoverableLinkLoadError(Exception ex) {
+            return ex is UnauthorizedAccessException ||
+                    (ex is COMException comException && comException.ErrorCode == E_ACCESSDENIED);
+        }
+
         public static bool ClipboardContainsFileDropList(IntPtr hwnd) {
             if((hwnd != IntPtr.Zero) && PInvoke.OpenClipboard(hwnd)) {
                 try {
@@ -349,7 +356,12 @@ namespace QTTabBarLib.Interop {
             }
             catch (Exception ex)
             {
-                QTUtility2.MakeErrorLog(ex, "ShellMethods _ShellLinkObject");
+                if(IsRecoverableLinkLoadError(ex)) {
+                    QTUtility2.log("ShellMethods GetLinkTargetIDL skipped inaccessible link " + lnkPath);
+                }
+                else {
+                    QTUtility2.MakeErrorLog(ex, "ShellMethods _ShellLinkObject");
+                }
             }
             finally {
                 if(o != null) {
@@ -372,7 +384,12 @@ namespace QTTabBarLib.Interop {
             }
             catch (Exception ex)
             {
-                QTUtility2.MakeErrorLog(ex, "ShellMethods GetLinkTargetPath");
+                if(IsRecoverableLinkLoadError(ex)) {
+                    QTUtility2.log("ShellMethods GetLinkTargetPath skipped inaccessible link " + lnkPath);
+                }
+                else {
+                    QTUtility2.MakeErrorLog(ex, "ShellMethods GetLinkTargetPath");
+                }
 
             }
             finally {

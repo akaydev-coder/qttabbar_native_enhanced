@@ -1,4 +1,4 @@
-﻿//    This file is part of QTTabBar, a shell extension for Microsoft
+//    This file is part of QTTabBar, a shell extension for Microsoft
 //    Windows Explorer.
 //    Copyright (C) 2007-2021  Quizo, Paul Accisano
 //
@@ -16,14 +16,20 @@
 //    along with QTTabBar.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using QTTabBarLib.Interop;
 
 namespace QTTabBarLib {
     public class ListViewMonitor : IDisposable {
         public event EventHandler ListViewChanged;
-        private IntPtr hwndShellContainer;
-        private NativeWindowController ContainerController;
+        // Windows native Explorer tabs create one ShellTabWindowClass container per tab.
+        // Every container can own its own SHELLDLL_DefView, so monitor all containers
+        // and recapture when the active one changes.
+        private List<NativeWindowController> containerControllers = new List<NativeWindowController>();
+        private NativeWindowController explorerController;
+        private List<AbstractListView> liveViews = new List<AbstractListView>();
         private ShellBrowserEx ShellBrowser;
         private IntPtr hwndExplorer;
         private IntPtr hwndSubDirTipMessageReflect;
@@ -33,32 +39,74 @@ namespace QTTabBarLib {
             ShellBrowser = shellBrowser;
             this.hwndExplorer = hwndExplorer;
             this.hwndSubDirTipMessageReflect = hwndSubDirTipMessageReflect;
-            hwndShellContainer = QTUtility.IsXP 
-                    ? hwndExplorer
-                    : WindowUtils.FindChildWindow(hwndExplorer, hwnd => PInvoke.GetClassName(hwnd) == "ShellTabWindowClass");
-            if(hwndShellContainer != IntPtr.Zero) {
-                ContainerController = new NativeWindowController(hwndShellContainer);
-                ContainerController.MessageCaptured += ContainerController_MessageCaptured;
+            if(QTUtility.IsXP) {
+                AddContainer(hwndExplorer);
+            }
+            else {
+                IntPtr hwndContainer = IntPtr.Zero;
+                while((hwndContainer = PInvoke.FindWindowEx(hwndExplorer, hwndContainer, "ShellTabWindowClass", null)) != IntPtr.Zero) {
+                    AddContainer(hwndContainer);
+                }
+                explorerController = new NativeWindowController(hwndExplorer);
+                explorerController.MessageCaptured += ExplorerController_MessageCaptured;
             }
         }
 
         public AbstractListView CurrentListView { get; private set; }
         public AbstractListView PreviousListView { get; private set; }
 
+        private void AddContainer(IntPtr hwnd) {
+            if(hwnd == IntPtr.Zero || containerControllers.Exists(existing => existing.Handle == hwnd)) return;
+            NativeWindowController controller = new NativeWindowController(hwnd);
+            controller.MessageCaptured += ContainerController_MessageCaptured;
+            containerControllers.Add(controller);
+        }
+
+        private IntPtr ActiveContainer() {
+            return QTUtility.IsXP ? hwndExplorer : WindowUtils.GetShellTabWindowClass(hwndExplorer);
+        }
+
+        private bool ExplorerController_MessageCaptured(ref Message msg) {
+            if(msg.Msg == WM.PARENTNOTIFY &&
+               PInvoke.LoWord((int)msg.WParam) == WM.CREATE &&
+               PInvoke.GetClassName(msg.LParam) == "ShellTabWindowClass") {
+                AddContainer(msg.LParam);
+            }
+            return false;
+        }
+
         private bool ContainerController_MessageCaptured(ref Message msg) {
-            // QTUtility2.debugMessage(msg);
-            if(msg.Msg == WM.PARENTNOTIFY && 
+            if(msg.Msg == WM.PARENTNOTIFY &&
                PInvoke.LoWord((int)msg.WParam) == WM.CREATE) {
                 string name = PInvoke.GetClassName(msg.LParam);
-                if(name == "SHELLDLL_DefView") {
+                if(name == "SHELLDLL_DefView" && msg.HWnd == ActiveContainer()) {
                     RecaptureHandles(msg.LParam);
+                }
+            }
+            else if(msg.Msg == WM.WINDOWPOSCHANGED && containerControllers.Count > 1) {
+                WINDOWPOS wp = (WINDOWPOS)Marshal.PtrToStructure(msg.LParam, typeof(WINDOWPOS));
+                if((wp.flags & SWP.NOZORDER) == 0 && msg.HWnd == ActiveContainer()) {
+                    IntPtr hwndShellView = WindowUtils.FindChildWindow(msg.HWnd,
+                            hwnd => PInvoke.GetClassName(hwnd) == "SHELLDLL_DefView");
+                    if(hwndShellView != IntPtr.Zero) {
+                        RecaptureHandles(hwndShellView);
+                    }
                 }
             }
             return false;
         }
 
         public void Initialize() {
-            IntPtr hwndShellView = WindowUtils.FindChildWindow(hwndExplorer, hwnd => PInvoke.GetClassName(hwnd) == "SHELLDLL_DefView");
+            IntPtr searchRoot = ActiveContainer();
+            if(searchRoot == IntPtr.Zero) {
+                searchRoot = hwndExplorer;
+            }
+            IntPtr hwndShellView = WindowUtils.FindChildWindow(searchRoot,
+                    hwnd => PInvoke.GetClassName(hwnd) == "SHELLDLL_DefView");
+            if(hwndShellView == IntPtr.Zero && searchRoot != hwndExplorer) {
+                hwndShellView = WindowUtils.FindChildWindow(hwndExplorer,
+                        hwnd => PInvoke.GetClassName(hwnd) == "SHELLDLL_DefView");
+            }
             if(hwndShellView == IntPtr.Zero) {
                 if(CurrentListView != null) {
                     CurrentListView.Dispose();
@@ -93,8 +141,16 @@ namespace QTTabBarLib {
                 PreviousListView = CurrentListView;
             }
 
-            if(hwndListView == IntPtr.Zero)
-            {
+            AbstractListView live = hwndListView == IntPtr.Zero ? null
+                    : liveViews.Find(view => view.Handle == hwndListView);
+            if(live != null) {
+                CurrentListView = live;
+                UpdateBackgroundWindow(hwndListView, fIsSysListView);
+                ListViewChanged(this, null);
+                return;
+            }
+
+            if(hwndListView == IntPtr.Zero) {
                 QTUtility2.log("new AbstractListView");
                 CurrentListView = new AbstractListView();
             }
@@ -106,22 +162,27 @@ namespace QTTabBarLib {
                 QTUtility2.log("new ExtendedItemsView");
                 CurrentListView = new ExtendedItemsView(ShellBrowser, hwndShellView, hwndListView, hwndSubDirTipMessageReflect);
             }
-            if(!fIsSysListView && hwndListView != IntPtr.Zero) {
-                try {
-                    using(IDLWrapper path = ShellBrowser.GetShellPath()) {
-                        HookLibManager.UpdateBackgroundWindow(hwndListView,
-                            path != null && path.Available ? path.Path : String.Empty);
-                    }
-                }
-                catch(Exception ex) {
-                    QTUtility2.MakeErrorLog(ex, "Explorer background initial path");
-                }
-            }
+            UpdateBackgroundWindow(hwndListView, fIsSysListView);
             CurrentListView.ListViewDestroyed += ListView_Destroyed;
+            liveViews.Add(CurrentListView);
             ListViewChanged(this, null);
         }
 
+        private void UpdateBackgroundWindow(IntPtr hwndListView, bool fIsSysListView) {
+            if(fIsSysListView || hwndListView == IntPtr.Zero) return;
+            try {
+                using(IDLWrapper path = ShellBrowser.GetShellPath()) {
+                    HookLibManager.UpdateBackgroundWindow(hwndListView,
+                        path != null && path.Available ? path.Path : String.Empty);
+                }
+            }
+            catch(Exception ex) {
+                QTUtility2.MakeErrorLog(ex, "Explorer background initial path");
+            }
+        }
+
         private void ListView_Destroyed(object sender, EventArgs args) {
+            liveViews.Remove((AbstractListView)sender);
             if(sender == CurrentListView) {
                 if(PreviousListView != null) {
                     CurrentListView = PreviousListView;
@@ -142,6 +203,18 @@ namespace QTTabBarLib {
 
         public void Dispose() {
             if(fDisposed) return;
+            if(explorerController != null) {
+                explorerController.MessageCaptured -= ExplorerController_MessageCaptured;
+                explorerController = null;
+            }
+            foreach(NativeWindowController controller in containerControllers) {
+                controller.MessageCaptured -= ContainerController_MessageCaptured;
+            }
+            containerControllers.Clear();
+            foreach(AbstractListView view in liveViews) {
+                if(view != CurrentListView) view.Dispose();
+            }
+            liveViews.Clear();
             if(CurrentListView != null) {
                 CurrentListView.Dispose();
                 CurrentListView = null;

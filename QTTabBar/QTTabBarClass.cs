@@ -603,7 +603,9 @@ namespace QTTabBarLib {
                                     }
                                 }
                                 */
-                                Handle_MButtonUp_Tree(msg);
+                                if(IsTreeViewMessageTarget(msg.hwnd)) {
+                                    Handle_MButtonUp_Tree(msg);
+                                }
                             }
                             break;
                         case WM.SYSCOLORCHANGE:
@@ -3593,6 +3595,16 @@ namespace QTTabBarLib {
                     : IntPtr.Zero;
         }
 
+        private bool IsTreeViewMessageTarget(IntPtr hwnd) {
+            while(hwnd != IntPtr.Zero && hwnd != ExplorerHandle) {
+                if(PInvoke.GetClassName(hwnd) == "SysTreeView32") {
+                    return true;
+                }
+                hwnd = PInvoke.GetParent(hwnd);
+            }
+            return false;
+        }
+
         internal struct TVITEM
         {
             public int mask;
@@ -5119,16 +5131,27 @@ namespace QTTabBarLib {
                 ExtendedListViewCommon elvc = listView as ExtendedListViewCommon;
                 if (elvc != null)
                 {
+                    elvc.ItemCountChanged -= ListView_ItemCountChanged;
                     elvc.ItemCountChanged += ListView_ItemCountChanged;
+                    elvc.SelectionActivated -= ListView_SelectionActivated;
                     elvc.SelectionActivated += ListView_SelectionActivated;
+                    elvc.SelectionChanged -= ListView_SelectionChanged;
                     elvc.SelectionChanged += ListView_SelectionChanged;
+                    elvc.MiddleClick -= ListView_MiddleClick;
                     elvc.MiddleClick += ListView_MiddleClick;
+                    elvc.DoubleClick -= ListView_DoubleClick;
                     elvc.DoubleClick += ListView_DoubleClick;
+                    elvc.EndLabelEdit -= ListView_EndLabelEdit;
                     elvc.EndLabelEdit += ListView_EndLabelEdit;
+                    elvc.MouseActivate -= ListView_MouseActivate;
                     elvc.MouseActivate += ListView_MouseActivate;
+                    elvc.SubDirTip_MenuItemClicked -= subDirTip_MenuItemClicked;
                     elvc.SubDirTip_MenuItemClicked += subDirTip_MenuItemClicked;
+                    elvc.SubDirTip_MenuItemRightClicked -= subDirTip_MenuItemRightClicked;
                     elvc.SubDirTip_MenuItemRightClicked += subDirTip_MenuItemRightClicked;
+                    elvc.SubDirTip_MultipleMenuItemsClicked -= subDirTip_MultipleMenuItemsClicked;
                     elvc.SubDirTip_MultipleMenuItemsClicked += subDirTip_MultipleMenuItemsClicked;
+                    elvc.SubDirTip_MultipleMenuItemsRightClicked -= subDirTip_MultipleMenuItemsRightClicked;
                     elvc.SubDirTip_MultipleMenuItemsRightClicked += subDirTip_MultipleMenuItemsRightClicked;
                 }
             }

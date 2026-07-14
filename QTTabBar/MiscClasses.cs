@@ -192,13 +192,27 @@ namespace QTTabBarLib {
         }
 
         public SerializeDelegate(SerializationInfo info, StreamingContext context) {
-            Type delType = (Type)info.GetValue("delegateType", typeof(Type));
+            Type delType;
+            bool isSerializable;
+            try {
+                delType = (Type)info.GetValue("delegateType", typeof(Type));
+                isSerializable = info.GetBoolean("isSerializable");
+            }
+            catch(SerializationException) {
+                Delegate = null;
+                return;
+            }
+
+            if(delType == null) {
+                Delegate = null;
+                return;
+            }
 
             // Type classType = (Type)info.GetValue("classType", typeof(Type));
             // obj = Activator.CreateInstance(classType);
 
             //If it's a "simple" delegate we just read it straight off
-            if (info.GetBoolean("isSerializable")) {
+            if(isSerializable) {
                 Delegate = (Delegate)info.GetValue("delegate", delType);
             }
             //otherwise, we need to read its anonymous class
@@ -401,4 +415,3 @@ namespace QTTabBarLib {
     }
 
 }
-

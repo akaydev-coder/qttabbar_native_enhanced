@@ -28,8 +28,6 @@ namespace QTTabBarLib {
     [Guid("D2BF470E-ED1C-487F-A777-2BD8835EB6CE"), ComVisible(true), ClassInterface(ClassInterfaceType.None)]
     public class AutoLoader : IObjectWithSite {
         private IWebBrowser2 explorer;       
-        private Timer activationTimer;
-        private int activationAttempts;
         private static int crashDiagnosticsInstalled;
         private const string BHOKEYNAME = @"Software\Microsoft\Windows\CurrentVersion\Explorer\Browser Helper Objects\";
         private const int E_FAIL = unchecked((int)0x80004005);
@@ -63,7 +61,7 @@ namespace QTTabBarLib {
             QTUtility2.log("SetSite");
             explorer = site as IWebBrowser2;
             if(explorer == null) {
-                StopActivationTimer();
+                return 0;
             }
             // QTUtility2.flog("QTTabBar AutoLoader SetSite ");
             /*if(explorer == null || Process.GetCurrentProcess().ProcessName == "iexplore") {
@@ -111,63 +109,30 @@ namespace QTTabBarLib {
         }
 
         private void ActivateIt() {
-            string installDateString;
-            DateTime installDate;
-            string minDate = DateTime.MinValue.ToString();
-            using(RegistryKey key = Registry.LocalMachine.OpenSubKey(RegConst.Root)) {
-                installDateString = key == null ? minDate : (string)key.GetValue("InstallDate", minDate);
-                installDate = DateTime.Parse(installDateString);
-            }
-            using(RegistryKey key = Registry.CurrentUser.CreateSubKey(RegConst.Root)) {
-                DateTime lastActivation = DateTime.Parse((string)key.GetValue("ActivationDate", minDate));
-                if(installDate.CompareTo(lastActivation) <= 0) return;
-
-                key.SetValue("ActivationDate", installDateString);
-                QTUtility2.flog("QTTabBar AutoLoader add ActivationDate");
-            }
-
-            ScheduleFirstActivation();
-        }
-
-        private void ScheduleFirstActivation() {
-            if(activationTimer != null || explorer == null) return;
-
-            activationAttempts = 0;
-            activationTimer = new Timer { Interval = 250 };
-            activationTimer.Tick += activationTimer_Tick;
-            activationTimer.Start();
-            QTUtility2.flog("QTTabBar AutoLoader first activation scheduled");
-        }
-
-        private void activationTimer_Tick(object sender, EventArgs e) {
-            if(explorer == null || InstanceManager.GetThreadTabBar() != null) {
-                StopActivationTimer();
-                return;
-            }
-
             try {
-                activationAttempts++;
-                object tabBarClsid = typeof(QTTabBarClass).GUID.ToString("B");
-                object show = true;
-                object size = null;
-                explorer.ShowBrowserBar(ref tabBarClsid, ref show, ref size);
-                QTUtility2.flog("QTTabBar AutoLoader first activation ShowBrowserBar attempt " + activationAttempts);
+                string installDateString;
+                DateTime installDate;
+                string minDate = DateTime.MinValue.ToString();
+                using(RegistryKey key = Registry.LocalMachine.OpenSubKey(RegConst.Root)) {
+                    installDateString = key == null ? minDate : (string)key.GetValue("InstallDate", minDate);
+                    installDate = DateTime.Parse(installDateString);
+                }
+                using(RegistryKey key = Registry.CurrentUser.CreateSubKey(RegConst.Root)) {
+                    DateTime lastActivation = DateTime.Parse((string)key.GetValue("ActivationDate", minDate));
+                    if(installDate.CompareTo(lastActivation) <= 0) return;
+
+                    object tabBarClsid = typeof(QTTabBarClass).GUID.ToString("B");
+                    object show = true;
+                    object size = null;
+                    explorer.ShowBrowserBar(ref tabBarClsid, ref show, ref size);
+                    QTUtility2.flog("QTTabBar AutoLoader ShowBrowserBar succeeded");
+                    key.SetValue("ActivationDate", installDateString);
+                    QTUtility2.flog("QTTabBar AutoLoader add ActivationDate");
+                }
             }
             catch(Exception ex) {
-                QTUtility2.MakeErrorLog(ex, "AutoLoader first activation ShowBrowserBar");
+                QTUtility2.MakeErrorLog(ex, "AutoLoader ShowBrowserBar");
             }
-
-            if(activationAttempts >= 40) {
-                StopActivationTimer();
-            }
-        }
-
-        private void StopActivationTimer() {
-            if(activationTimer == null) return;
-            activationTimer.Stop();
-            activationTimer.Tick -= activationTimer_Tick;
-            activationTimer.Dispose();
-            activationTimer = null;
         }
     }
 }

@@ -1240,6 +1240,10 @@ namespace QTTabBarLib {
             }
         }
 
+        internal static object ShowBrowserBarSize {
+            get { return (byte[])DefaultBarSize.Clone(); }
+        }
+
         private static void SetAutoShow(bool enabled) {
             try {
                 using(RegistryKey key = Registry.CurrentUser.CreateSubKey(CurrentItemsKey)) {
@@ -1257,7 +1261,7 @@ namespace QTTabBarLib {
                 EnsureUserExplorerBarRegistration();
                 object clsid = typeof(QCommandBarVertical).GUID.ToString("B");
                 object show = true;
-                object size = null;
+                object size = ShowBrowserBarSize;
                 explorer.ShowBrowserBar(ref clsid, ref show, ref size);
             }
             catch(Exception ex) {

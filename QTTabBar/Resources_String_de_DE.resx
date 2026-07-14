@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -142,7 +142,13 @@
     <value>Kopieren nach:;Verschieben nach:;Verknüpfung erstellen in:</value>
   </data>
   <data name="ErrorDialogs" xml:space="preserve">
-    <value>Operation fehlgeschlagen.\r\nBitte stellen Sie sicher, dass die Datei oder das Ziel der Verknüpfung existiert:\r\n\r\n{0};Fehler - QTTabBar;Warnung:  Die QTTabBar konnte nicht automatisch aktiviert werden. Um sie manuell zu aktivieren, drücken Sie die Alt-Taste, lassen Sie sie los und wählen Sie QTTabBar aus dem Menü Ansicht/Symbolleisten.;Konnte nicht aktiviert werden;Fehler;QTTabBar-Hook-Bibliothek konnte nicht geladen werden.;QTTabBar-Hook-Bibliothek konnte nicht initialisiert werden.;Einige Funktionen sind möglicherweise nicht funktionsfähig. Um dies zu beheben, müssen Sie möglicherweise die Anwendung neu installieren.;Hooking des Desktops fehlgeschlagen. Bitte aktivieren Sie das QT Tab Desktop-Tool erneut.;Der Vorgang ist fehlgeschlagen.\r\nBitte stellen Sie sicher, dass der Ordner existiert oder dass Sie die Berechtigung haben, darauf zuzugreifen:\r\n\r\n\t{0}</value>
+    <value>Operation fehlgeschlagen.
+Bitte stellen Sie sicher, dass die Datei oder das Ziel der Verknüpfung existiert:
+
+{0};Fehler - QTTabBar;Warnung:  Die QTTabBar konnte nicht automatisch aktiviert werden. Um sie manuell zu aktivieren, drücken Sie die Alt-Taste, lassen Sie sie los und wählen Sie QTTabBar aus dem Menü Ansicht/Symbolleisten.;Konnte nicht aktiviert werden;Fehler;QTTabBar-Hook-Bibliothek konnte nicht geladen werden.;QTTabBar-Hook-Bibliothek konnte nicht initialisiert werden.;Einige Funktionen sind möglicherweise nicht funktionsfähig. Um dies zu beheben, müssen Sie möglicherweise die Anwendung neu installieren.;Hooking des Desktops fehlgeschlagen. Bitte aktivieren Sie das QT Tab Desktop-Tool erneut.;Der Vorgang ist fehlgeschlagen.
+Bitte stellen Sie sicher, dass der Ordner existiert oder dass Sie die Berechtigung haben, darauf zuzugreifen:
+
+\t{0}</value>
   </data>
   <data name="FileFilters" xml:space="preserve">
     <value>Bilddateien;Sprachdateien;Plugin-Dateien</value>
@@ -154,19 +160,21 @@
     <value>Alle;Links;Oben;Rechts;Unten</value>
   </data>
   <data name="Misc_Strings" xml:space="preserve">
-    <value>Desktop Suche;Bilddatei ist ungültig.\r\n\r\nBitte geben Sie eine 432 x 40 px große Bilddatei an.;Suchergebnisse in;Verknüpfung;Wählen Sie Ihre Datei;Wählen Sie Ihren Ordner;Experimentell;Dummy</value>
+    <value>Desktop Suche;Bilddatei ist ungültig.
+
+Bitte geben Sie eine 432 x 40 px große Bilddatei an.;Suchergebnisse in;Verknüpfung;Wählen Sie Ihre Datei;Wählen Sie Ihren Ordner;Experimentell;Dummy</value>
   </data>
   <data name="OptionsDialog" xml:space="preserve">
     <value>QTTabBar Einstellungen;Alle Einstellungen auf dieser Seite auf ihre Standardwerte zurücksetzen?;Alle Einstellungen auf ihre Standardwerte zurücksetzen?  Dies wirkt sich nicht auf Gruppen, Anwendungen oder Plugins aus.;Bestätigung</value>
   </data>
   <data name="Options_Page01_Window" xml:space="preserve">
-    <value>Ändern Sie das Verhalten von Explorer-Fenstern; Einzelfenstermodus; Erfassen neuer Explorer-Fenster als neue Registerkarten; Neue Explorer-Fenster nicht erfassen; Standardspeicherort für neue Fenster und Registerkarten; Sitzungsspeicherung; Starten Sie jedes Mal eine neue Sitzung; Wiederherstellen aller Registerkarten aus der vorherigen Sitzung; Wiederherstellen nur der gesperrten Registerkarten aus der vorherigen Sitzung; Wenn die Schließen-Schaltfläche angeklickt wird; Schließen Sie das Fenster; Schließen Sie die aktuelle Registerkarte; Schließen Sie alle nicht gesperrten Registerkarten; Senden Sie das Fenster in den Systemtray; Schließen; Minimieren; Blaue Plus-Schaltfläche</value>
+    <value>Ändern Sie das Verhalten von Explorer-Fenstern;Einzelfenstermodus;Erfassen neuer Explorer-Fenster als neue Registerkarten;Neue Explorer-Fenster nicht erfassen;Standardspeicherort für neue Fenster und Registerkarten;Sitzungsspeicherung;Starten Sie jedes Mal eine neue Sitzung;Wiederherstellen aller Registerkarten aus der vorherigen Sitzung;Wiederherstellen nur der gesperrten Registerkarten aus der vorherigen Sitzung;Wenn die Schließen-Schaltfläche angeklickt wird;Schließen Sie das Fenster;Schließen Sie die aktuelle Registerkarte;Schließen Sie alle nicht gesperrten Registerkarten;Senden Sie das Fenster in den Systemtray;Schließen;Minimieren;Plus-Schaltfläche</value>
   </data>
   <data name="Options_Page02_Tabs" xml:space="preserve">
-    <value>Ändern Sie die Optionen für die Registerkarten. Neue Registerkarten öffnen:;Wenn die aktuelle Registerkarte geschlossen wird, wechseln Sie zu der Registerkarte: ;Sofort zu neuen Tabs wechseln;Vorhandene Tabs wiederverwenden;Mehrdeutige Tabs umbenennen;Beim Ziehen über einen Tab zu diesem wechseln;Menü Unterordner-Inhalt anzeigen;Tab-Symbole;Ordnersymbole auf Tabs anzeigen;Menü Unterordner-Inhalt anzeigen, wenn auf das Symbol geklickt wird;Laufwerksbuchstabe auf dem Symbol anzeigen;Schließen-Schaltfläche;Schließen-Schaltfläche auf Tabs anzeigen;Nur bei gedrückter Alt-Taste;Nur bei Mausbewegung; Registerkartenleiste;Navigationsschaltflächen auf der Registerkartenleiste anzeigen;Links;Rechts;Mehrere Reihen von Registerkarten zulassen;Die Reihe mit der aktiven Registerkarte immer unten anordnen;Links von der aktuellen Registerkarte;Rechts von der aktuellen Registerkarte;Ganz links;Ganz rechts;Registerkarte nach links;Registerkarte nach rechts;Ganz links;Ganz rechts;Zuletzt aktivierte Registerkarte;Verhalten</value>
+    <value>Ändern Sie die Optionen für die Registerkarten.;Neue Registerkarten öffnen:;Wenn die aktuelle Registerkarte geschlossen wird, wechseln Sie zu der Registerkarte: ;Sofort zu neuen Tabs wechseln;Vorhandene Tabs wiederverwenden;Mehrdeutige Tabs umbenennen;Beim Ziehen über einen Tab,;zu diesem wechseln;Menü Unterordner-Inhalt anzeigen;Tab-Symbole;Ordnersymbole auf Tabs anzeigen;Menü Unterordner-Inhalt anzeigen, wenn auf das Symbol geklickt wird;Laufwerksbuchstabe auf dem Symbol anzeigen;Schließen-Schaltfläche;Schließen-Schaltfläche auf Tabs anzeigen;Nur bei gedrückter Alt-Taste;Nur bei Mausbewegung;Registerkartenleiste;Navigationsschaltflächen auf der Registerkartenleiste anzeigen;Links;Rechts;Mehrere Reihen von Registerkarten zulassen;Die Reihe mit der aktiven Registerkarte immer unten anordnen;Links von der aktuellen Registerkarte;Rechts von der aktuellen Registerkarte;Ganz links;Ganz rechts;Registerkarte nach links;Registerkarte nach rechts;Ganz links;Ganz rechts;Zuletzt aktivierte Registerkarte;Verhalten</value>
   </data>
   <data name="Options_Page03_Tweaks" xml:space="preserve">
-    <value>Aktivieren oder Deaktivieren von Tweaks für die Listenansicht des Explorers. Tweaks, die mit beiden Listenansichten verwendet werden können; Anzeige von Spaltenüberschriften in allen Ansichtsmodi (Windows Vista/7); Verwendung der Standard-Dateisystemansicht für Bibliotheksordner (Windows 7); Abwählen der Dateierweiterung beim Umbenennen von Dateien (Windows XP); Auswahl mit F2 beim Umbenennen umschalten; Umdrehen beim Verschieben der Auswahl mit den Pfeiltasten; Rücktaste geht eine Ebene nach oben (Windows Vista/7);Scrollen mit Mausrad bei gedrückter Umschalttaste scrollt horizontal;Tweaks, die nur mit der älteren Listenansicht verwendet werden können;Aktivieren der älteren Listenansicht-Steuerung (Windows 7);Vollständige Zeilenauswahl in der Detailansicht;Gitterlinien in der Detailansicht anzeigen;Alternative Zeilenfarben in der Detailansicht;Vordergrundfarbe: ;Hintergrundfarbe:</value>
+    <value>Aktivieren oder Deaktivieren von Tweaks für die Listenansicht des Explorers.;Tweaks, die mit beiden Listenansichten verwendet werden können;Anzeige von Spaltenüberschriften in allen Ansichtsmodi (Windows Vista/7);Verwendung der Standard-Dateisystemansicht für Bibliotheksordner (Windows 7);Abwählen der Dateierweiterung beim Umbenennen von Dateien (Windows XP);Auswahl mit F2 beim Umbenennen umschalten;Umdrehen beim Verschieben der Auswahl mit den Pfeiltasten;Rücktaste geht eine Ebene nach oben (Windows Vista/7);Scrollen mit Mausrad bei gedrückter Umschalttaste scrollt horizontal;Tweaks, die nur mit der älteren Listenansicht verwendet werden können;Aktivieren der älteren Listenansicht-Steuerung (Windows 7);Vollständige Zeilenauswahl in der Detailansicht;Gitterlinien in der Detailansicht anzeigen;Alternative Zeilenfarben in der Detailansicht;Vordergrundfarbe: ;Hintergrundfarbe:</value>
   </data>
   <data name="Options_Page04_Tooltips" xml:space="preserve">
     <value>Ändern Sie das Verhalten von Unterordner- und Vorschau-Tooltips;Unterordner-Inhalte;Unterordner-Inhalte aktivieren;Nur bei gedrückter Umschalttaste;Dateien anzeigen;Vorschau-Tooltips anzeigen, wenn Sie mit der Maus über Menüpunkte fahren;Vorschau-Tooltips;Vorschau-Tooltips aktivieren;Nur bei gedrückter Umschalttaste;Dateiinformationen unter Bildern anzeigen;Maximale Breite x Höhe:;Schriftart:;Textdateitypen;Bild- und Videodateitypen</value>
@@ -175,7 +183,7 @@
     <value>Allgemeine Einstellungen für das Verhalten von QTTabBar;Taskleisten-Integration;Registerkartenvorschau in der Taskleiste anzeigen;Verlauf;Verlauf geschlossener Registerkarten behalten;Jetzt löschen;Verlauf geöffneter Dateien behalten;Netzwerk;Netzwerk-Timeout (geben Sie 0 für die Systemvorgabe ein):;Regelmäßig nach Updates suchen;Jetzt prüfen;Exportieren;Einstellungen exportieren...;Dateiverlauf löschen?;Registerkartenverlauf löschen?;Sound;Enable Sound;Activar o som</value>
   </data>
   <data name="Options_Page06_Appearance" xml:space="preserve">
-    <value>Ändern Sie das Aussehen der Registerkarten und der Registerkartenleiste;Tab Bild;Benutzerdefiniertes Bild：;Dimensionierung von Rändern：;Überlappungsbereich：;Inhaltsränder：;Hit-Test transparenter Bereich;Tab Größe;Höhe：;Minimale Breite：;Maximale Breite：;Skalierungsmodus：;Volle Breite;Gleiche Größe;Tab Text;Text Farben：;Schatten Farben：;Aktive Farbe;Inaktive Farbe;Hover-Farbe;Schriftart：;Ausrichtung：;Links;Zentriert;Hintergrund der Symbolleiste;Benutzerdefiniertes Bild;Einheitsfarbe;Die Bilder werden von jedem Symbolleistenbereich ausgefüllt;Speicherort des Bildes：;Dimensionierung von Rändern：;Skin-Dateien;Skin importieren...;Skin exportieren...;Dehnen;Anpassung;GekacheltFarbe;Textschrift:;Ausrichtung:;Links;Zentriert;Symbolleistenhintergrund;Bild;Volltonfarbe;Bild für jede Leiste einzeln;Dehnungsmodus:;Größenränder:;Skin-Datei;Skin importieren. ..;Skin exportieren...;Strecken;Echte Größe;Kacheln</value>
+    <value>Ändern Sie das Aussehen der Registerkarten und der Registerkartenleiste;Tab Bild;Benutzerdefiniertes Bild：;Dimensionierung von Rändern：;Überlappungsbereich：;Inhaltsränder：;Hit-Test transparenter Bereich;Tab Größe;Höhe：;Minimale Breite：;Maximale Breite：;Skalierungsmodus：;Volle Breite;Gleiche Größe;Tab Text;Text Farben：;Schatten Farben：;Aktive Farbe;Inaktive Farbe;Hover-Farbe;Schriftart：;Ausrichtung：;Links;Zentriert;Hintergrund der Symbolleiste;Benutzerdefiniertes Bild;Vollfarbe;Die Bilder werden von jedem Symbolleistenbereich ausgefüllt;Speicherort des Bildes:;Dimensionierung von Rändern:;Skin-Dateien;Skin importieren...;Skin exportieren...;Dehnen;Echte Größe;Kacheln</value>
   </data>
   <data name="Options_TabButtonImages" xml:space="preserve">
     <value>Tab-Schaltflächengrafiken;Benutzerdefinierte Grafik für „Tab schließen“:;Versatz der Schließen-Grafik (X, Y):;Benutzerdefinierte Grafik für „Tab gesperrt“:;Versatz der Sperrgrafik (X, Y):</value>
@@ -246,7 +254,7 @@
     <value>1.0</value>
   </data>
   <data name="Version_QTTabBar" xml:space="preserve">
-    <value>DevBuild: 2022/8/15 19:01:42 (2.0.50727.9164)</value>
+    <value>1.6.0.0</value>
   </data>
   <data name="Options_PlusButton" xml:space="preserve">
     <value>Schaltfläche für neuen Tab;Angepasste Grafik verwenden:</value>

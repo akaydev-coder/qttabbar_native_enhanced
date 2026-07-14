@@ -14,6 +14,7 @@ constexpr wchar_t kRegistryRoot[] = L"Software\\QTTabBar\\";
 constexpr wchar_t kInstallDateValue[] = L"InstallDate";
 constexpr wchar_t kActivationDateValue[] = L"ActivationDate";
 constexpr wchar_t kAutoLoaderDescription[] = L"QTTabBar AutoLoader";
+constexpr BYTE kVerticalCommandBarSize[] = {0x44, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00};
 
 // The tab host attaches to the Explorer instance when the band window is
 // created in QTTabBarClass::OnCreate. Triggering ShowBrowserBar here is the
@@ -156,7 +157,42 @@ HRESULT AutoLoaderNative::ShowBrowserBar(IWebBrowser2* browser, REFGUID clsid) {
     CComVariant barId(clsidString);
     CComVariant show(VARIANT_TRUE);
     CComVariant size;
-    size.vt = VT_EMPTY;
+    if(::InlineIsEqualGUID(clsid, CLSID_QCommandBarVertical)) {
+        SAFEARRAYBOUND bound = {};
+        bound.lLbound = 0;
+        bound.cElements = static_cast<ULONG>(sizeof(kVerticalCommandBarSize));
+        SAFEARRAY* array = ::SafeArrayCreate(VT_UI1, 1, &bound);
+        if(array != nullptr) {
+            void* data = nullptr;
+            HRESULT accessHr = ::SafeArrayAccessData(array, &data);
+            if(SUCCEEDED(accessHr)) {
+                bool copied = false;
+                if(data != nullptr) {
+                    auto bytes = static_cast<BYTE*>(data);
+                    for(size_t i = 0; i < sizeof(kVerticalCommandBarSize); ++i) {
+                        bytes[i] = kVerticalCommandBarSize[i];
+                    }
+                    copied = true;
+                }
+                ::SafeArrayUnaccessData(array);
+                if(copied) {
+                    size.vt = VT_ARRAY | VT_UI1;
+                    size.parray = array;
+                }
+                else {
+                    ::SafeArrayDestroy(array);
+                    size.vt = VT_EMPTY;
+                }
+            }
+            else {
+                ::SafeArrayDestroy(array);
+                size.vt = VT_EMPTY;
+            }
+        }
+    }
+    else {
+        size.vt = VT_EMPTY;
+    }
 
     hr = browser->ShowBrowserBar(&barId, &show, &size);
     if(FAILED(hr)) {

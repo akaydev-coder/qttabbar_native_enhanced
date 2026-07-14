@@ -22,6 +22,7 @@ using System.Management;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
+using Microsoft.Win32;
 using QTTabBarLib.Interop;
 
 namespace QTTabBarLib {
@@ -183,8 +184,10 @@ namespace QTTabBarLib {
                     "QTTabBar");
             bool legacyHookEnabled = IsLegacyHookExplicitlyEnabled(installPath);
             bool backgroundEnabled = IsExplorerBackgroundEnabled(installPath);
-            bool backgroundOnly = backgroundEnabled && !legacyHookEnabled;
-            if(!legacyHookEnabled && !backgroundEnabled)
+            bool autoHookEnabled = Config.Window.AutoHookWindow || IsConfigRegistryBool("Window", "AutoHookWindow");
+            bool fullHookRequested = legacyHookEnabled || autoHookEnabled;
+            bool backgroundOnly = backgroundEnabled && !fullHookRequested;
+            if(!fullHookRequested && !backgroundEnabled)
             {
                 if(fHookLibraryLoaded)
                 {
@@ -197,7 +200,7 @@ namespace QTTabBarLib {
                 return;
             }
 
-            bool shouldLoadHookLibrary = Config.Window.AutoHookWindow || backgroundEnabled;
+            bool shouldLoadHookLibrary = fullHookRequested || backgroundEnabled;
             try
             {
                 if (LoadedHook)
@@ -372,6 +375,19 @@ namespace QTTabBarLib {
                     path.EndsWith(".bmp", StringComparison.OrdinalIgnoreCase) ||
                     path.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) ||
                     path.EndsWith(".jpeg", StringComparison.OrdinalIgnoreCase));
+        }
+
+        private static bool IsConfigRegistryBool(string category, string name)
+        {
+            try {
+                using(RegistryKey key = Registry.CurrentUser.OpenSubKey(RegConst.Root + RegConst.Config + category, false)) {
+                    object value = key == null ? null : key.GetValue(name);
+                    return value is int && (int)value != 0;
+                }
+            }
+            catch {
+                return false;
+            }
         }
 
         internal static void RegisterBackgroundWindow(IntPtr window, string path = null)

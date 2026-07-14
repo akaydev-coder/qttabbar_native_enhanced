@@ -35,6 +35,27 @@ namespace QTTabBarLib {
             OnNavigateComplete();
         }
 
+        private bool EnsureFolderView() {
+            if(folderView != null) return true;
+            if(shellBrowser == null) return false;
+
+            IShellView ppshv = null;
+            try {
+                if(shellBrowser.QueryActiveShellView(out ppshv) == 0) {
+                    folderView = ppshv as IFolderView;
+                }
+            }
+            catch(COMException exception) {
+                QTUtility2.MakeErrorLog(exception, "EnsureFolderView");
+            }
+            finally {
+                if(folderView == null && ppshv != null) {
+                    Marshal.ReleaseComObject(ppshv);
+                }
+            }
+            return folderView != null;
+        }
+
 
         public IFolderView FolderView
         {
@@ -130,7 +151,7 @@ namespace QTTabBarLib {
         }
 
         public IDLWrapper GetItem(int idx, bool noAppend = false) {
-            if(folderView == null) return new IDLWrapper();
+            if(!EnsureFolderView()) return new IDLWrapper();
             IntPtr ppidl = IntPtr.Zero;
             try {
                 // QTUtility2.log("GetItem  folderView " + folderView + " idx " + idx );
@@ -171,7 +192,7 @@ namespace QTTabBarLib {
 
         public int GetItemCount() {
             int count;
-            return folderView != null && folderView.ItemCount(SVGIO.ALLVIEW, out count) == 0 ? count : 0;
+            return EnsureFolderView() && folderView.ItemCount(SVGIO.ALLVIEW, out count) == 0 ? count : 0;
         }
 
         public IEnumerable<IDLWrapper> GetItems(bool selectedOnly = false, bool noAppend = false) {
@@ -208,21 +229,13 @@ namespace QTTabBarLib {
 
         public int GetSelectedCount() {
             int count;
-            if (folderView == null)
-            {
-                // 显示赋值 folderView 实例
-                IShellView ppshv;
-                if (shellBrowser.QueryActiveShellView(out ppshv) == 0)
-                {
-                    folderView = ppshv as IFolderView;
-                }
-            }
+            EnsureFolderView();
             QTUtility2.log(" GetSelectedCount folderView is null ? " + (folderView == null) ); // 测试是否未空？  by indiff
             return folderView != null && folderView.ItemCount(SVGIO.SELECTION, out count) == 0 ? count : 0;
         }
 
         public IDLWrapper GetShellPath() {
-            if(folderView == null) return new IDLWrapper();
+            if(!EnsureFolderView()) return new IDLWrapper();
             IPersistFolder2 ppv = null;
             try {
                 Guid riid = ExplorerGUIDs.IID_IPersistFolder2;
@@ -279,18 +292,8 @@ namespace QTTabBarLib {
                 QTUtility2.log("ReleaseComObject folderView to reset");
                 Marshal.ReleaseComObject(folderView);
                 folderView = null;
-
-                if (folderView == null)
-                {
-                    // 显示赋值 folderView 实例
-                    IShellView ppshv;
-                    if (shellBrowser.QueryActiveShellView(out ppshv) == 0)
-                    {
-                        folderView = ppshv as IFolderView;
-                    }
-                }
-
             }
+            EnsureFolderView();
         }
 
         /**
