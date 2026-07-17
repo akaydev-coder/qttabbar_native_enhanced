@@ -482,6 +482,9 @@ namespace QTTabBarLib {
             public bool ShowPreviewInfo          { get; set; }
             public int PreviewMaxWidth           { get; set; }
             public int PreviewMaxHeight          { get; set; }
+            public int PreviewDelay              { get; set; }
+            public int PreviewOpacity            { get; set; }
+            public int PreviewCacheCapacity      { get; set; }
             public Font PreviewFont              { get; set; }
             public List<string> TextExt          { get; set; }
             public List<string> ImageExt         { get; set; }
@@ -511,6 +514,9 @@ namespace QTTabBarLib {
                 // Ԥ���Ŀ���
                 PreviewMaxWidth = 600;
                 PreviewMaxHeight = 400;
+                PreviewDelay = 300;
+                PreviewOpacity = 100;
+                PreviewCacheCapacity = 128;
                 //  PreviewMaxWidth = 512;
                 // PreviewMaxHeight = 256;
                 //  ��������
@@ -1236,6 +1242,18 @@ namespace QTTabBarLib {
                 Config.Tips.PreviewFont = Config.Tips.PreviewFont ?? Control.DefaultFont;
                 Config.Tips.PreviewMaxWidth = QTUtility.ValidateMinMax(Config.Tips.PreviewMaxWidth, 128, 1920);
                 Config.Tips.PreviewMaxHeight = QTUtility.ValidateMinMax(Config.Tips.PreviewMaxHeight, 96, 1200);
+                if(Config.Tips.PreviewDelay <= 0) {
+                    Config.Tips.PreviewDelay = new Config._Tips().PreviewDelay;
+                }
+                if(Config.Tips.PreviewOpacity <= 0) {
+                    Config.Tips.PreviewOpacity = new Config._Tips().PreviewOpacity;
+                }
+                if(Config.Tips.PreviewCacheCapacity <= 0) {
+                    Config.Tips.PreviewCacheCapacity = new Config._Tips().PreviewCacheCapacity;
+                }
+                Config.Tips.PreviewDelay = QTUtility.ValidateMinMax(Config.Tips.PreviewDelay, 50, 5000);
+                Config.Tips.PreviewOpacity = QTUtility.ValidateMinMax(Config.Tips.PreviewOpacity, 20, 100);
+                Config.Tips.PreviewCacheCapacity = QTUtility.ValidateMinMax(Config.Tips.PreviewCacheCapacity, 8, 1024);
                 Config.Misc.TabHistoryCount = QTUtility.ValidateMinMax(Config.Misc.TabHistoryCount, 1, 30);
                 Config.Misc.FileHistoryCount = QTUtility.ValidateMinMax(Config.Misc.FileHistoryCount, 1, 30);
                 Config.Misc.NetworkTimeout = QTUtility.ValidateMinMax(Config.Misc.NetworkTimeout, 0, 120);

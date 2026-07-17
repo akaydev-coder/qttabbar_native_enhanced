@@ -126,6 +126,56 @@
                 Tag="{Binding Path=PreviewFont, Mode=TwoWay}"
                 Width="200"/>
         </StackPanel>
+        <StackPanel
+            IsEnabled="{Binding Path=IsChecked, ElementName=chkShowTooltipPreviews}"
+            Margin="31,1,0,1"
+            Orientation="Horizontal">
+            <Label
+                Content="{qt:Resx Key=Options_Page04_Tooltips, Index=14}"
+                Height="16"
+                Padding="0"/>
+            <qt:Spinner
+                Min="50"
+                Max="5000"
+                Margin="8,1"
+                Value="{Binding Path=PreviewDelay}"/>
+            <Label
+                Content="{qt:Resx Key=Options_Page04_Tooltips, Index=15}"
+                Height="16"
+                Margin="24,0,0,0"
+                Padding="0"/>
+            <qt:Spinner
+                Min="20"
+                Max="100"
+                Margin="8,1"
+                Value="{Binding Path=PreviewOpacity}"/>
+            <Label
+                Content="%"
+                Height="16"
+                Margin="0"
+                Padding="0"/>
+        </StackPanel>
+        <StackPanel
+            IsEnabled="{Binding Path=IsChecked, ElementName=chkShowTooltipPreviews}"
+            Margin="31,1,0,1"
+            Orientation="Horizontal">
+            <Label
+                Content="{qt:Resx Key=Options_Page04_Tooltips, Index=16}"
+                Height="16"
+                Padding="0"/>
+            <qt:Spinner
+                Min="8"
+                Max="1024"
+                Margin="8,1"
+                Value="{Binding Path=PreviewCacheCapacity}"/>
+            <Button
+                x:Name="btnClearPreviewCache"
+                Content="{qt:Resx Key=Options_Page04_Tooltips, Index=17}"
+                Click="btnClearPreviewCache_Click"
+                Height="23"
+                Margin="24,1,0,1"
+                MinWidth="120"/>
+        </StackPanel>
         <Grid Margin="13,15,0,1">
             <Grid.Resources>
                 <!-- DataTemplate for the file extension listboxes -->

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -169,7 +169,7 @@
     <value>Enable or disable tweaks to Explorer's List View.;Tweaks that can be used with either List View;Display column headers in all view modes (Windows Vista/7);Use the standard filesystem view for Library folders (Windows 7);Deselect file extension when renaming files (Windows XP);Cycle selection with F2 while renaming;Wrap around when moving the selection with the arrow keys;Backspace goes up one level (Windows Vista/7);Scrolling with mouse wheel while holding shift scrolls horizontally;Tweaks that can only be used with the older List View;Enable the older List View control (Windows 7);Full row selection in Details view;Show grid lines in Details view;Alternate row colors in Details view;Foreground color:;Background color:</value>
   </data>
   <data name="Options_Page04_Tooltips" xml:space="preserve">
-    <value>Change the behavior of Subfolder and Preview tooltips.;Subfolder Tips;Enable Subfolder Tips;Only with the Shift key is down;Show files;Show preview tooltips when mousing over menu items;Preview tooltips;Enable preview tooltips;Only with the Shift key is down;Show file information below images;Maximum Width x Height:;Font:;Text filetypes;Image and Video filetypes</value>
+    <value>Change the behavior of Subfolder and Preview tooltips.;Subfolder Tips;Enable Subfolder Tips;Only with the Shift key is down;Show files;Show preview tooltips when mousing over menu items;Preview tooltips;Enable preview tooltips;Only with the Shift key is down;Show file information below images;Maximum Width x Height:;Font:;Text filetypes;Image and Video filetypes;Preview delay (ms):;Preview opacity:;Preview cache entries:;Clear preview cache</value>
   </data>
   <data name="Options_Page05_General" xml:space="preserve">
     <value>General options for QTTabBar's behavoir.;Taskbar integration;Show tab previews on the Taskbar;History;Keep history of closed tabs;Clear now;Keep history of opened files;Network;Network timeout (Enter 0 for system default):;Check for updates periodically;Check now;Export;Export Settings...;Clear file history?;Clear tab history?;Sound;Enable Sound;Enable Log</value>
@@ -249,7 +249,7 @@
     <value>1.0</value>
   </data>
   <data name="Version_QTTabBar" xml:space="preserve">
-    <value>DevBuild: 2022/8/15 19:01:42 (2.0.50727.9164)</value>
+    <value>1.6.1.0</value>
   </data>
   <data name="Options_PlusButton" xml:space="preserve">
     <value>New-tab button;Use custom image:</value>

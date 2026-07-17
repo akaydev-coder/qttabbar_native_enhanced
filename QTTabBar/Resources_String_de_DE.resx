@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -177,7 +177,7 @@ Bitte geben Sie eine 432 x 40 px große Bilddatei an.;Suchergebnisse in;Verknüp
     <value>Aktivieren oder Deaktivieren von Tweaks für die Listenansicht des Explorers.;Tweaks, die mit beiden Listenansichten verwendet werden können;Anzeige von Spaltenüberschriften in allen Ansichtsmodi (Windows Vista/7);Verwendung der Standard-Dateisystemansicht für Bibliotheksordner (Windows 7);Abwählen der Dateierweiterung beim Umbenennen von Dateien (Windows XP);Auswahl mit F2 beim Umbenennen umschalten;Umdrehen beim Verschieben der Auswahl mit den Pfeiltasten;Rücktaste geht eine Ebene nach oben (Windows Vista/7);Scrollen mit Mausrad bei gedrückter Umschalttaste scrollt horizontal;Tweaks, die nur mit der älteren Listenansicht verwendet werden können;Aktivieren der älteren Listenansicht-Steuerung (Windows 7);Vollständige Zeilenauswahl in der Detailansicht;Gitterlinien in der Detailansicht anzeigen;Alternative Zeilenfarben in der Detailansicht;Vordergrundfarbe: ;Hintergrundfarbe:</value>
   </data>
   <data name="Options_Page04_Tooltips" xml:space="preserve">
-    <value>Ändern Sie das Verhalten von Unterordner- und Vorschau-Tooltips;Unterordner-Inhalte;Unterordner-Inhalte aktivieren;Nur bei gedrückter Umschalttaste;Dateien anzeigen;Vorschau-Tooltips anzeigen, wenn Sie mit der Maus über Menüpunkte fahren;Vorschau-Tooltips;Vorschau-Tooltips aktivieren;Nur bei gedrückter Umschalttaste;Dateiinformationen unter Bildern anzeigen;Maximale Breite x Höhe:;Schriftart:;Textdateitypen;Bild- und Videodateitypen</value>
+    <value>Ändern Sie das Verhalten von Unterordner- und Vorschau-Tooltips;Unterordner-Inhalte;Unterordner-Inhalte aktivieren;Nur bei gedrückter Umschalttaste;Dateien anzeigen;Vorschau-Tooltips anzeigen, wenn Sie mit der Maus über Menüpunkte fahren;Vorschau-Tooltips;Vorschau-Tooltips aktivieren;Nur bei gedrückter Umschalttaste;Dateiinformationen unter Bildern anzeigen;Maximale Breite x Höhe:;Schriftart:;Textdateitypen;Bild- und Videodateitypen;Vorschauverzögerung (ms):;Vorschau-Deckkraft:;Vorschau-Cache-Einträge:;Vorschau-Cache leeren</value>
   </data>
   <data name="Options_Page05_General" xml:space="preserve">
     <value>Allgemeine Einstellungen für das Verhalten von QTTabBar;Taskleisten-Integration;Registerkartenvorschau in der Taskleiste anzeigen;Verlauf;Verlauf geschlossener Registerkarten behalten;Jetzt löschen;Verlauf geöffneter Dateien behalten;Netzwerk;Netzwerk-Timeout (geben Sie 0 für die Systemvorgabe ein):;Regelmäßig nach Updates suchen;Jetzt prüfen;Exportieren;Einstellungen exportieren...;Dateiverlauf löschen?;Registerkartenverlauf löschen?;Sound;Enable Sound;Activar o som</value>
@@ -257,7 +257,7 @@ Bitte geben Sie eine 432 x 40 px große Bilddatei an.;Suchergebnisse in;Verknüp
     <value>1.0</value>
   </data>
   <data name="Version_QTTabBar" xml:space="preserve">
-    <value>1.6.0.1</value>
+    <value>1.6.1.0</value>
   </data>
   <data name="Options_PlusButton" xml:space="preserve">
     <value>Schaltfläche für neuen Tab;Angepasste Grafik verwenden:</value>

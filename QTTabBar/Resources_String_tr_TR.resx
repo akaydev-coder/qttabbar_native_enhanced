@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -127,7 +127,7 @@
     <value>Turkiye</value>
   </data>
   <data name="Version_QTTabBar" xml:space="preserve">
-    <value>DevBuild: 2022/8/15 19:01:42 (2.0.50727.9164)</value>
+    <value>1.6.1.0</value>
   </data>
   <data name="DateModified" xml:space="preserve">
     <value>08/15/2022</value>
@@ -180,7 +180,7 @@ Lütfen 432 x 40 px resim dosyası seçin.;Arama sonuçları;kısayol;Dosya seç
     <value>Liste Görünümü ince ayarlarını etkinleştirir veya devre dışı bırak.;Liste Görünümü ile kullanılabilen ince ayarlar;Tüm görünüm modlarında sütun başlıklarını görüntüle (Windows Vista/7);Kitaplık klasörleri için standart dosya sistemi görünümünü kullan (Windows 7);Dosyaları yeniden adlandırırken dosya uzantısının seçimini kaldır (Windows XP);Yeniden adlandırırken F2 ile seçimi değiştir;Ok tuşlarıyla seçimi taşırken kaydır;Backspace bir seviye yukarı çıkar (Windows Vista/7);Shift tuşunu basılı tutarken fare tekerleği yatay kaydırma yapar;Yalnızca eski Liste Görünümü ile kullanılabilen ince ayarlar;Eski Liste Görünümü kontrolünü etkinleştir (Windows 7);Ayrıntılı görünümde tam satır seçimi （Windows XP）;Ayrıntılı görünümde kılavuz çizgilerini göster;Ayrıntılı görünümde alternatif satır renkleri;Ön plan rengi:;Arka plan rengi:</value>
   </data>
   <data name="Options_Page04_Tooltips" xml:space="preserve">
-    <value>Alt Klasör ve Önizleme araç ipuçlarının davranışını değiştirin.;Alt Klasör İpuçları;Alt Klasör İpuçlarını Etkinleştir;Sadece Shift tuşu aşağıdayken;Dosyaları göster;Menü öğeleri üzerinde fareyle gezinirken önizleme araç ipuçlarını göster;Önizleme ipuçları;Önizleme araç ipuçlarını etkinleştir;Sadece Shift tuşu aşağıdayken;Resimlerin altındaki dosya bilgilerini göster;Maksimum Genişlik x Yükseklik:;Yazı tipi:;Metin dosya türleri;Görüntü ve Video dosya türleri</value>
+    <value>Alt Klasör ve Önizleme araç ipuçlarının davranışını değiştirin.;Alt Klasör İpuçları;Alt Klasör İpuçlarını Etkinleştir;Sadece Shift tuşu aşağıdayken;Dosyaları göster;Menü öğeleri üzerinde fareyle gezinirken önizleme araç ipuçlarını göster;Önizleme ipuçları;Önizleme araç ipuçlarını etkinleştir;Sadece Shift tuşu aşağıdayken;Resimlerin altındaki dosya bilgilerini göster;Maksimum Genişlik x Yükseklik:;Yazı tipi:;Metin dosya türleri;Görüntü ve Video dosya türleri;Preview delay (ms):;Preview opacity:;Preview cache entries:;Clear preview cache</value>
   </data>
   <data name="Options_Page05_General" xml:space="preserve">
     <value>QTTabBar genel davranış seçenekleri;Görev barı entegrasyonu;Görev barında sekme önizlemelerini göster;Tarih;Kapatılan sekmelerin geçmişini tut;Şimdi Temizle;Açılan dosyaların geçmişini tut;Ağ;Ağ Zaman Aşımı (Sistem varsayılanı için 0 girin):;Güncellemeleri periyodik olarak kontrol edin;Şimdi kontrol et;Dışa Aktar;Dışa Aktarma Ayarları...;Dosya geçmişi temizlensin mi?;Sekme geçmişi temizlensin mi?;Ses;Sesi etkinleştir;Günlüğü etkinleştir</value>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -127,7 +127,7 @@
     <value>Brazil</value>
   </data>
   <data name="Version_QTTabBar" xml:space="preserve">
-    <value>DevBuild: 2022/8/15 19:01:42 (2.0.50727.9164)</value>
+    <value>1.6.1.0</value>
   </data>
   <data name="DateModified" xml:space="preserve">
     <value>08/15/2022</value>
@@ -180,7 +180,7 @@ Por favor, especifique arquivo de imagem 432 x 40 px.;Resultados da Pesquisa em;
     <value>Ativa ou desativa os ajustes da Visualização da Lista do Explorer.;Ajustes que podem ser usados ​​com a Visualização em Lista;Exibir cabeçalhos de coluna em todos os modos de visualização (Windows Vista/7);Usar visualização padrão do sistema de arquivos para pastas de Biblioteca (Windows 7);Desmarcar a extensão do arquivo ao renomear arquivos (Windows XP);Seleção de ciclo com F2 durante a renomeação;Enrole ao redor ao mover a seleção com as teclas de seta;Backspace sobe um nível (Windows Vista/7);Rolagem com roda do mouse enquanto segura Shift horizontalmente;Ajustes que só podem ser usados com a Visualização em Listas mais antiga;Ativar controle da Visualização em Lista mais antiga (Windows 7);Selecionar linha completa na Visualização em Detalhes;Mostrar linhas de grade na Visualização em Detalhes;Cores de linha alternadas na Visualização em Detalhes;Cor de primeiro plano:;Cor de segundo plano:</value>
   </data>
   <data name="Options_Page04_Tooltips" xml:space="preserve">
-    <value>Altera o comportamento da ferramenta de menu de subpastas e pré-visualização.;Dicas de subpastas;Ativar dicas de subpasta;Apenas com a tecla Shift pressionada;Mostrar arquivos;Mostrar dicas de ferramentas ao passar mouse sobre itens;Visualizar dicas de ferramentas;Ativar visualizar de dicas;Apenas com a tecla Shift pressionada;Mostrar Informações do arquivo abaixo das imagens;Largura x altura máxima:;Fonte:;Tipos de arquivos de texto;Tipos de arquivos de imagem e vídeo</value>
+    <value>Altera o comportamento da ferramenta de menu de subpastas e pré-visualização.;Dicas de subpastas;Ativar dicas de subpasta;Apenas com a tecla Shift pressionada;Mostrar arquivos;Mostrar dicas de ferramentas ao passar mouse sobre itens;Visualizar dicas de ferramentas;Ativar visualizar de dicas;Apenas com a tecla Shift pressionada;Mostrar Informações do arquivo abaixo das imagens;Largura x altura máxima:;Fonte:;Tipos de arquivos de texto;Tipos de arquivos de imagem e vídeo;Preview delay (ms):;Preview opacity:;Preview cache entries:;Clear preview cache</value>
   </data>
   <data name="Options_Page05_General" xml:space="preserve">
     <value>Opções gerais para o comportamento do Qttabbar.;Integração da barra de tarefas;Mostrar visualizações de abas na Barra de tarefas;Histórico;Manter histórico de abas fechadas;Limpar;Manter histórico de arquivos abertos;Rede;Tempo limite de rede (Digite 0 para o padrão do sistema):;Verifique se há atualizações periodicamente;Verificar;Exportar;Exportar Configurações;Limpar histórico de arquivos?;Limpar histórico de abas?</value>

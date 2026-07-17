@@ -1220,7 +1220,7 @@ namespace QTTabBarLib {
                         thumbnailTooltip = new ThumbnailTooltipForm();
                         thumbnailTooltip.ThumbnailVisibleChanged += thumbnailTooltip_ThumbnailVisibleChanged;
                         timer_Thumbnail = new Timer();
-                        timer_Thumbnail.Interval = 400;
+                        timer_Thumbnail.Interval = QTUtility.ValidateMinMax(Config.Tips.PreviewDelay, 50, 5000);
                         timer_Thumbnail.Tick += timer_Thumbnail_Tick;
                     }
                     if(thumbnailTooltip.IsShownByKey && !fKey) {

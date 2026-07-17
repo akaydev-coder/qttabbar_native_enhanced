@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -127,7 +127,7 @@
     <value>France</value>
   </data>
   <data name="Version_QTTabBar" xml:space="preserve">
-    <value>DevBuild: 2022/8/15 19:01:42 (2.0.50727.9164)</value>
+    <value>1.6.1.0</value>
   </data>
   <data name="DateModified" xml:space="preserve">
     <value>08/15/2022</value>
@@ -180,7 +180,7 @@ Veuillez préciser 432 x 40 px fichier d'image.;Résultats de la recherche dans;
     <value>Activez ou désactivez les modifications apportées à la vue de liste de l'explorateur.;Tweaks pouvant être utilisés avec l'une ou l'autre des vues de liste;Afficher les en-têtes de colonne dans tous les modes d'affichage (Windows Vista/7);Utiliser la vue standard du système de fichiers pour les dossiers de la bibliothèque (Windows 7);Désélectionnez l'extension de fichier lorsque vous renommez des fichiers (Windows XP);Sélection du cycle avec F2 lors du changement de nom;Retour en boucle lors du déplacement de la sélection avec les touches fléchées;Retour arrière monte d'un niveau (Windows Vista/7);Faire défiler avec la molette de la souris tout en maintenant la touche Maj enfoncée horizontalement;Tweaks qui ne peuvent être utilisés qu'avec l'ancienne vue de liste;Activer l'ancien contrôle d'affichage de liste (Windows 7);Sélection complète de la ligne dans la vue Détails;Afficher les lignes de grille dans la vue Détails;Couleurs de ligne alternatives dans la vue Détails;Couleur de premier plan:;Couleur de l'arrière plan:</value>
   </data>
   <data name="Options_Page04_Tooltips" xml:space="preserve">
-    <value>Modifiez le comportement des info-bulles de sous-dossier et d'aperçu.;Conseils sur les sous-dossiers;Activer les conseils de sous-dossier;Seulement avec la touche Maj enfoncée;Afficher les fichiers;Afficher les info-bulles d'aperçu lorsque vous passez la souris sur les éléments de menu;Aperçu des info-bulles;Activer les info-bulles d'aperçu;Seulement avec la touche Maj enfoncée;Afficher les informations du fichier sous les images;Largeur x Hauteur maximale:;Polcice:;Types de fichiers texte;Types de fichiers image et vidéo</value>
+    <value>Modifiez le comportement des info-bulles de sous-dossier et d'aperçu.;Conseils sur les sous-dossiers;Activer les conseils de sous-dossier;Seulement avec la touche Maj enfoncée;Afficher les fichiers;Afficher les info-bulles d'aperçu lorsque vous passez la souris sur les éléments de menu;Aperçu des info-bulles;Activer les info-bulles d'aperçu;Seulement avec la touche Maj enfoncée;Afficher les informations du fichier sous les images;Largeur x Hauteur maximale:;Polcice:;Types de fichiers texte;Types de fichiers image et vidéo;Preview delay (ms):;Preview opacity:;Preview cache entries:;Clear preview cache</value>
   </data>
   <data name="Options_Page05_General" xml:space="preserve">
     <value>Options générales pour le comportement de QTTabBar.;Intégration de la barre des tâches;Afficher les aperçus des onglets dans la barre des tâches;Historique;Conserver l'historique des onglets fermés;Effacer maintenant;Conserver l'historique des fichiers ouverts;Réseau;Délai d'expiration du réseau (Entrez 0 pour la valeur par défaut du système):;Vérifiez périodiquement les mises à jour;Vérifier maintenant;Exporter;Exporter les paramètres...;Effacer l'historique des fichiers ?;Effacer l'historique des onglets ?;Son;Activer le son;Activer le journal</value>

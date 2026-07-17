@@ -147,6 +147,10 @@ namespace QTTabBarLib {
             lstMediaFileTypes.ScrollIntoView(MediaFileTypes.First());
         }
 
+        private void btnClearPreviewCache_Click(object sender, RoutedEventArgs e) {
+            ThumbnailTooltipForm.ClearAllCaches();
+        }
+
         private void lstTextFileTypes_OnKeyDown(object sender, KeyEventArgs e) {
             if(e.Key == Key.Delete) RemoveSelectedFileType(lstTextFileTypes);
         }

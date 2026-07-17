@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
@@ -34,7 +35,7 @@ using QTTabBarLib.Interop;
 
 namespace QTTabBarLib {
     /**
-     * Ô¤ÀÀ´°¿Ú
+     * Ô¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
      */
     internal sealed class ThumbnailTooltipForm : Form {
         private const string EMPTYFILE = "  *empty file";
@@ -51,6 +52,9 @@ namespace QTTabBarLib {
         private const int MAX_TEXT_LENGTH = 0x400;
         public const int MAX_THUMBNAIL_HEIGHT = 0x4b0;
         public const int MAX_THUMBNAIL_WIDTH = 0x780;
+        private static readonly List<WeakReference<ThumbnailTooltipForm>> activeForms = new List<WeakReference<ThumbnailTooltipForm>>();
+        private static readonly object activeFormsLock = new object();
+        private int cacheCapacity = Config.Tips.PreviewCacheCapacity;
         private int maxHeight = Config.Tips.PreviewMaxHeight;
         private int maxWidth = Config.Tips.PreviewMaxWidth;
         private PictureBox pictureBox1;
@@ -81,7 +85,7 @@ namespace QTTabBarLib {
         /// static fields.
         /// </summary>
         private static string supportedImages;
-        // Ö§³ÖµÄÊÓÆµ¸ñÊ½
+        // Ö§ï¿½Öµï¿½ï¿½ï¿½Æµï¿½ï¿½Ê½
         private static string supportedMovies = ".asx;.dvr-ms;.mp2;.flv;..mkv;.ts;.3g2;.3gp;.3gp2;.3gpp;.amr;.amv;.asf;.avi;.bdmv;.bik;.d2v;.divx;.drc;.dsa;.dsm;.dss;.dsv;.evo;.f4v;.flc;.fli;.flic;.flv;.hdmov;.ifo;.ivf;.m1v;.m2p;.m2t;.m2ts;.m2v;.m4b;.m4p;.m4v;.mkv;.mp2v;.mp4;.mp4v;.mpe;.mpeg;.mpg;.mpls;.mpv2;.mpv4;.mov;.mts;.ogm;.ogv;.pss;.pva;.qt;.ram;.ratdvd;.rm;.rmm;.rmvb;.roq;.rpm;.smil;.smk;.swf;.tp;.tpr;.ts;.vob;.vp6;.webm;.wm;.wmp;.wmv";
 
 
@@ -103,14 +107,62 @@ namespace QTTabBarLib {
         public ThumbnailTooltipForm() {
             InitializeComponent();
             lstPathFailedThumbnail = new List<string>();
-            imageCacheStore = new ImageCacheStore(0x80);
+            cacheCapacity = QTUtility.ValidateMinMax(Config.Tips.PreviewCacheCapacity, 8, 1024);
+            imageCacheStore = new ImageCacheStore(cacheCapacity);
+            lock(activeFormsLock) {
+                activeForms.Add(new WeakReference<ThumbnailTooltipForm>(this));
+            }
         }
 
         public void ClearCache() {
             imageCacheStore.Clear();
         }
 
+        public static void ClearAllCaches() {
+            lock(activeFormsLock) {
+                for(int i = activeForms.Count - 1; i >= 0; i--) {
+                    ThumbnailTooltipForm form;
+                    if(!activeForms[i].TryGetTarget(out form) || form.IsDisposed) {
+                        activeForms.RemoveAt(i);
+                        continue;
+                    }
+                    try {
+                        if(form.InvokeRequired && form.IsHandleCreated) {
+                            form.BeginInvoke((MethodInvoker)form.ClearCache);
+                        }
+                        else {
+                            form.ClearCache();
+                        }
+                    }
+                    catch(Exception exception) {
+                        QTUtility2.MakeErrorLog(exception, "ThumbnailTooltipForm ClearAllCaches");
+                    }
+                }
+            }
+        }
+
+        private void ApplyRuntimeSettings() {
+            int newMaxWidth = QTUtility.ValidateMinMax(Config.Tips.PreviewMaxWidth, 128, 1920);
+            int newMaxHeight = QTUtility.ValidateMinMax(Config.Tips.PreviewMaxHeight, 96, 1200);
+            int newCacheCapacity = QTUtility.ValidateMinMax(Config.Tips.PreviewCacheCapacity, 8, 1024);
+            int opacity = QTUtility.ValidateMinMax(Config.Tips.PreviewOpacity, 20, 100);
+
+            if((maxWidth != newMaxWidth) || (maxHeight != newMaxHeight)) {
+                maxWidth = newMaxWidth;
+                maxHeight = newMaxHeight;
+                pictureBox1.Image = null;
+                imageCacheStore.Clear();
+                lstPathFailedThumbnail.Clear();
+            }
+            if(cacheCapacity != newCacheCapacity) {
+                cacheCapacity = newCacheCapacity;
+                imageCacheStore.MaxCacheLength = cacheCapacity;
+            }
+            Opacity = opacity / 100.0;
+        }
+
         private bool CreateThumbnail(string path, ref Size formSize) {
+            ApplyRuntimeSettings();
             string ext = Path.GetExtension(path).ToLower();
             if(ExtIsImage(ext)) {
                 FileInfo info = new FileInfo(path);
@@ -126,13 +178,6 @@ namespace QTTabBarLib {
                 Size sizeActual = Size.Empty;
                 lblInfo.Text = string.Empty;
                 string toolTipText = null;
-                if((maxWidth != Config.Tips.PreviewMaxWidth) || (maxHeight != Config.Tips.PreviewMaxHeight)) {
-                    maxWidth = Config.Tips.PreviewMaxWidth;
-                    maxHeight = Config.Tips.PreviewMaxHeight;
-                    pictureBox1.Image = null;
-                    imageCacheStore.Clear();
-                    lstPathFailedThumbnail.Clear();
-                }
                 foreach(ImageData data2 in imageCacheStore) {
                     if(data2.Path.PathEquals(path)) {
                         if(data2.ModifiedDate == info.LastWriteTime) {
@@ -239,7 +284,7 @@ namespace QTTabBarLib {
                     return false;
                 }
             }
-            if(ExtIsText(ext)) { // Èç¹ûÔ¤ÀÀµÄÊÇÎÄ±¾ÎÄ¼þ
+            if(ExtIsText(ext)) { // ï¿½ï¿½ï¿½Ô¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä±ï¿½ï¿½Ä¼ï¿½
                 FileInfo textFileInfo = new FileInfo(path);
                 if(textFileInfo.Exists) {
                     try {
@@ -248,7 +293,7 @@ namespace QTTabBarLib {
                         bool isEmptyText = false;
                         string content;
                         ioException = null;
-                        // ¼ÓÔØÔ¤ÀÀµÄÂß¼­
+                        // ï¿½ï¿½ï¿½ï¿½Ô¤ï¿½ï¿½ï¿½ï¿½ï¿½ß¼ï¿½
 
                         /*if (textFileInfo.Length > 0L && textFileInfo.Length <= MAX_TEXT_LENGTH)
                         {
@@ -310,7 +355,17 @@ namespace QTTabBarLib {
         }
 
         protected override void Dispose(bool disposing) {
-            imageCacheStore.Clear();
+            if(disposing) {
+                imageCacheStore.Clear();
+                lock(activeFormsLock) {
+                    for(int i = activeForms.Count - 1; i >= 0; i--) {
+                        ThumbnailTooltipForm form;
+                        if(!activeForms[i].TryGetTarget(out form) || ReferenceEquals(form, this)) {
+                            activeForms.RemoveAt(i);
+                        }
+                    }
+                }
+            }
             base.Dispose(disposing);
         }
 
@@ -382,13 +437,13 @@ namespace QTTabBarLib {
             lblInfo.ForeColor = SystemColors.InfoText;
             lblInfo.BackColor = Color.Transparent;
             lblInfo.Dock = DockStyle.Bottom;
-            lblInfo.Padding = new Padding(4);
+            lblInfo.Padding = new Padding(6, 4, 6, 6);
             lblInfo.Size = new Size(0x10, 50);
             lblInfo.UseMnemonic = false;
             pictureBox1.BackColor = Color.Transparent;
             pictureBox1.Dock = DockStyle.Fill;
             pictureBox1.Location = new Point(0, 0);
-            pictureBox1.Padding = new Padding(4);
+            pictureBox1.Padding = new Padding(6);
             pictureBox1.Size = new Size(0x100, 0x80);
             pictureBox1.SizeMode = PictureBoxSizeMode.CenterImage;
             pictureBox1.TabStop = false;
@@ -397,12 +452,12 @@ namespace QTTabBarLib {
             lblText.BackColor = Color.Transparent;
             lblText.Dock = DockStyle.Fill;
             lblText.Location = new Point(0, 0);
-            lblText.Padding = new Padding(4);
+            lblText.Padding = new Padding(8);
             lblText.Size = new Size(0x100, 0x80);
             lblText.UseMnemonic = false;
             AutoScaleDimensions = new SizeF(6f, 13f);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = SystemColors.Info;
+            BackColor = Color.FromArgb(245, 250, 252);
             ClientSize = new Size(0x100, 0x80);
             Controls.Add(lblText);
             Controls.Add(pictureBox1);
@@ -458,10 +513,10 @@ namespace QTTabBarLib {
         }
 
         /// <summary> 
-        /// ¸ø¶¨ÎÄ¼þµÄÂ·¾¶£¬¶ÁÈ¡ÎÄ¼þµÄ¶þ½øÖÆÊý¾Ý£¬ÅÐ¶ÏÎÄ¼þµÄ±àÂëÀàÐÍ 
+        /// ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½Â·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¡ï¿½Ä¼ï¿½ï¿½Ä¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý£ï¿½ï¿½Ð¶ï¿½ï¿½Ä¼ï¿½ï¿½Ä±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
         /// </summary> 
-        /// <param name=¡°FILE_NAME¡°>ÎÄ¼þÂ·¾¶</param> 
-        /// <returns>ÎÄ¼þµÄ±àÂëÀàÐÍ</returns> 
+        /// <param name=ï¿½ï¿½FILE_NAMEï¿½ï¿½>ï¿½Ä¼ï¿½Â·ï¿½ï¿½</param> 
+        /// <returns>ï¿½Ä¼ï¿½ï¿½Ä±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</returns> 
         public static System.Text.Encoding GetType(string FILE_NAME)
         {
             FileStream fs = new FileStream(FILE_NAME, FileMode.Open, FileAccess.Read);
@@ -471,15 +526,15 @@ namespace QTTabBarLib {
         }
 
         /// <summary> 
-        /// Í¨¹ý¸ø¶¨µÄÎÄ¼þÁ÷£¬ÅÐ¶ÏÎÄ¼þµÄ±àÂëÀàÐÍ 
+        /// Í¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½ï¿½Ä¼ï¿½ï¿½Ä±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
         /// </summary> 
-        /// <param name=¡°fs¡°>ÎÄ¼þÁ÷</param> 
-        /// <returns>ÎÄ¼þµÄ±àÂëÀàÐÍ</returns> 
+        /// <param name=ï¿½ï¿½fsï¿½ï¿½>ï¿½Ä¼ï¿½ï¿½ï¿½</param> 
+        /// <returns>ï¿½Ä¼ï¿½ï¿½Ä±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</returns> 
         public static System.Text.Encoding GetType(FileStream fs)
         {
             byte[] Unicode = new byte[] { 0xFF, 0xFE, 0x41 };
             byte[] UnicodeBIG = new byte[] { 0xFE, 0xFF, 0x00 };
-            byte[] UTF8 = new byte[] { 0xEF, 0xBB, 0xBF }; //´øBOM 
+            byte[] UTF8 = new byte[] { 0xEF, 0xBB, 0xBF }; //ï¿½ï¿½BOM 
             Encoding reVal = Encoding.Default;
 
             BinaryReader r = new BinaryReader(fs, System.Text.Encoding.Default);
@@ -509,20 +564,20 @@ namespace QTTabBarLib {
         } 
 
         /// <summary> 
-        /// ÅÐ¶ÏÊÇ·ñ´øBOMµÄUTF8¸ñÊ½£¨¹ÀËã·½·¨£©
-        /// BOM£ºByte Order Mark£¬¶¨Òå×Ö½ÚË³Ðò¡£
-        /// UTF-8²»ÐèÒªBOM±íÃ÷×Ö½ÚË³Ðò£¬µ«ÓÃBOMÀ´±íÊ¾±àÂë·½Ê½¡£
-        /// Windows¾ÍÊÇ²ÉÓÃBOMÀ´±ê¼ÇÎÄ±¾ÎÄ¼þµÄ±àÂë·½Ê½µÄ£¬
-        /// ¿ÉÒÔ°ÑUTF-8ºÍASCIIµÈ±àÂëÇø·Ö¿ªÀ´£¬
-        /// µ«ÔÚWindowsÖ®Íâ£¨Èç£¬Linux £©£¬»á´øÀ´ÎÊÌâ¡£
+        /// ï¿½Ð¶ï¿½ï¿½Ç·ï¿½ï¿½BOMï¿½ï¿½UTF8ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½ï¿½ã·½ï¿½ï¿½ï¿½ï¿½
+        /// BOMï¿½ï¿½Byte Order Markï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö½ï¿½Ë³ï¿½ï¿½
+        /// UTF-8ï¿½ï¿½ï¿½ï¿½ÒªBOMï¿½ï¿½ï¿½ï¿½ï¿½Ö½ï¿½Ë³ï¿½ò£¬µï¿½ï¿½ï¿½BOMï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ë·½Ê½ï¿½ï¿½
+        /// Windowsï¿½ï¿½ï¿½Ç²ï¿½ï¿½ï¿½BOMï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä±ï¿½ï¿½Ä¼ï¿½ï¿½Ä±ï¿½ï¿½ë·½Ê½ï¿½Ä£ï¿½
+        /// ï¿½ï¿½ï¿½Ô°ï¿½UTF-8ï¿½ï¿½ASCIIï¿½È±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¿ï¿½ï¿½ï¿½ï¿½ï¿½
+        /// ï¿½ï¿½ï¿½ï¿½WindowsÖ®ï¿½â£¨ï¿½ç£¬Linux ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½â¡£
         /// </summary> 
         /// <param name="data"></param> 
         /// <returns></returns> 
         private static bool IsUTF8Bytes(byte[] data)
         {
-            // ×Ö½ÚÊý
+            // ï¿½Ö½ï¿½ï¿½ï¿½
             int charByteCounter = 1;
-            // µ±Ç°×Ö½Ú
+            // ï¿½ï¿½Ç°ï¿½Ö½ï¿½
             byte curByte;
             for (int i = 0; i < data.Length; i++)
             {
@@ -531,13 +586,13 @@ namespace QTTabBarLib {
                 {
                     if (curByte >= 0x80)
                     {
-                        // ÅÐ¶Ïµ±Ç° 
+                        // ï¿½Ð¶Ïµï¿½Ç° 
                         while (((curByte <<= 1) & 0x80) != 0)
                         {
                             charByteCounter++;
                         }
-                        // ±ê¼ÇÎ»Ê×Î»ÈôÎª·Ç0 ÔòÖÁÉÙÒÔ2¸ö1¿ªÊ¼
-                        // Èç:110XXXXX...........1111110X 
+                        // ï¿½ï¿½ï¿½Î»ï¿½ï¿½Î»ï¿½ï¿½Îªï¿½ï¿½0 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½2ï¿½ï¿½1ï¿½ï¿½Ê¼
+                        // ï¿½ï¿½:110XXXXX...........1111110X 
                         if (charByteCounter == 1 || charByteCounter > 6)
                         {
                             return false;
@@ -546,7 +601,7 @@ namespace QTTabBarLib {
                 }
                 else
                 {
-                    // ÈôÊÇUTF-8 ´ËÊ±µÚÒ»Î»±ØÐëÎª1 
+                    // ï¿½ï¿½ï¿½ï¿½UTF-8 ï¿½ï¿½Ê±ï¿½ï¿½Ò»Î»ï¿½ï¿½ï¿½ï¿½Îª1 
                     if ((curByte & 0xC0) != 0x80)
                     {
                         return false;
@@ -678,7 +733,7 @@ namespace QTTabBarLib {
             }
             if (info.nCodePage == Encoding.ASCII.CodePage)
             {
-                //ASCII¤Î¤È¤­¤ÏUTF-8¤Ë¤¹¤ë
+                //ASCIIï¿½Î¤È¤ï¿½ï¿½ï¿½UTF-8ï¿½Ë¤ï¿½ï¿½ï¿½
                 return Encoding.UTF8;
             }
             return Encoding.GetEncoding((int)info.nCodePage);
@@ -779,12 +834,12 @@ namespace QTTabBarLib {
         }
 
         /**
-         * codepage=936 ¼òÌåÖÐÎÄGBK
-            codepage=950 ·±ÌåÖÐÎÄBIG5
-            codepage=437 ÃÀ¹ú/¼ÓÄÃ´óÓ¢Óï
-            codepage=932 ÈÕÎÄ
-            codepage=949 º«ÎÄ
-            codepage=866 ¶íÎÄ
+         * codepage=936 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½GBK
+            codepage=950 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½BIG5
+            codepage=437 ï¿½ï¿½ï¿½ï¿½/ï¿½ï¿½ï¿½Ã´ï¿½Ó¢ï¿½ï¿½
+            codepage=932 ï¿½ï¿½ï¿½ï¿½
+            codepage=949 ï¿½ï¿½ï¿½ï¿½
+            codepage=866 ï¿½ï¿½ï¿½ï¿½
          */
         public static Encoding TryGetEncoding(byte[] bytes)
         {
@@ -1146,24 +1201,24 @@ namespace QTTabBarLib {
 
         public static bool IsTragetEncoding(byte[] bytes, Encoding targetEncoding)
         {
-            //Œ¢byte[]ÞDžéstringÔÙÞD»Øbyte[]¿´Î»Ôª”µÊÇ·ñÓÐ×ƒ
+            //ï¿½ï¿½byte[]ï¿½Dï¿½ï¿½stringï¿½ï¿½ï¿½Dï¿½ï¿½byte[]ï¿½ï¿½Î»Ôªï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½×ƒ
             var stringWithTragetEncoding = targetEncoding.GetString(bytes);
             var bytesWithTragetEncodingCount = targetEncoding.GetByteCount(stringWithTragetEncoding);
             return bytes.Length == bytesWithTragetEncodingCount;
         }
 
         /// <summary> 
-        /// ÅÐ¶ÏÎÄ¼þÁ÷µÄ±àÂëÀàÐÍ 
+        /// ï¿½Ð¶ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½Ä±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
         /// </summary> 
-        /// <param name="filestream">ÎÄ¼þÁ÷</param> 
-        /// <returns>Á÷µÄ±àÂëÀàÐÍ</returns> 
+        /// <param name="filestream">ï¿½Ä¼ï¿½ï¿½ï¿½</param> 
+        /// <returns>ï¿½ï¿½ï¿½Ä±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</returns> 
         private static Encoding GetStreamEncoding(byte[] ss)
         {
             try
             {
                 byte[] Unicode = new byte[] { 0xFF, 0xFE, 0x41 };
                 byte[] UnicodeBIG = new byte[] { 0xFE, 0xFF, 0x00 };
-                //´øBOM 
+                //ï¿½ï¿½BOM 
                 byte[] UTF8 = new byte[] { 0xEF, 0xBB, 0xBF };
                 Encoding reVal = Encoding.Default;
                 if (IsUTF8Bytes(ss) || (ss[0] == 0xEF && ss[1] == 0xBB && ss[2] == 0xBF))
@@ -1506,12 +1561,17 @@ namespace QTTabBarLib {
         }
 
         protected override void OnPaintBackground(PaintEventArgs e) {
-            if(!QTUtility.IsXP && VisualStyleRenderer.IsSupported) {
-                new VisualStyleRenderer(VisualStyleElement.ToolTip.Standard.Normal).DrawBackground(e.Graphics, new Rectangle(0, 0, Width, Height));
+            Rectangle bounds = new Rectangle(0, 0, Width, Height);
+            if(bounds.Width <= 0 || bounds.Height <= 0) return;
+
+            using(LinearGradientBrush brush = new LinearGradientBrush(bounds,
+                    Color.FromArgb(250, 255, 255),
+                    Color.FromArgb(224, 245, 247),
+                    LinearGradientMode.Vertical)) {
+                e.Graphics.FillRectangle(brush, bounds);
             }
-            else {
-                base.OnPaintBackground(e);
-                e.Graphics.DrawRectangle(SystemPens.InfoText, new Rectangle(0, 0, Width - 1, Height - 1));
+            using(Pen borderPen = new Pen(Color.FromArgb(128, 137, 182, 190))) {
+                e.Graphics.DrawRectangle(borderPen, new Rectangle(0, 0, Width - 1, Height - 1));
             }
         }
 
@@ -1618,6 +1678,18 @@ namespace QTTabBarLib {
                 this.max_cache_length = max_cache_length;
             }
 
+            public int MaxCacheLength {
+                get {
+                    return max_cache_length;
+                }
+                set {
+                    lock(syncObject) {
+                        max_cache_length = Math.Max(1, value);
+                        TrimToMaxLength();
+                    }
+                }
+            }
+
             protected override void ClearItems() {
                 lock(syncObject) {
                     foreach(ImageData data in this) {
@@ -1630,10 +1702,14 @@ namespace QTTabBarLib {
             protected override void InsertItem(int index, ImageData item) {
                 lock(syncObject) {
                     base.InsertItem(index, item);
-                    if(Count > max_cache_length) {
-                        base[0].Dispose();
-                        base.RemoveItem(0);
-                    }
+                    TrimToMaxLength();
+                }
+            }
+
+            private void TrimToMaxLength() {
+                while(Count > max_cache_length) {
+                    base[0].Dispose();
+                    base.RemoveItem(0);
                 }
             }
 
