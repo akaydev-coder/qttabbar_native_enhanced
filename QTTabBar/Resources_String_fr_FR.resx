@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -192,7 +192,7 @@ Veuillez préciser 432 x 40 px fichier d'image.;Résultats de la recherche dans;
     <value>Tab button images;Use custom close-button image:;Close-button offset (X, Y):;Use custom lock icon:;Lock-icon offset (X, Y):</value>
   </data>
   <data name="Options_Page07_Mouse" xml:space="preserve">
-    <value>Attribuez des commandes à différentes actions de la souris.;Pour ajouter un raccourci de souris, effectuez une action de la souris sur l'icône plus à gauche du type de cible approprié. Pour supprimer une liaison, sélectionnez-la dans la liste et appuyez sur la touche Suppr.;Autres options de souris;La molette de la souris fait défiler la fenêtre sous la souris;Accord de souris;Action;Partout;Onglet;Arrière-plan de l'onglet;Lien de dossier;Fichier ou dossier;Arrière-plan de l'explorateur;Clique gauche;Clique droit;Clique milieu;Double clique;X1 clique;X2 clique;Ce bouton de la souris ne peut pas être utilisé pour cette cible.;Les boutons de souris valides pour cette cible sont:;Bouton invalide</value>
+    <value>Attribuez des commandes à différentes actions de la souris.;Pour ajouter un raccourci de souris, effectuez une action de la souris sur l'icône plus à gauche du type de cible approprié. Pour supprimer une liaison, sélectionnez-la dans la liste et appuyez sur la touche Suppr.;Autres options de souris;La molette de la souris fait défiler la fenêtre sous la souris;Accord de souris;Action;Partout;Onglet;Arrière-plan de l'onglet;Lien de dossier;Fichier ou dossier;Arrière-plan de l'explorateur;Breadcrumbs;Clique gauche;Clique droit;Clique milieu;Double clique;X1 clique;X2 clique;Ce bouton de la souris ne peut pas être utilisé pour cette cible.;Les boutons de souris valides pour cette cible sont:;Bouton invalide</value>
   </data>
   <data name="Options_Page08_Keys" xml:space="preserve">
     <value>Modifier les raccourcis clavier.;Sélectionnez une action dans la liste et appuyez sur la touche gestuelle que vous souhaitez lui associer. Appuyez sur Échap pour effacer la liaison.;Autres options de clavier;Afficher la fenêtre de switch de l'onglet lorsque Ctrl + Tab est enfoncé;Action;Frappe;Cette clé est déjà affectée à :;Doit-il être réaffecté ?;Conflit de frappe</value>
@@ -214,6 +214,9 @@ Veuillez préciser 432 x 40 px fichier d'image.;Résultats de la recherche dans;
   </data>
   <data name="Options_Page14_About" xml:space="preserve">
     <value>Afficher les crédits et les informations de version.;Code d'origine de {0};Développeur principal:;Autres développeurs:;Icônes et graphiques:;Si vous trouvez QTTabBar utile, pensez à faire un petit don.;Modification chinoise:;Construit par : {0}</value>
+  </data>
+  <data name="Options_Page15_DragDrop" xml:space="preserve">
+    <value>Configure drag and drop behavior.;Tab as Drop Target;Drop target behavior;Default drop effect;System default;Copy;Move;Create shortcut;When tab is hovered while dragging;Do nothing;Switch to tab;Show Subfolder menu;Drag hover time before activation, in msec;Accept drops from the same TabBar</value>
   </data>
   <data name="OptionsDialog" xml:space="preserve">
     <value>Options de QTTabBar;Réinitialiser toutes les options de cette page à leurs valeurs par défaut ?;Réinitialiser toutes les options à leurs valeurs par défaut ? Cela n'affectera pas les groupes, les applications ou les plugins.;Confirmation</value>
@@ -242,7 +245,7 @@ Veuillez préciser 432 x 40 px fichier d'image.;Résultats de la recherche dans;
     <value>Créer un nouveau groupe;Nom groupe:;Ajouter tous les onglets</value>
   </data>
   <data name="TabBar_Option_Genre" xml:space="preserve">
-    <value>Fenêtre;Onglets;Tweaks;Info-bulles;Général;Apparence;Souris;Raccourcis;Groupes;Applications;Barre de boutons;Plugins;Langue;À propos</value>
+    <value>Fenêtre;Onglets;Tweaks;Info-bulles;Général;Apparence;Souris;Drag &amp; Drop;Raccourcis;Groupes;Applications;Barre de boutons;Plugins;Langue;À propos</value>
   </data>
   <data name="TaskBar_Menu" xml:space="preserve">
     <value>Barre des tâches;Bureau;Verrouiller les éléments;Dessiner l'arrière-plan du titre;Menu en un clic;Activer les touches de raccourci d'application</value>

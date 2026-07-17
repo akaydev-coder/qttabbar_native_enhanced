@@ -317,6 +317,9 @@
     <Compile Include="OptionsDialog\Options14_About.xaml.cs">
       <DependentUpon>Options14_About.xaml</DependentUpon>
     </Compile>
+    <Compile Include="OptionsDialog\Options15_DragDrop.xaml.cs">
+      <DependentUpon>Options15_DragDrop.xaml</DependentUpon>
+    </Compile>
     <Compile Include="OptionsDialog\Options02_Tabs.xaml.cs">
       <DependentUpon>Options02_Tabs.xaml</DependentUpon>
     </Compile>
@@ -672,6 +675,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="OptionsDialog\Options14_About.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="OptionsDialog\Options15_DragDrop.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

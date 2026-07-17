@@ -1056,7 +1056,6 @@ namespace QTTabBarLib
                         case WM.MBUTTONUP:
                             if (!Explorer.Busy) // && !Config.NoMidClickTree
                             {
-                                QTUtility2.log("CallbackGetMsgProc MBUTTONUP NoMidClickTree");
                                 // Handle_MButtonUp_Tree(msg);
                             }
                             break;

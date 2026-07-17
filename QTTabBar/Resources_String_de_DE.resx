@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -189,7 +189,7 @@ Bitte geben Sie eine 432 x 40 px große Bilddatei an.;Suchergebnisse in;Verknüp
     <value>Tab-Schaltflächengrafiken;Benutzerdefinierte Grafik für „Tab schließen“:;Versatz der Schließen-Grafik (X, Y):;Benutzerdefinierte Grafik für „Tab gesperrt“:;Versatz der Sperrgrafik (X, Y):</value>
   </data>
   <data name="Options_Page07_Mouse" xml:space="preserve">
-    <value>Weisen Sie verschiedenen Mausaktionen Befehle zu;Um eine Mausbindung hinzuzufügen, führen Sie eine Mausaktion auf dem Plus-Symbol links neben dem entsprechenden Zieltyp aus.  Um eine Bindung zu entfernen, markieren Sie sie in der Liste und drücken Sie die Entf-Taste.;Weitere Mausoptionen;Mausrad rollt das Fenster unter der Maus;Mausakkord;Aktion;Überall;Tabulator;Tab-Leisten-Hintergrund;Ordner-Link;Datei oder Ordner;Explorer-Hintergrund;Linksklick;Rechtsklick;Mittelklick;Doppelklick;X1-Klick;X2-Klick;Diese Maustaste kann für dieses Ziel nicht verwendet werden.;Die gültigen Maustasten für dieses Ziel sind:;Ungültige Taste</value>
+    <value>Weisen Sie verschiedenen Mausaktionen Befehle zu;Um eine Mausbindung hinzuzufügen, führen Sie eine Mausaktion auf dem Plus-Symbol links neben dem entsprechenden Zieltyp aus.  Um eine Bindung zu entfernen, markieren Sie sie in der Liste und drücken Sie die Entf-Taste.;Weitere Mausoptionen;Mausrad rollt das Fenster unter der Maus;Mausakkord;Aktion;Überall;Tabulator;Tab-Leisten-Hintergrund;Ordner-Link;Datei oder Ordner;Explorer-Hintergrund;Breadcrumbs;Linksklick;Rechtsklick;Mittelklick;Doppelklick;X1-Klick;X2-Klick;Diese Maustaste kann für dieses Ziel nicht verwendet werden.;Die gültigen Maustasten für dieses Ziel sind:;Ungültige Taste</value>
   </data>
   <data name="Options_Page08_Keys" xml:space="preserve">
     <value>Tastenkombinationen ändern;Wählen Sie eine Aktion aus der Liste aus und drücken Sie die Tastenkombination, die Sie damit verbinden möchten.  Drücken Sie Escape, um die Bindung zu löschen.;Andere Tastaturoptionen;Tabulatorwechsel-Fenster anzeigen, wenn Strg + Tab gedrückt wird;Aktion;Tastendruck;Diese Taste ist bereits zugewiesen an:;Soll sie neu zugewiesen werden?;Tastenkonflikt</value>
@@ -211,6 +211,9 @@ Bitte geben Sie eine 432 x 40 px große Bilddatei an.;Suchergebnisse in;Verknüp
   </data>
   <data name="Options_Page14_About" xml:space="preserve">
     <value>Credits und Versionsinformationen anzeigen:;Originalcode von {0};Hauptentwickler:;Andere Entwickler:;Symbole und Grafiken:;Wenn Sie QTTabBar nützlich finden, ziehen Sie bitte eine kleine Spende in Betracht.;汉化修改：;Build by: {0}</value>
+  </data>
+  <data name="Options_Page15_DragDrop" xml:space="preserve">
+    <value>Drag-&amp;-Drop-Verhalten konfigurieren.;Tab als Drop-Ziel;Drop-Ziel-Verhalten;Standard-Drop-Effekt;Systemstandard;Kopieren;Verschieben;Verknüpfung erstellen;Wenn ein Tab während eines Ziehvorgangs berührt wird;Nichts tun;Zum Tab wechseln;Unterordner-Menü anzeigen;Hover-Zeit vor Aktivierung in ms;Drops aus derselben TabBar akzeptieren</value>
   </data>
   <data name="PayPalURL" xml:space="preserve">
     <value>https://github.com/indiff/qttabbar/blob/master/QTTabBar/Resources/wechat_pay.jpg</value>
@@ -236,7 +239,7 @@ Bitte geben Sie eine 432 x 40 px große Bilddatei an.;Suchergebnisse in;Verknüp
     <value>Neue Gruppe erstellen;Gruppenname:;Alle Registerkarten hinzufügen</value>
   </data>
   <data name="TabBar_Option_Genre" xml:space="preserve">
-    <value>Fenster;Registerkarten;Tweaks;Tooltips;Allgemein;Aussehen;Maus;Tasten;Gruppen;Anwendungen;Tastenleiste;Plugins;Sprache;Über</value>
+    <value>Fenster;Registerkarten;Tweaks;Tooltips;Allgemein;Aussehen;Maus;Drag &amp; Drop;Tasten;Gruppen;Anwendungen;Tastenleiste;Plugins;Sprache;Über</value>
   </data>
   <data name="TaskBar_Menu" xml:space="preserve">
     <value>Taskleiste;Desktop;Elemente sperren;Titelhintergrund zeichnen;Menü mit einem Klick;Tastenkombinationen für Anwendungen aktivieren</value>
@@ -254,7 +257,7 @@ Bitte geben Sie eine 432 x 40 px große Bilddatei an.;Suchergebnisse in;Verknüp
     <value>1.0</value>
   </data>
   <data name="Version_QTTabBar" xml:space="preserve">
-    <value>1.6.0.0</value>
+    <value>1.6.0.1</value>
   </data>
   <data name="Options_PlusButton" xml:space="preserve">
     <value>Schaltfläche für neuen Tab;Angepasste Grafik verwenden:</value>

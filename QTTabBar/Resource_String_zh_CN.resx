@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -184,7 +184,7 @@
     <value>Tab button images;Use custom close-button image:;Close-button offset (X, Y):;Use custom lock icon:;Lock-icon offset (X, Y):</value>
   </data>
   <data name="Options_Page07_Mouse" xml:space="preserve">
-    <value>分配到不同的鼠标操作的命令;在左侧加号图标目标类型点击左键绑定合适的鼠标动作若要删除绑定，在列表中选择它，然后按Delete键;其他鼠标选项;滚动鼠标滚轮的鼠标下的窗口;目标和鼠标动作;对应的执行行为;任何地方;标签;标签栏空白处;文件夹链接;文件或文件夹;资源管理器空白处;左键;右键点击;中击;双击;X1的点击;X2的点击;您的鼠标动作无法适用于该目标;该目标有效地鼠标操作为：;无效的鼠标动作</value>
+    <value>分配到不同的鼠标操作的命令;在左侧加号图标目标类型点击左键绑定合适的鼠标动作若要删除绑定，在列表中选择它，然后按Delete键;其他鼠标选项;滚动鼠标滚轮的鼠标下的窗口;目标和鼠标动作;对应的执行行为;任何地方;标签;标签栏空白处;文件夹链接;文件或文件夹;资源管理器空白处;Breadcrumbs;左键;右键点击;中击;双击;X1的点击;X2的点击;您的鼠标动作无法适用于该目标;该目标有效地鼠标操作为：;无效的鼠标动作</value>
   </data>
   <data name="Options_Page08_Keys" xml:space="preserve">
     <value>更改键盘快捷键;从列表中选中一个动作，然后按键设置你想绑定的快捷键按Escape清除绑定的快捷键;其他键盘选项;显示标签切换窗口时，按下CTRL + TAB;执行动作;绑定快捷键;此键已分配给：;它应该被重新分配吗?;按键冲突</value>
@@ -206,6 +206,9 @@
   </data>
   <data name="Options_Page14_About" xml:space="preserve">
     <value>查看相关人员以及版本信息.;源代码 {0};主要开发人员：;其他开发人员：;图标和图形设计：;如果您发现QTTabBar有用，请考虑做一个小的捐赠;汉化修改：;编译：{0}</value>
+  </data>
+  <data name="Options_Page15_DragDrop" xml:space="preserve">
+    <value>Configure drag and drop behavior.;Tab as Drop Target;Drop target behavior;Default drop effect;System default;Copy;Move;Create shortcut;When tab is hovered while dragging;Do nothing;Switch to tab;Show Subfolder menu;Drag hover time before activation, in msec;Accept drops from the same TabBar</value>
   </data>
   <data name="PayPalURL" xml:space="preserve">
     <value>https://github.com/indiff/qttabbar/blob/master/QTTabBar/Resources/wechat_pay.jpg</value>
@@ -229,7 +232,7 @@
     <value>新增标签组;标签组名:;加入所有标签</value>
   </data>
   <data name="TabBar_Option_Genre" xml:space="preserve">
-    <value>窗口行为;标签行为;调整工具;预览提示;常规选项;标签外观;鼠标操作;快捷操作;分组操作;自定应用;按钮选项;插件管理;语言配置;关于信息</value>
+    <value>窗口行为;标签行为;调整工具;预览提示;常规选项;标签外观;鼠标操作;Drag &amp; Drop;快捷操作;分组操作;自定应用;按钮选项;插件管理;语言配置;关于信息</value>
   </data>
   <data name="TaskBar_Menu" xml:space="preserve">
     <value>任务栏(&amp;T);桌面(&amp;D);锁定项目(&amp;L);显示标题背景(&amp;B);单击显示菜单(&amp;O);启用程序快捷键(&amp;A)</value>

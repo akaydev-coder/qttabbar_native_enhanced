@@ -178,6 +178,7 @@ namespace QTTabBarLib {
                     new Options05_General       { Index = i++},
                     new Options06_Appearance    { Index = i++},
                     new Options07_Mouse         { Index = i++},
+                    new Options15_DragDrop      { Index = i++},
                     new Options08_Keys          { Index = i++},
                     new Options09_Groups        { Index = i++}, // can not use dll
                     new Options10_Apps          { Index = i++},

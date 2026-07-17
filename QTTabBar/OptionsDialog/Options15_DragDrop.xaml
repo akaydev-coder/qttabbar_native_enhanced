@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<qt:OptionsDialogTab
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:qt="clr-namespace:QTTabBarLib"
+    x:Class="QTTabBarLib.Options15_DragDrop"
+    x:ClassModifier="internal"
+    DataContext="{Binding Path=WorkingConfig.dragdrop, RelativeSource={RelativeSource Self}}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="OptionsDialogResources.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <StackPanel
+        Margin="14,5,10,0"
+        Orientation="Vertical">
+        <StackPanel
+            Margin="0,0,0,4"
+            Orientation="Horizontal">
+            <Image
+                Source="{Binding Source={x:Static qt:Resources_Image.imgTabMouse}, Converter={StaticResource BitmapToImageSourceConverter}}"
+                Style="{StaticResource PageHeaderImageStyle}"/>
+            <Label
+                Content="{qt:Resx Key=Options_Page15_DragDrop, Index=0}"
+                FontSize="13"
+                VerticalAlignment="Bottom"/>
+        </StackPanel>
+
+        <CheckBox x:Name="chkTabDropTargetEnabled"
+            Content="{qt:Resx Key=Options_Page15_DragDrop, Index=1}"
+            IsChecked="{Binding Path=TabDropTargetEnabled}"
+            Style="{StaticResource CheckStyle}"/>
+
+        <Label
+            Content="{qt:Resx Key=Options_Page15_DragDrop, Index=2}"
+            Style="{StaticResource SectionHeaderStyle}"/>
+
+        <Grid Margin="13,0,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="270"/>
+                <ColumnDefinition Width="220"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Label
+                Content="{qt:Resx Key=Options_Page15_DragDrop, Index=3}"
+                Padding="0"
+                VerticalAlignment="Center"/>
+            <ComboBox
+                Grid.Column="1"
+                IsEnabled="{Binding Path=IsChecked, ElementName=chkTabDropTargetEnabled}"
+                SelectedValue="{Binding Path=TabDropDefaultEffect}"
+                SelectedValuePath="Tag">
+                <ComboBoxItem Content="{qt:Resx Key=Options_Page15_DragDrop, Index=4}" Tag="{x:Static qt:TabDropDefaultEffect.SystemDefault}"/>
+                <ComboBoxItem Content="{qt:Resx Key=Options_Page15_DragDrop, Index=5}" Tag="{x:Static qt:TabDropDefaultEffect.Copy}"/>
+                <ComboBoxItem Content="{qt:Resx Key=Options_Page15_DragDrop, Index=6}" Tag="{x:Static qt:TabDropDefaultEffect.Move}"/>
+                <ComboBoxItem Content="{qt:Resx Key=Options_Page15_DragDrop, Index=7}" Tag="{x:Static qt:TabDropDefaultEffect.Link}"/>
+            </ComboBox>
+
+            <Label
+                Grid.Row="1"
+                Content="{qt:Resx Key=Options_Page15_DragDrop, Index=8}"
+                Padding="0"
+                Margin="0,8,0,0"
+                VerticalAlignment="Center"/>
+            <ComboBox
+                Grid.Column="1"
+                Grid.Row="1"
+                Margin="0,8,0,0"
+                IsEnabled="{Binding Path=IsChecked, ElementName=chkTabDropTargetEnabled}"
+                SelectedValue="{Binding Path=TabDropHoverAction}"
+                SelectedValuePath="Tag">
+                <ComboBoxItem Content="{qt:Resx Key=Options_Page15_DragDrop, Index=9}" Tag="{x:Static qt:TabDropHoverAction.None}"/>
+                <ComboBoxItem Content="{qt:Resx Key=Options_Page15_DragDrop, Index=10}" Tag="{x:Static qt:TabDropHoverAction.SelectTab}"/>
+                <ComboBoxItem Content="{qt:Resx Key=Options_Page15_DragDrop, Index=11}" Tag="{x:Static qt:TabDropHoverAction.ShowSubfolderMenu}"/>
+            </ComboBox>
+
+            <Label
+                Grid.Row="2"
+                Content="{qt:Resx Key=Options_Page15_DragDrop, Index=12}"
+                Padding="0"
+                Margin="0,8,0,0"
+                VerticalAlignment="Center"/>
+            <qt:Spinner
+                Grid.Column="1"
+                Grid.Row="2"
+                Min="100"
+                Max="5000"
+                Margin="0,8,0,0"
+                IsEnabled="{Binding Path=IsChecked, ElementName=chkTabDropTargetEnabled}"
+                Value="{Binding Path=TabDropHoverTime}"/>
+        </Grid>
+
+        <CheckBox x:Name="chkTabDropAcceptSameTabBar"
+            Content="{qt:Resx Key=Options_Page15_DragDrop, Index=13}"
+            IsChecked="{Binding Path=TabDropAcceptSameTabBar}"
+            IsEnabled="{Binding Path=IsChecked, ElementName=chkTabDropTargetEnabled}"
+            Margin="13,12,0,0"
+            Style="{StaticResource CheckStyle}"/>
+    </StackPanel>
+</qt:OptionsDialogTab>

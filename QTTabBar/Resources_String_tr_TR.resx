@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -192,7 +192,7 @@ Lütfen 432 x 40 px resim dosyası seçin.;Arama sonuçları;kısayol;Dosya seç
     <value>Tab button images;Use custom close-button image:;Close-button offset (X, Y):;Use custom lock icon:;Lock-icon offset (X, Y):</value>
   </data>
   <data name="Options_Page07_Mouse" xml:space="preserve">
-    <value>Farklı fare eylemlerine komutlar atayın.;Bir fare bağı eklemek için, uygun hedef türünün solundaki artı simgesi üzerinde bir fare eylemi gerçekleştirin. Bir bağı kaldırmak için listeden seçin ve Sil tuşuna basın.;Diğer fare seçenekleri;Fare tekerleği, farenin altındaki pencereyi kaydırır;Hedef fare eylemi;Eylem;Herhangi bir yer;Sekme;Sekme barı Arka Planı;Klasör Bağlantısı;Dosya veya Klasör;Gezgin Arka Planı;Sol tık;Sağ tık;Orta tıklama;Çift tıklama;X1 Tıklama;X2 Tıklama;Bu fare düğmesi bu hedef için kullanılamaz.;Bu hedef için geçerli fare düğmeleri şunlardır:;Geçersiz Düğme</value>
+    <value>Farklı fare eylemlerine komutlar atayın.;Bir fare bağı eklemek için, uygun hedef türünün solundaki artı simgesi üzerinde bir fare eylemi gerçekleştirin. Bir bağı kaldırmak için listeden seçin ve Sil tuşuna basın.;Diğer fare seçenekleri;Fare tekerleği, farenin altındaki pencereyi kaydırır;Hedef fare eylemi;Eylem;Herhangi bir yer;Sekme;Sekme barı Arka Planı;Klasör Bağlantısı;Dosya veya Klasör;Gezgin Arka Planı;Breadcrumbs;Sol tık;Sağ tık;Orta tıklama;Çift tıklama;X1 Tıklama;X2 Tıklama;Bu fare düğmesi bu hedef için kullanılamaz.;Bu hedef için geçerli fare düğmeleri şunlardır:;Geçersiz Düğme</value>
   </data>
   <data name="Options_Page08_Keys" xml:space="preserve">
     <value>Klavye kısayollarını değiştirin.;Listeden bir eylem seçin ve ona bağlamak istediğiniz tuş hareketine basın. Bağlamayı temizlemek için Escape tuşuna basın.;Diğer klavye seçenekleri;Ctrl + Tab tuşlarına basıldığında Sekme Değiştirici penceresini göster;Eylem;Tuş vuruşu;Bu tuş zaten şuna atanmış:;Yeniden atanmalı mı?;Tuş çakışması</value>
@@ -214,6 +214,9 @@ Lütfen 432 x 40 px resim dosyası seçin.;Arama sonuçları;kısayol;Dosya seç
   </data>
   <data name="Options_Page14_About" xml:space="preserve">
     <value>İlgili personel ve sürüm bilgilerini görüntüleyin.;Kaynak kodu {0};Ana geliştiriciler:;Diğer geliştiriciler:;Simge ve Grafik Tasarım:;QTTabBar'ı faydalı bulursanız, lütfen küçük bir bağış yapmayı düşünün.;Basitleştirilmiş Çince:;Derleme: {0}</value>
+  </data>
+  <data name="Options_Page15_DragDrop" xml:space="preserve">
+    <value>Configure drag and drop behavior.;Tab as Drop Target;Drop target behavior;Default drop effect;System default;Copy;Move;Create shortcut;When tab is hovered while dragging;Do nothing;Switch to tab;Show Subfolder menu;Drag hover time before activation, in msec;Accept drops from the same TabBar</value>
   </data>
   <data name="OptionsDialog" xml:space="preserve">
     <value>QTTabBar Seçenekleri;Bu sayfadaki tüm seçenekler varsayılan değerlerine sıfırlansın mı?;Tüm seçenekler varsayılan değerlerine sıfırlansın mı? Bu, Grupları, Uygulamaları veya Eklentileri etkilemeyecektir.;Onayla</value>
@@ -242,7 +245,7 @@ Lütfen 432 x 40 px resim dosyası seçin.;Arama sonuçları;kısayol;Dosya seç
     <value>Yeni Grup Oluştur;Grup ismi:;Tüm sekmeleri ekle</value>
   </data>
   <data name="TabBar_Option_Genre" xml:space="preserve">
-    <value>Pencere;Sekmeler;İnce ayarlar;İpuçları;Genel;Görünüş;Fare;Kısayollar;Gruplar;Uygulamalar;Düğmeler Barı;Eklentiler;Dil;Hakkında</value>
+    <value>Pencere;Sekmeler;İnce ayarlar;İpuçları;Genel;Görünüş;Fare;Drag &amp; Drop;Kısayollar;Gruplar;Uygulamalar;Düğmeler Barı;Eklentiler;Dil;Hakkında</value>
   </data>
   <data name="TaskBar_Menu" xml:space="preserve">
     <value>Görev barı (&amp;T);Masaüstü (&amp;D);Öğeleri kilitle (&amp;L);Başlık arka planını çiz (&amp;B);Menüyü göster (&amp;O);Uygulama kısayolları (&amp;A)</value>

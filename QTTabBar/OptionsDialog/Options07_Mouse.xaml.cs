@@ -41,15 +41,16 @@ namespace QTTabBarLib {
             {MouseTarget.FolderLink,            9},
             {MouseTarget.ExplorerItem,          10},
             {MouseTarget.ExplorerBackground,    11},
+            {MouseTarget.Breadcrumbs,           12},
         };
         private static readonly Dictionary<MouseChord, int> MouseButtonResx
                 = new Dictionary<MouseChord, int> {
-            {MouseChord.Left,   12},
-            {MouseChord.Right,  13},
-            {MouseChord.Middle, 14},
-            {MouseChord.Double, 15},
-            {MouseChord.X1,     16},
-            {MouseChord.X2,     17},
+            {MouseChord.Left,   13},
+            {MouseChord.Right,  14},
+            {MouseChord.Middle, 15},
+            {MouseChord.Double, 16},
+            {MouseChord.X1,     17},
+            {MouseChord.X2,     18},
         };
 
         // I don't think these need to be localized.
@@ -113,6 +114,15 @@ namespace QTTabBarLib {
                 BindAction.CopyItemPath,
                 BindAction.CopyItemName,
             }},
+            {MouseTarget.Breadcrumbs, new BindAction[] {
+                BindAction.Nothing,
+                BindAction.ItemOpenInNewTab,
+                BindAction.ItemOpenInNewTabNoSel,
+                BindAction.ItemOpenInNewWindow,
+                BindAction.ItemProperties,
+                BindAction.CopyItemPath,
+                BindAction.CopyItemName,
+            }},
             {MouseTarget.ExplorerItem, new BindAction[] {
                 BindAction.Nothing,
                 BindAction.ItemOpenInNewTab,
@@ -159,6 +169,10 @@ namespace QTTabBarLib {
                 MouseChord.Middle,
             }},
             {MouseTarget.FolderLink, new MouseChord[] {
+                MouseChord.Left,
+                MouseChord.Middle,
+            }},
+            {MouseTarget.Breadcrumbs, new MouseChord[] {
                 MouseChord.Left,
                 MouseChord.Middle,
             }},
@@ -221,6 +235,12 @@ namespace QTTabBarLib {
                         foreach(var p in WorkingConfig.mouse.LinkActions) {
                             MouseBindings.Add(new MouseEntry(MouseTarget.FolderLink, p.Key, p.Value));
                         }
+                        if(WorkingConfig.mouse.BreadcrumbActions == null) {
+                            WorkingConfig.mouse.BreadcrumbActions = new Config._Mouse().BreadcrumbActions;
+                        }
+                        foreach(var p in WorkingConfig.mouse.BreadcrumbActions) {
+                            MouseBindings.Add(new MouseEntry(MouseTarget.Breadcrumbs, p.Key, p.Value));
+                        }
                         foreach(var p in WorkingConfig.mouse.TabActions) {
                             MouseBindings.Add(new MouseEntry(MouseTarget.Tab, p.Key, p.Value));
                         }
@@ -262,6 +282,9 @@ namespace QTTabBarLib {
                         .ToDictionary(e => e.Chord, e => e.Action);
                 WorkingConfig.mouse.LinkActions = MouseBindings
                         .Where(e => e.Action != BindAction.Nothing && e.Target == MouseTarget.FolderLink)
+                        .ToDictionary(e => e.Chord, e => e.Action);
+                WorkingConfig.mouse.BreadcrumbActions = MouseBindings
+                        .Where(e => e.Action != BindAction.Nothing && e.Target == MouseTarget.Breadcrumbs)
                         .ToDictionary(e => e.Chord, e => e.Action);
                 WorkingConfig.mouse.TabActions = MouseBindings
                         .Where(e => e.Action != BindAction.Nothing && e.Target == MouseTarget.Tab)
@@ -331,11 +354,11 @@ namespace QTTabBarLib {
             if(!MouseTargetButtons[target].Contains(button)) {
                 var dict = QTUtility.TextResourcesDic["Options_Page07_Mouse"];
                 MessageBox.Show(
-                        dict[18] + Environment.NewLine +
                         dict[19] + Environment.NewLine +
+                        dict[20] + Environment.NewLine +
                         MouseTargetButtons[target].Select(k => "  " + dict[MouseButtonResx[k]])
                             .StringJoin(Environment.NewLine),
-                        dict[20], MessageBoxButton.OK, MessageBoxImage.Hand);
+                        dict[21], MessageBoxButton.OK, MessageBoxImage.Hand);
                 return;
             }
             MouseEntry entry = MouseBindings.FirstOrDefault(e => e.Chord == chord && e.Target == target);

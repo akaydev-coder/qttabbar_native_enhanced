@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -192,7 +192,7 @@ Por favor, especifique un archivo de imagen de 432 x 40 px.;Resultados de la bú
     <value>Tab button images;Use custom close-button image:;Close-button offset (X, Y):;Use custom lock icon:;Lock-icon offset (X, Y):</value>
   </data>
   <data name="Options_Page07_Mouse" xml:space="preserve">
-    <value>Asigna comandos a diferentes acciones del ratón.;Para añadir un vínculo al ratón, pulse sobre el gesto de la izquierda y seleccione la acción en el desplegable de la derecha. Para eliminar un vínculo, seleccione el gesto y pulse la tecla Supr.;Otras opciones del ratón;La rueda del ratón desplaza la ventana bajo el ratón;Gestos del ratón;Acción;Dondequiera;Pestaña;Fondo Barra de Pestañas;Enlaces Carpetas (Link Folder);Archivo o Carpeta;Fondo Explorador;Clic izquierdo;Clic derecho;Clic medio;Doble clic;X1 Clic;X2 Clic;Este botón del ratón no se puede utilizar para este objetivo.;Los botones del ratón válidos para este objetivo son:;Botón no válido</value>
+    <value>Asigna comandos a diferentes acciones del ratón.;Para añadir un vínculo al ratón, pulse sobre el gesto de la izquierda y seleccione la acción en el desplegable de la derecha. Para eliminar un vínculo, seleccione el gesto y pulse la tecla Supr.;Otras opciones del ratón;La rueda del ratón desplaza la ventana bajo el ratón;Gestos del ratón;Acción;Dondequiera;Pestaña;Fondo Barra de Pestañas;Enlaces Carpetas (Link Folder);Archivo o Carpeta;Fondo Explorador;Breadcrumbs;Clic izquierdo;Clic derecho;Clic medio;Doble clic;X1 Clic;X2 Clic;Este botón del ratón no se puede utilizar para este objetivo.;Los botones del ratón válidos para este objetivo son:;Botón no válido</value>
   </data>
   <data name="Options_Page08_Keys" xml:space="preserve">
     <value>Cambia los atajos de teclado.;Seleccione una acción de la lista y pulse el atajo de teclado que le desea vincular. Pulse Esc para borrar la vinculación.;Otras opciones de teclado;Mostrar la ventana del Selector de Pestañas al pulsar Ctrl + Tab;Acción;Atajo de teclado;El atajo ya está asignado a:;¿Desea reasignarlo?;Conflicto en el atajo de teclado</value>
@@ -214,6 +214,9 @@ Por favor, especifique un archivo de imagen de 432 x 40 px.;Resultados de la bú
   </data>
   <data name="Options_Page14_About" xml:space="preserve">
     <value>Muestra créditos e información de la versión.;Código original de {0};Desarrolladores principales:;Otros desarrolladores:;Iconos y gráficos:;Si encuentra útil QTTabBar, por favor considere hacer una pequeña donación.;Modificación del chino.;Realizado por: {0}</value>
+  </data>
+  <data name="Options_Page15_DragDrop" xml:space="preserve">
+    <value>Configure drag and drop behavior.;Tab as Drop Target;Drop target behavior;Default drop effect;System default;Copy;Move;Create shortcut;When tab is hovered while dragging;Do nothing;Switch to tab;Show Subfolder menu;Drag hover time before activation, in msec;Accept drops from the same TabBar</value>
   </data>
   <data name="OptionsDialog" xml:space="preserve">
     <value>Opciones de QTTabBar;¿Restaurar todas las opciones de esta página a sus valores por defecto?;¿Restaurar todas las opciones a sus valores por defecto?  Esto no afectará a los Grupos, Aplicaciones o Plugins.;Confirmación</value>
@@ -242,7 +245,7 @@ Por favor, especifique un archivo de imagen de 432 x 40 px.;Resultados de la bú
     <value>Crear nuevo grupo;Nombre del grupo:;Añadir todas las pestañas</value>
   </data>
   <data name="TabBar_Option_Genre" xml:space="preserve">
-    <value>Ventana;Pestañas;Ajustes;Herramientas;General;Apariencia;Ratón;Teclado;Grupos;Aplicaciones;Barra de botones;Complementos;Idioma;Acerca de</value>
+    <value>Ventana;Pestañas;Ajustes;Herramientas;General;Apariencia;Ratón;Drag &amp; Drop;Teclado;Grupos;Aplicaciones;Barra de botones;Complementos;Idioma;Acerca de</value>
   </data>
   <data name="TaskBar_Menu" xml:space="preserve">
     <value>Barra de Tareas;Escritorio;Bloquear elementos;Dibujo del fondo del título;Menú con un solo clic;Habilitar las teclas de acceso directo a las aplicaciones</value>

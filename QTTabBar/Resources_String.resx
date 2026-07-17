@@ -181,7 +181,7 @@
     <value>Tab button images;Use custom close-button image:;Close-button offset (X, Y):;Use custom lock icon:;Lock-icon offset (X, Y):</value>
   </data>
   <data name="Options_Page07_Mouse" xml:space="preserve">
-    <value>Assign commands to different mouse actions.;To add a mouse binding, perform a mouse action on the plus icon to the left of the appropriate target type.  To remove a binding, select it in the list and press the Delete key.;Other mouse options;Mouse wheel scrolls the window under the mouse;Mouse Chord;Action;Anywhere;Tab;Tab Bar Background;Folder Link;File or Folder;Explorer Background;Left Click;Right Click;Middle Click;Double Click;X1 Click;X2 Click;This mouse button cannot be used for this target.;The valid mouse buttons for this target are:;Invalid Button</value>
+    <value>Assign commands to different mouse actions.;To add a mouse binding, perform a mouse action on the plus icon to the left of the appropriate target type.  To remove a binding, select it in the list and press the Delete key.;Other mouse options;Mouse wheel scrolls the window under the mouse;Mouse Chord;Action;Anywhere;Tab;Tab Bar Background;Folder Link;File or Folder;Explorer Background;Breadcrumbs;Left Click;Right Click;Middle Click;Double Click;X1 Click;X2 Click;This mouse button cannot be used for this target.;The valid mouse buttons for this target are:;Invalid Button</value>
   </data>
   <data name="Options_Page08_Keys" xml:space="preserve">
     <value>Change keyboard shortcuts.;Select an action from the list and press the key gesture you would like to bind to it.  Press Escape to clear the binding.;Other keyboard options;Show the Tab Switcher window when Ctrl + Tab is pressed;Action;Keystroke;This key is already assigned to:;Should it be reassigned?;Keystroke conflict</value>
@@ -203,6 +203,9 @@
   </data>
   <data name="Options_Page14_About" xml:space="preserve">
     <value>View credits and version information.;Original code by {0};Lead Developer:;Other Developers:;Icons and graphics:;If you find QTTabBar useful, please consider making a small donation.;汉化修改：;Build by: {0}</value>
+  </data>
+  <data name="Options_Page15_DragDrop" xml:space="preserve">
+    <value>Configure drag and drop behavior.;Tab as Drop Target;Drop target behavior;Default drop effect;System default;Copy;Move;Create shortcut;When tab is hovered while dragging;Do nothing;Switch to tab;Show Subfolder menu;Drag hover time before activation, in msec;Accept drops from the same TabBar</value>
   </data>
   <data name="PayPalURL" xml:space="preserve">
     <value>https://github.com/indiff/qttabbar/blob/master/QTTabBar/Resources/wechat_pay.jpg</value>
@@ -228,7 +231,7 @@
     <value>Create New Group;Group name:;Add all tabs</value>
   </data>
   <data name="TabBar_Option_Genre" xml:space="preserve">
-    <value>Window;Tabs;Tweaks;Tooltips;General;Appearance;Mouse;Keys;Groups;Applications;Button Bar;Plugins;Language;About</value>
+    <value>Window;Tabs;Tweaks;Tooltips;General;Appearance;Mouse;Drag &amp; Drop;Keys;Groups;Applications;Button Bar;Plugins;Language;About</value>
   </data>
   <data name="TaskBar_Menu" xml:space="preserve">
     <value>Taskbar;Desktop;Lock items;Draw title background;Menu by one click;Enable application shortcut keys</value>

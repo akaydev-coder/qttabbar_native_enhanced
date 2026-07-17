@@ -38,6 +38,10 @@ namespace QTTabBarLib {
         private NativeWindowController ParentController;
         private IntPtr hdpa = IntPtr.Zero;
 
+        public IntPtr Handle {
+            get { return BreadcrumbController.Handle; }
+        }
+
         public BreadcrumbBar(IntPtr hwnd) {
             BreadcrumbController = new NativeWindowController(hwnd);
             BreadcrumbController.MessageCaptured += BreadcrumbController_MessageCaptured;
@@ -79,7 +83,7 @@ namespace QTTabBarLib {
                 return true;
             }
             else if(msg.Msg == WM.COMMAND) {
-                if(hdpa != IntPtr.Zero && ItemClicked != null && Control.ModifierKeys != Keys.None) {
+                if(hdpa != IntPtr.Zero && ItemClicked != null) {
                     int itemId = PInvoke.LoWord(msg.WParam.ToInt32());
                     int idx = CommandToIndex(itemId);
                     if(idx >= 0 && idx < ButtonCount()) {
@@ -95,14 +99,54 @@ namespace QTTabBarLib {
         // Catch middle clicks
         private bool BreadcrumbController_MessageCaptured(ref Message msg) {
             if(msg.Msg == WM.MBUTTONUP) {
-                if(hdpa != IntPtr.Zero && ItemClicked != null) {
-                    int idx = HitTest(QTUtility2.PointFromLPARAM(msg.LParam));
-                    if(idx >= 0 && idx <= ButtonCount()) {
-                        DoItemClick(IndexToCommand(idx), Control.ModifierKeys, true);
-                    }
+                Point pt = QTUtility2.PointFromLPARAM(msg.LParam);
+                if(TryHandleMiddleClick(pt, Control.ModifierKeys, false)) {
+                    return true;
                 }
             }
             return false;
+        }
+
+        public bool TryHandleMiddleClick(Point point, Keys modKeys, bool screenCoordinates) {
+            if(hdpa == IntPtr.Zero || ItemClicked == null) {
+                return false;
+            }
+            int idx;
+            int count;
+            int ancestorIndex;
+            if(!TryGetHitAncestorIndex(point, screenCoordinates, out ancestorIndex, out idx, out count)) {
+                return false;
+            }
+            return DoItemClick(IndexToCommand(idx), modKeys, true);
+        }
+
+        public bool TryGetHitAncestorIndex(Point point, bool screenCoordinates, out int ancestorIndex) {
+            int idx;
+            int count;
+            return TryGetHitAncestorIndex(point, screenCoordinates, out ancestorIndex, out idx, out count);
+        }
+
+        public bool TryGetHitAncestorIndex(Point point, bool screenCoordinates, out int ancestorIndex, out int idx, out int count) {
+            return TryGetHitAncestorIndex(BreadcrumbController.Handle, point, screenCoordinates, out ancestorIndex, out idx, out count);
+        }
+
+        public static bool TryGetHitAncestorIndex(IntPtr hwnd, Point point, bool screenCoordinates, out int ancestorIndex, out int idx, out int count) {
+            ancestorIndex = -1;
+            idx = -1;
+            count = 0;
+            if(hwnd == IntPtr.Zero || !PInvoke.IsWindow(hwnd)) {
+                return false;
+            }
+            if(screenCoordinates && !PInvoke.ScreenToClient(hwnd, ref point)) {
+                return false;
+            }
+            count = (int)PInvoke.SendMessage(hwnd, TB_BUTTONCOUNT, IntPtr.Zero, IntPtr.Zero);
+            idx = (int)PInvoke.SendMessage(hwnd, TB_HITTEST, IntPtr.Zero, ref point);
+            if(idx < 0 || idx >= count) {
+                return false;
+            }
+            ancestorIndex = count - 1 - idx;
+            return ancestorIndex >= 0;
         }
 
         private bool DoItemClick(int itemId, Keys modKeys, bool middle) {

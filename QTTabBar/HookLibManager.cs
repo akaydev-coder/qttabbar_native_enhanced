@@ -414,7 +414,7 @@ namespace QTTabBarLib {
             if(!fHookLibraryLoaded || window == IntPtr.Zero) return;
             try {
                 int result = QTTabBarNative_UpdateBackgroundWindow(window, path ?? String.Empty);
-                if(result != 0) {
+                if(result != 0 && result != unchecked((int)0x80004001)) {
                     QTUtility2.log("UpdateBackgroundWindow failed: 0x" + result.ToString("X8"));
                 }
             }

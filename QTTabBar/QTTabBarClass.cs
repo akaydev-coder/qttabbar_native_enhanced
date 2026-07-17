@@ -78,6 +78,7 @@ namespace QTTabBarLib {
         private bool fHideExplorer;
         private bool fDrivesContainedDD;
         private static bool fInitialized;
+        private static int tabDragSourceDepth;
         private readonly bool fIsFirstLoad;
         private volatile bool FirstNavigationCompleted;
         private bool fAutoNavigating;
@@ -569,7 +570,10 @@ namespace QTTabBarLib {
                         case WM.MBUTTONUP:
                             if (!Explorer.Busy) // && !Config.NoMidClickTree
                             {
-                                QTUtility2.log("CallbackGetMsgProc MBUTTONUP NoMidClickTree");
+                                if(TryHandleBreadcrumbMiddleClick(new Point(msg.pt.x, msg.pt.y), msg.hwnd)) {
+                                    Marshal.StructureToPtr(new MSG(), lParam, false);
+                                    return PInvoke.CallNextHookEx(hHook_Msg, nCode, wParam, lParam);
+                                }
                                 /*
                                 object obj = Marshal.GetObjectForIUnknown(msg.wParam);
                                 try {
@@ -2788,43 +2792,123 @@ namespace QTTabBarLib {
             return false;
         }
 
+        private static bool IsTabDragSourceActive {
+            get { return tabDragSourceDepth > 0; }
+        }
+
+        private static bool TabDropTargetEnabled {
+            get { return Config.DragDrop.TabDropTargetEnabled; }
+        }
+
+        private static bool TabDropUsesHoverTimer {
+            get { return Config.DragDrop.TabDropHoverAction != TabDropHoverAction.None; }
+        }
+
+        private static bool TabDropShowsSubDirMenu {
+            get { return Config.DragDrop.TabDropHoverAction == TabDropHoverAction.ShowSubfolderMenu; }
+        }
+
+        private static bool TabDropRejectsSameTabBar {
+            get { return IsTabDragSourceActive && !Config.DragDrop.TabDropAcceptSameTabBar; }
+        }
+
+        private static DragDropEffects ResolveTabDropEffect(int grfKeyState, int sourceState) {
+            if(Config.DragDrop.TabDropDefaultEffect == TabDropDefaultEffect.SystemDefault ||
+                    (grfKeyState & 0x2c) != 0) {
+                return DropTargetWrapper.MakeEffect(grfKeyState, sourceState);
+            }
+            switch(Config.DragDrop.TabDropDefaultEffect) {
+                case TabDropDefaultEffect.Copy:
+                    return DragDropEffects.Copy;
+
+                case TabDropDefaultEffect.Move:
+                    return DragDropEffects.Move;
+
+                case TabDropDefaultEffect.Link:
+                    return DragDropEffects.Link;
+
+                default:
+                    return DropTargetWrapper.MakeEffect(grfKeyState, sourceState);
+            }
+        }
+
+        private static bool TryGetTabDropTargetIDL(QTabItem tab, out byte[] idlReal) {
+            idlReal = null;
+            if(tab == null) {
+                return false;
+            }
+
+            string path = tab.CurrentPath;
+            if(!string.IsNullOrEmpty(path) && !QTUtility2.IsShellPathButNotFileSystem(path)) {
+                try {
+                    if(Directory.Exists(path)) {
+                        byte[] pathIDL = ShellMethods.GetIDLData(path);
+                        if(pathIDL != null && pathIDL.Length > 0) {
+                            idlReal = pathIDL;
+                            return true;
+                        }
+                    }
+                }
+                catch(Exception exception) {
+                    QTUtility2.MakeErrorLog(exception, "QTTabBarClass TryGetTabDropTargetIDL path fallback");
+                }
+            }
+
+            if(tab.CurrentIDL != null && tab.CurrentIDL.Length > 0) {
+                idlReal = tab.CurrentIDL;
+                return true;
+            }
+            return false;
+        }
+
+        private bool IsSameTabDropTarget(QTabItem tab) {
+            return tab != null &&
+                    !string.IsNullOrEmpty(strDraggingStartPath) &&
+                    !string.IsNullOrEmpty(tab.CurrentPath) &&
+                    strDraggingStartPath.PathEquals(tab.CurrentPath);
+        }
+
+        private int GetTabDropSourceState(QTabItem tab) {
+            if(tab == null ||
+                    string.IsNullOrEmpty(strDraggingDrive) ||
+                    string.IsNullOrEmpty(tab.CurrentPath) ||
+                    QTUtility2.IsShellPathButNotFileSystem(tab.CurrentPath)) {
+                return 1;
+            }
+            try {
+                string targetRoot = QTUtility2.MakeRootName(tab.CurrentPath);
+                return strDraggingDrive.Equals(targetRoot, StringComparison.OrdinalIgnoreCase) ? 0 : 1;
+            }
+            catch(Exception exception) {
+                QTUtility2.MakeErrorLog(exception, "QTTabBarClass GetTabDropSourceState");
+                return 1;
+            }
+        }
+
         private int dropTargetWrapper_DragFileDrop(out IntPtr hwnd, out byte[] idlReal) {
             HideToolTipForDD();
             hwnd = tabControl1.Handle;
             idlReal = null;
             QTabItem tabMouseOn = tabControl1.GetTabMouseOn();
-            if((tabMouseOn == null) || !Config.Tabs.DragOverTabOpensSDT) {
-                return 1;
+            if(!TabDropTargetEnabled || TabDropRejectsSameTabBar || (tabMouseOn == null)) {
+                return -1;
             }
-            if((tabMouseOn.CurrentIDL != null) && (tabMouseOn.CurrentIDL.Length > 0)) {
-                idlReal = tabMouseOn.CurrentIDL;
+            if(TryGetTabDropTargetIDL(tabMouseOn, out idlReal)) {
                 return 0;
             }
             return -1;
         }
 
         private DragDropEffects dropTargetWrapper_DragFileEnter(IntPtr hDrop, Point pnt, int grfKeyState) {
-            if(Config.Tabs.DragOverTabOpensSDT) {
-                int num = HandleDragEnter(hDrop, out strDraggingDrive, out strDraggingStartPath);
-                fDrivesContainedDD = num == 2;
-                if(num == -1) {
-                    return DragDropEffects.None;
-                }
-                if(tabControl1.GetTabMouseOn() == null) {
-                    return DragDropEffects.Copy;
-                }
-                switch(num) {
-                    case 0:
-                        return DropTargetWrapper.MakeEffect(grfKeyState, 0);
-
-                    case 1:
-                        return DropTargetWrapper.MakeEffect(grfKeyState, 1);
-
-                    case 2:
-                        return DragDropEffects.None;
-                }
+            if(!TabDropTargetEnabled || TabDropRejectsSameTabBar) {
+                return DragDropEffects.None;
             }
-            return DragDropEffects.Copy;
+            int num = HandleDragEnter(hDrop, out strDraggingDrive, out strDraggingStartPath);
+            fDrivesContainedDD = num == 2;
+            if(num == -1 || num == 2 || tabControl1.GetTabMouseOn() == null) {
+                return DragDropEffects.None;
+            }
+            return ResolveTabDropEffect(grfKeyState, num);
         }
 
         private void dropTargetWrapper_DragFileLeave(object sender, EventArgs e) {
@@ -2837,6 +2921,10 @@ namespace QTTabBarLib {
         private void dropTargetWrapper_DragFileOver(object sender, DragEventArgs e) {
             QTUtility2.log("QTTabBarClass dropTargetWrapper_DragFileOver");
             e.Effect = DragDropEffects.None;
+            if(!TabDropTargetEnabled || TabDropRejectsSameTabBar) {
+                HideToolTipForDD();
+                return;
+            }
             QTabItem mouseOnTab = tabControl1.GetTabMouseOn(); // ��������ı�ǩ 
             bool flag = true;
             if(mouseOnTab != tabForDD) {
@@ -2846,34 +2934,32 @@ namespace QTTabBarLib {
                 flag = false;
             }
             if(mouseOnTab == null) {
-                e.Effect = DragDropEffects.Copy;
+                HideToolTipForDD();
             }
-            else if(mouseOnTab.CurrentPath.Length > 2) {
-                if(fDrivesContainedDD || strDraggingStartPath.PathEquals(mouseOnTab.CurrentPath)) {
+            else {
+                byte[] dropTargetIDL;
+                if(!TryGetTabDropTargetIDL(mouseOnTab, out dropTargetIDL)) {
+                    HideToolTipForDD();
+                    return;
+                }
+                if(fDrivesContainedDD || IsSameTabDropTarget(mouseOnTab)) {
                     if(toolTipForDD != null) {
                         toolTipForDD.Hide(tabControl1);
                     }
                     ShowToolTipForDD(mouseOnTab, -1, e.KeyState); // ��ʾtip ��ʾ��Ϣ
                 }
                 else {
-                    using(IDLWrapper wrapper = new IDLWrapper(mouseOnTab.CurrentIDL, !flag)) {
+                    using(IDLWrapper wrapper = new IDLWrapper(dropTargetIDL, !flag)) {
                         if(wrapper.Available && wrapper.IsDropTarget) {
-                            string b = mouseOnTab.CurrentPath.Substring(0, 3);
-                            int num = strDraggingDrive != null && strDraggingDrive.Equals(b, StringComparison.OrdinalIgnoreCase)
-                                    ? 0 : 1;
+                            int num = GetTabDropSourceState(mouseOnTab);
                             ShowToolTipForDD(mouseOnTab, num, e.KeyState);
-                            e.Effect = Config.Tabs.DragOverTabOpensSDT
-                                    ? DropTargetWrapper.MakeEffect(e.KeyState, num)
-                                    : DragDropEffects.Copy;
+                            e.Effect = ResolveTabDropEffect(e.KeyState, num);
                         }
                         else {
                             HideToolTipForDD();
                         }
                     }
                 }
-            }
-            else {
-                HideToolTipForDD();
             }
         }
 
@@ -4139,8 +4225,7 @@ namespace QTTabBarLib {
 
                 case Keys.F2:
                     if(Config.Tweaks.F2Selection) {
-                        listView.HandleF2();
-                        return true;
+                        return listView.HandleF2();
                     }
                     return false;
 
@@ -4676,8 +4761,7 @@ namespace QTTabBarLib {
                 hwndBreadcrumbBar = PInvoke.FindWindowEx(hwndBreadcrumbBar, IntPtr.Zero, "ToolbarWindow32", null);
                 if(hwndBreadcrumbBar != IntPtr.Zero) {
                     breadcrumbBar = new BreadcrumbBar(hwndBreadcrumbBar);
-                    QTUtility2.log("QTTabBarClass BreadcrumbBar set FolderLinkClicked ");
-                    breadcrumbBar.ItemClicked += FolderLinkClicked;
+                    breadcrumbBar.ItemClicked += BreadcrumbClicked;
                 }
             }
             // SysTreeView32
@@ -6786,9 +6870,11 @@ namespace QTTabBarLib {
                     timerOnTab.Tick += timerOnTab_Tick;
                 }
                 timerOnTab.Enabled = false;
-                timerOnTab.Interval = Config.Tabs.DragOverTabOpensSDT ? INTERVAL_SHOWMENU : INTERVAL_SELCTTAB;
-                timerOnTab.Enabled = true;
-                if(Config.Tabs.DragOverTabOpensSDT && (iState != -1)) {
+                if(TabDropUsesHoverTimer) {
+                    timerOnTab.Interval = QTUtility.ValidateMinMax(Config.DragDrop.TabDropHoverTime, 100, 5000);
+                    timerOnTab.Enabled = true;
+                }
+                if(TabDropShowsSubDirMenu && (iState != -1)) {
                     Rectangle tabRect = tabControl1.GetTabRect(tab);
                     Point lpPoints = new Point(tabRect.X + ((tabRect.Width * 3) / 4), tabRect.Bottom + 0x10);
                     string[] strArray = QTUtility.TextResourcesDic["DragDropToolTip"];
@@ -7028,7 +7114,13 @@ namespace QTTabBarLib {
             QTabItem item = (QTabItem)e.Item;
             string currentPath = item.CurrentPath;
             if(Directory.Exists(currentPath)) {
-                ShellMethods.DoDragDrop(currentPath, this);
+                Interlocked.Increment(ref tabDragSourceDepth);
+                try {
+                    ShellMethods.DoDragDrop(currentPath, this);
+                }
+                finally {
+                    Interlocked.Decrement(ref tabDragSourceDepth);
+                }
             }
         }
 
@@ -7248,7 +7340,7 @@ namespace QTTabBarLib {
             timerOnTab.Enabled = false;
             QTabItem tabMouseOn = tabControl1.GetTabMouseOn();
             if(((tabMouseOn != null) && (tabMouseOn == tabForDD)) && tabControl1.TabPages.Contains(tabMouseOn)) {
-                if(Config.Tabs.DragOverTabOpensSDT) {
+                if(Config.DragDrop.TabDropHoverAction == TabDropHoverAction.ShowSubfolderMenu) {
                     WindowUtils.BringExplorerToFront(ExplorerHandle);
                     ShowSubdirTip_Tab(tabMouseOn, true, tabControl1.TabOffset, false, fToggleTabMenu);
                     fToggleTabMenu = !fToggleTabMenu;
@@ -7257,7 +7349,7 @@ namespace QTTabBarLib {
                         toolTipForDD.Active = false;
                     }
                 }
-                else {
+                else if(Config.DragDrop.TabDropHoverAction == TabDropHoverAction.SelectTab) {
                     tabControl1.SelectTab(tabMouseOn);
                 }
             }
@@ -7476,6 +7568,160 @@ namespace QTTabBarLib {
             else {
                 QTUtility2.log("QTTabBarClass FolderLinkClicked δ��ȡ�����õĶ���");
                 return false;
+            }
+        }
+
+        private bool BreadcrumbClicked(IDLWrapper wrapper, Keys modifierKeys, bool middle) {
+            MouseChord chord = QTUtility.MakeMouseChord(middle ? MouseChord.Middle : MouseChord.Left, modifierKeys);
+            BindAction action;
+            Dictionary<MouseChord, BindAction> actions = Config.Mouse.BreadcrumbActions;
+            if(actions != null && actions.TryGetValue(chord, out action) && action != BindAction.Nothing) {
+                return DoBindAction(action, false, null, wrapper);
+            }
+            return false;
+        }
+
+        private bool TryHandleBreadcrumbMiddleClick(Point screenPoint, IntPtr sourceHwnd) {
+            try {
+                IntPtr hwndBreadcrumb = FindBreadcrumbToolbarFromPoint(screenPoint, sourceHwnd);
+                if(hwndBreadcrumb == IntPtr.Zero) {
+                    return false;
+                }
+                if(breadcrumbBar == null || breadcrumbBar.Handle != hwndBreadcrumb || !PInvoke.IsWindow(breadcrumbBar.Handle)) {
+                    breadcrumbBar = new BreadcrumbBar(hwndBreadcrumb);
+                    breadcrumbBar.ItemClicked += BreadcrumbClicked;
+                }
+                if(breadcrumbBar.TryHandleMiddleClick(screenPoint, ModifierKeys, true)) {
+                    return true;
+                }
+                int ancestorIndex;
+                int hitIndex;
+                int buttonCount;
+                if(!BreadcrumbBar.TryGetHitAncestorIndex(hwndBreadcrumb, screenPoint, true,
+                        out ancestorIndex, out hitIndex, out buttonCount)) {
+                    return false;
+                }
+                using(IDLWrapper wrapper = CreateBreadcrumbTargetFromCurrent(ancestorIndex)) {
+                    if(wrapper == null || !wrapper.Available) {
+                        return false;
+                    }
+                    if(BreadcrumbClicked(wrapper, ModifierKeys, true)) {
+                        return true;
+                    }
+                }
+            }
+            catch(Exception exception) {
+                QTUtility2.MakeErrorLog(exception, "QTTabBarClass TryHandleBreadcrumbMiddleClick");
+            }
+            return false;
+        }
+
+        private IntPtr FindBreadcrumbToolbarFromPoint(Point screenPoint, IntPtr sourceHwnd) {
+            IntPtr hwnd = NormalizeBreadcrumbToolbarHandle(sourceHwnd);
+            if(hwnd != IntPtr.Zero) {
+                return hwnd;
+            }
+
+            hwnd = NormalizeBreadcrumbToolbarHandle(PInvoke.WindowFromPoint(screenPoint));
+            if(hwnd != IntPtr.Zero) {
+                return hwnd;
+            }
+
+            hwnd = WindowUtils.FindChildWindow(ExplorerHandle,
+                    child => IsBreadcrumbToolbar(child) && PInvoke.GetWindowRect(child).Contains(screenPoint));
+            if(hwnd != IntPtr.Zero) {
+                return hwnd;
+            }
+
+            for(IntPtr current = hwnd; current != IntPtr.Zero; current = PInvoke.GetParent(current)) {
+                string className = PInvoke.GetClassName(current);
+                if(className == "ToolbarWindow32") {
+                    IntPtr parent = PInvoke.GetParent(current);
+                    if(parent != IntPtr.Zero && PInvoke.GetClassName(parent) == "Breadcrumb Parent") {
+                        return current;
+                    }
+                }
+                if(className == "Breadcrumb Parent") {
+                    IntPtr toolbar = PInvoke.FindWindowEx(current, IntPtr.Zero, "ToolbarWindow32", null);
+                    if(toolbar != IntPtr.Zero) {
+                        return toolbar;
+                    }
+                }
+                if(current == ExplorerHandle) {
+                    break;
+                }
+            }
+
+            IntPtr breadcrumbParent = WindowUtils.FindChildWindow(ExplorerHandle,
+                    child => PInvoke.GetClassName(child) == "Breadcrumb Parent" &&
+                            PInvoke.GetWindowRect(child).Contains(screenPoint));
+            return breadcrumbParent == IntPtr.Zero
+                    ? IntPtr.Zero
+                    : PInvoke.FindWindowEx(breadcrumbParent, IntPtr.Zero, "ToolbarWindow32", null);
+        }
+
+        private IntPtr NormalizeBreadcrumbToolbarHandle(IntPtr hwnd) {
+            if(hwnd == IntPtr.Zero || !PInvoke.IsWindow(hwnd)) {
+                return IntPtr.Zero;
+            }
+            if(hwnd != ExplorerHandle && !PInvoke.IsChild(ExplorerHandle, hwnd)) {
+                return IntPtr.Zero;
+            }
+
+            for(IntPtr current = hwnd; current != IntPtr.Zero; current = PInvoke.GetParent(current)) {
+                string className = PInvoke.GetClassName(current);
+                if(className == "ToolbarWindow32" && IsBreadcrumbToolbar(current)) {
+                    return current;
+                }
+                if(className == "Breadcrumb Parent") {
+                    return PInvoke.FindWindowEx(current, IntPtr.Zero, "ToolbarWindow32", null);
+                }
+                if(current == ExplorerHandle) {
+                    break;
+                }
+            }
+            return IntPtr.Zero;
+        }
+
+        private bool IsBreadcrumbToolbar(IntPtr hwnd) {
+            if(hwnd == IntPtr.Zero || PInvoke.GetClassName(hwnd) != "ToolbarWindow32") {
+                return false;
+            }
+
+            for(IntPtr parent = PInvoke.GetParent(hwnd); parent != IntPtr.Zero; parent = PInvoke.GetParent(parent)) {
+                string className = PInvoke.GetClassName(parent);
+                if(className == "Breadcrumb Parent") {
+                    return true;
+                }
+                if(parent == ExplorerHandle || className == "CabinetWClass" || className == "ExploreWClass") {
+                    break;
+                }
+            }
+            return false;
+        }
+
+        private IDLWrapper CreateBreadcrumbTargetFromCurrent(int ancestorIndex) {
+            if(ancestorIndex < 0) {
+                return null;
+            }
+            IDLWrapper wrapper = null;
+            try {
+                wrapper = GetCurrentPIDL();
+                for(int i = 0; i < ancestorIndex; i++) {
+                    if(wrapper == null || !wrapper.Available) {
+                        return wrapper;
+                    }
+                    IDLWrapper parent = wrapper.GetParent();
+                    wrapper.Dispose();
+                    wrapper = parent;
+                }
+                return wrapper;
+            }
+            catch {
+                if(wrapper != null) {
+                    wrapper.Dispose();
+                }
+                throw;
             }
         }
 

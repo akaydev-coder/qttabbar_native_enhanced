@@ -390,21 +390,35 @@ namespace QTTabBarLib {
         
         protected abstract bool HandleCursorLoop(Keys key);
 
-        public override void HandleF2() {
+        public override bool HandleF2() {
             IntPtr hWnd = GetEditControl();
-            if(hWnd == IntPtr.Zero) return;
+            if(hWnd == IntPtr.Zero) return false;
             string str;
             using(SafePtr lParam = new SafePtr(520)) {
-                if(0 >= ((int)PInvoke.SendMessage(hWnd, 13, (IntPtr)260, lParam))) return;
+                if(0 >= ((int)PInvoke.SendMessage(hWnd, 13, (IntPtr)260, lParam))) return false;
                 str = Marshal.PtrToStringUni(lParam);
             }
-            if(str.Length <= 2) return;
+            if(str.Length <= 2) return false;
             int num = str.LastIndexOf(".");
-            if(num != -1) {
-                IntPtr ptr3 = PInvoke.SendMessage(hWnd, 0xb0, IntPtr.Zero, IntPtr.Zero);
-                int start = QTUtility2.GET_X_LPARAM(ptr3);
-                int length = QTUtility2.GET_Y_LPARAM(ptr3);
-                if((length - start) >= 0) {
+            IntPtr ptr3 = PInvoke.SendMessage(hWnd, 0xb0, IntPtr.Zero, IntPtr.Zero);
+            int start = QTUtility2.GET_X_LPARAM(ptr3);
+            int length = QTUtility2.GET_Y_LPARAM(ptr3);
+            if((length - start) >= 0) {
+                if(num == -1) {
+                    if((start == 0) && (length == str.Length)) {
+                        start = length = str.Length;
+                    }
+                    else if((start == str.Length) && (length == str.Length)) {
+                        start = length = 0;
+                    }
+                    else {
+                        start = 0;
+                        length = -1;
+                    }
+                    PInvoke.SendMessage(hWnd, 0xb1, (IntPtr)start, (IntPtr)length);
+                    return true;
+                }
+                else {
                     if((start == 0) && (length == num)) {
                         start = length = num;
                     }
@@ -425,8 +439,10 @@ namespace QTTabBarLib {
                         length = num;
                     }
                     PInvoke.SendMessage(hWnd, 0xb1, (IntPtr)start, (IntPtr)length);
+                    return true;
                 }   
             }
+            return false;
         }
 
         public override void HandleShiftKey() {

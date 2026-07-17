@@ -306,11 +306,11 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "QTTabBar"
             VALUE "FileDescription", "QTTabBar Native Deskband"
-            VALUE "FileVersion", "1.6.0.0"
+            VALUE "FileVersion", "1.6.0.1"
             VALUE "InternalName", "QTTabBarNative"
             VALUE "OriginalFilename", "QTTabBarNative.dll"
             VALUE "ProductName", "QTTabBar"
-            VALUE "ProductVersion", "1.6.0.0"
+            VALUE "ProductVersion", "1.6.0.1"
         END
     END
     BLOCK "VarFileInfo"

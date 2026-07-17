@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -192,7 +192,7 @@ Por favor, especifique arquivo de imagem 432 x 40 px.;Resultados da Pesquisa em;
     <value>Tab button images;Use custom close-button image:;Close-button offset (X, Y):;Use custom lock icon:;Lock-icon offset (X, Y):</value>
   </data>
   <data name="Options_Page07_Mouse" xml:space="preserve">
-    <value>Atribui comandos a diferentes ações do mouse.;Para adicionar um vinculo do mouse, execute uma ação do mouse no ícone de adição à esquerda do tipo de destino apropriado. Para remover um vinculo, selecione-a na lista e pressione a tecla Delete.;Outras opções do mouse;Roda do mouse rola a janela sob o mouse;Acordar mouse;Ação;Em qualquer lugar;Aba;Histórico da barra de abas;Link de Pasta;Arquivo ou Pasta;Fundo do Explorer;Clique Direito;Clique direito;Clique do Meio;Duplo Clique;X1 Clique;X2 Clique;Este botão do mouse não pode ser usado para este alvo.;Os botões válidos do mouse para este alvo são:;Botão inválido</value>
+    <value>Atribui comandos a diferentes ações do mouse.;Para adicionar um vinculo do mouse, execute uma ação do mouse no ícone de adição à esquerda do tipo de destino apropriado. Para remover um vinculo, selecione-a na lista e pressione a tecla Delete.;Outras opções do mouse;Roda do mouse rola a janela sob o mouse;Acordar mouse;Ação;Em qualquer lugar;Aba;Histórico da barra de abas;Link de Pasta;Arquivo ou Pasta;Fundo do Explorer;Breadcrumbs;Clique Direito;Clique direito;Clique do Meio;Duplo Clique;X1 Clique;X2 Clique;Este botão do mouse não pode ser usado para este alvo.;Os botões válidos do mouse para este alvo são:;Botão inválido</value>
   </data>
   <data name="Options_Page08_Keys" xml:space="preserve">
     <value>Altera os atalhos de teclado.;Selecione uma ação da lista e pressione o gesto de tecla que você gostaria de vincular a ela.  Pressione Escape para limpar a ligação.;Outras opções de teclado;Mostrar a janela do Alternador de Abas quando Ctrl + Tab é pressionado;Ação;Teclas;Esta tecla já está atribuída a:;Deveria ser reatribuído?;Conflito de teclas</value>
@@ -214,6 +214,9 @@ Por favor, especifique arquivo de imagem 432 x 40 px.;Resultados da Pesquisa em;
   </data>
   <data name="Options_Page14_About" xml:space="preserve">
     <value>Exibe as informações de créditos e da versão.;Código original por {0};Desenvolvedor Chefe:;Outros Desenvolvedores:;Ícones e gráficos:;Se você achou o Qttabbar útil, por favor considere fazer uma pequena doação.;汉化修改：;Criado por: {0}</value>
+  </data>
+  <data name="Options_Page15_DragDrop" xml:space="preserve">
+    <value>Configure drag and drop behavior.;Tab as Drop Target;Drop target behavior;Default drop effect;System default;Copy;Move;Create shortcut;When tab is hovered while dragging;Do nothing;Switch to tab;Show Subfolder menu;Drag hover time before activation, in msec;Accept drops from the same TabBar</value>
   </data>
   <data name="OptionsDialog" xml:space="preserve">
     <value>Opções do QTTabBar;Redefinir todas as opções nesta página para seus valores padrão?;Redefinir todas as opções para seus valores padrão? Isso não afetará grupos, aplicativos ou plugins.;Confirmações</value>
@@ -242,7 +245,7 @@ Por favor, especifique arquivo de imagem 432 x 40 px.;Resultados da Pesquisa em;
     <value>Criar um novo grupo;Nome do grupo:;Adicionar todas abas</value>
   </data>
   <data name="TabBar_Option_Genre" xml:space="preserve">
-    <value>Janela;Abas;Ajustes;Dicas de ferramentas;Geral;Aparência;Mouse;Teclas;Grupos;Aplicativos;Barra de Botão;Plugins;Idioma;Sobre</value>
+    <value>Janela;Abas;Ajustes;Dicas de ferramentas;Geral;Aparência;Mouse;Drag &amp; Drop;Teclas;Grupos;Aplicativos;Barra de Botão;Plugins;Idioma;Sobre</value>
   </data>
   <data name="TaskBar_Menu" xml:space="preserve">
     <value>Barra de tarefas;Área de trabalho;Bloquear itens;Desenhar fundo do título;Menu de clique único;Ativar teclas de atalho de aplicativo</value>

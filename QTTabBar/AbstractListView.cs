@@ -41,7 +41,8 @@ namespace QTTabBarLib {
             return -1;
         }
 
-        public virtual void HandleF2() {
+        public virtual bool HandleF2() {
+            return false;
         }
         
         public virtual void HandleShiftKey() {

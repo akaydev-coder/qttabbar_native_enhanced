@@ -85,6 +85,19 @@ namespace QTTabBarLib {
         Tile,
     }
 
+    public enum TabDropDefaultEffect {
+        SystemDefault,
+        Copy,
+        Move,
+        Link,
+    }
+
+    public enum TabDropHoverAction {
+        None,
+        SelectTab,
+        ShowSubfolderMenu,
+    }
+
    /* 
     * @����: ����Ŀ��
     */   
@@ -94,7 +107,8 @@ namespace QTTabBarLib {
         TabBarBackground,
         FolderLink,
         ExplorerItem,
-        ExplorerBackground
+        ExplorerBackground,
+        Breadcrumbs
     }
 
    /* 
@@ -234,6 +248,7 @@ namespace QTTabBarLib {
         public static _Tips Tips        { get { return ConfigManager.LoadedConfig.tips; } }		/*Ԥ����ʾ*/
         public static _Misc Misc        { get { return ConfigManager.LoadedConfig.misc; } }		/*����ѡ��*/
         public static _Skin Skin        { get { return ConfigManager.LoadedConfig.skin; } }		/*��ǩ���*/
+        public static _DragDrop DragDrop { get { return ConfigManager.LoadedConfig.dragdrop; } }
         public static _BBar BBar        { get { return ConfigManager.LoadedConfig.bbar; } }		/*��ťѡ��*/
         public static _Mouse Mouse      { get { return ConfigManager.LoadedConfig.mouse; } }	/*������*/
         public static _Keys Keys        { get { return ConfigManager.LoadedConfig.keys; } }		/*��ݲ���*/
@@ -247,6 +262,7 @@ namespace QTTabBarLib {
         public _Tips tips       { get; set; }
         public _Misc misc       { get; set; }
         public _Skin skin       { get; set; }
+        public _DragDrop dragdrop { get; set; }
         public _BBar bbar       { get; set; }
         public _Mouse mouse     { get; set; }
         public _Keys keys       { get; set; }
@@ -261,6 +277,7 @@ namespace QTTabBarLib {
             tips = new _Tips();
             misc = new _Misc();
             skin = new _Skin();
+            dragdrop = new _DragDrop();
             bbar = new _BBar();
             mouse = new _Mouse();
             keys = new _Keys();
@@ -379,6 +396,23 @@ namespace QTTabBarLib {
                 MultipleTabRows = true; // �������б�ǩ
                 ActiveTabOnBottomRow = false; // ʼ�ս����ǩ���ڵײ���
                 NeedPlusButton = true; // �Ƿ���ʾ��ɫ������ǩ��ť
+            }
+        }
+
+        [Serializable]
+        public class _DragDrop {
+            public bool TabDropTargetEnabled { get; set; }
+            public TabDropDefaultEffect TabDropDefaultEffect { get; set; }
+            public TabDropHoverAction TabDropHoverAction { get; set; }
+            public int TabDropHoverTime { get; set; }
+            public bool TabDropAcceptSameTabBar { get; set; }
+
+            public _DragDrop() {
+                TabDropTargetEnabled = true;
+                TabDropDefaultEffect = TabDropDefaultEffect.SystemDefault;
+                TabDropHoverAction = TabDropHoverAction.ShowSubfolderMenu;
+                TabDropHoverTime = 700;
+                TabDropAcceptSameTabBar = true;
             }
         }
 
@@ -813,6 +847,7 @@ namespace QTTabBarLib {
             public Dictionary<MouseChord, BindAction> TabActions { get; set; }
             public Dictionary<MouseChord, BindAction> BarActions { get; set; }
             public Dictionary<MouseChord, BindAction> LinkActions { get; set; }
+            public Dictionary<MouseChord, BindAction> BreadcrumbActions { get; set; }
             public Dictionary<MouseChord, BindAction> ItemActions { get; set; }
             public Dictionary<MouseChord, BindAction> MarginActions { get; set; }
 
@@ -871,6 +906,9 @@ namespace QTTabBarLib {
                     {MouseChord.None, BindAction.ItemsOpenInNewTabNoSel},
                     {MouseChord.Middle, BindAction.ItemOpenInNewTab},
                     {MouseChord.Ctrl | MouseChord.Middle, BindAction.ItemOpenInNewWindow}
+                };
+                BreadcrumbActions = new Dictionary<MouseChord, BindAction> {
+                    {MouseChord.Middle, BindAction.ItemOpenInNewTab}
                 };
                 // ��Դ��������Ŀ�հ״�
                ItemActions = new Dictionary<MouseChord, BindAction> {
@@ -1238,6 +1276,7 @@ namespace QTTabBarLib {
                 Config.Skin.CloseButtonImageOffsetY = QTUtility.ValidateMinMax(Config.Skin.CloseButtonImageOffsetY, -50, 50);
                 Config.Skin.LockIconImageOffsetX = QTUtility.ValidateMinMax(Config.Skin.LockIconImageOffsetX, -50, 50);
                 Config.Skin.LockIconImageOffsetY = QTUtility.ValidateMinMax(Config.Skin.LockIconImageOffsetY, -50, 50);
+                Config.DragDrop.TabDropHoverTime = QTUtility.ValidateMinMax(Config.DragDrop.TabDropHoverTime, 100, 5000);
                 using(IDLWrapper wrapper = new IDLWrapper(Config.Skin.RebarImageFile)) {
                     if(!wrapper.Available) Config.Skin.RebarImageFile = "";
                 }
