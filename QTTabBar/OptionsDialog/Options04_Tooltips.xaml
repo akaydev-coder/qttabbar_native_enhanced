@@ -86,6 +86,11 @@
             IsChecked="{Binding Path=ShowPreviewInfo}"
             IsEnabled="{Binding Path=IsChecked, ElementName=chkShowTooltipPreviews}"
             Style="{StaticResource IndentedCheckStyle}"/>
+        <CheckBox x:Name="chkShowDetailedTooltip"
+            Content="{qt:Resx Key=Options_Page04_Tooltips, Index=18}"
+            IsChecked="{Binding Path=ShowDetailedTooltip}"
+            IsEnabled="{Binding Path=IsChecked, ElementName=chkShowPreviewInfo}"
+            Style="{StaticResource IndentedCheckStyle}"/>
         <StackPanel
             IsEnabled="{Binding Path=IsChecked, ElementName=chkShowTooltipPreviews}"
             Margin="31,1,0,1"

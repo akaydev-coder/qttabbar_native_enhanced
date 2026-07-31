@@ -208,7 +208,7 @@
     <value>查看相关人员以及版本信息.;源代码 {0};主要开发人员：;其他开发人员：;图标和图形设计：;如果您发现QTTabBar有用，请考虑做一个小的捐赠;汉化修改：;编译：{0}</value>
   </data>
   <data name="Options_Page15_DragDrop" xml:space="preserve">
-    <value>Configure drag and drop behavior.;Tab as Drop Target;Drop target behavior;Default drop effect;System default;Copy;Move;Create shortcut;When tab is hovered while dragging;Do nothing;Switch to tab;Show Subfolder menu;Drag hover time before activation, in msec;Accept drops from the same TabBar</value>
+    <value>Configure drag and drop behavior.;Tab as Drop Target;Drop target behavior;Default drop effect;System default;Copy;Move;Create shortcut;When tab is hovered while dragging;Do nothing;Switch to tab;Show Subfolder menu;Drag hover time before activation, in msec;Accept drops from the same TabBar;Tab as Drag Source;Default behavior (inverted by Alt);Copy, move, or create shortcut;Create a new window;TabBar as Drop Target;Accept tabs from the same TabBar;Allow duplication when dropped</value>
   </data>
   <data name="PayPalURL" xml:space="preserve">
     <value>https://github.com/indiff/qttabbar/blob/master/QTTabBar/Resources/wechat_pay.jpg</value>

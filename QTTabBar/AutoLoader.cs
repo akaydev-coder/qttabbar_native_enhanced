@@ -100,7 +100,6 @@ namespace QTTabBarLib {
                 catch {
                 }
             };
-            QTUtility2.flog("QTTabBar crash diagnostics installed");
         }
 
         public int GetSite(ref Guid guid, out object ppvSite) {

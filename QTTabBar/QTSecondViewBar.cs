@@ -1842,6 +1842,11 @@ namespace QTTabBarLib
 
         protected void ShowMessageNavCanceled(string failedPath, bool fModal)
         {
+            if(string.IsNullOrWhiteSpace(failedPath))
+            {
+                return;
+            }
+
             QTUtility2.log("QTTabBarClass ShowMessageNavCanceled: " + failedPath);
             QTUtility2.MakeErrorLog(null, string.Format("Failed navigation: {0}", failedPath));
             if ( Config.Window.ShowFailNavMsg )

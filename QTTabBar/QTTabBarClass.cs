@@ -72,6 +72,7 @@ namespace QTTabBarLib {
         private Cursor curTabDrag;
         private Rectangle DraggingDestRect;
         private QTabItem DraggingTab;
+        private int tabDuplicateDropIndex = -1;
         private DropTargetWrapper dropTargetWrapper;
         private NativeWindowController explorerController;
         
@@ -2581,7 +2582,7 @@ namespace QTTabBarLib {
                         }
                     }
                     QTUtility2.log("DoFirstNavigation return");
-                    // return;
+                    return;
                 } // ����������߼�
                 QTUtility2.log("AddStartUpTabs ");
                 AddStartUpTabs(string.Empty, path);
@@ -2993,13 +2994,14 @@ namespace QTTabBarLib {
                            + " URL :" + (string)URL
             );*/
             string path = (string)URL;
+            QTabItem tabNeedingDeferredTitleRefresh = null;
             lastCompletedBrowseObjectIDL = lastAttemptedBrowseObjectIDL;
             // ��������ʱ��ˢ���ļ�����ͼ
             QTUtility2.log("QTTabBarClass ShellBrowser.OnNavigateComplete reset field FolderView");
             ShellBrowser.OnNavigateComplete();
             
             // if(fFinalRelease && !IsShown) {
-            if(!IsShown) {
+            if(!IsShown && !fNowQuitting) {
                 QTUtility2.log("QTTabBarClass Explorer_NavigateComplete2  !IsShown");
                 DoFirstNavigation(false, path);
             }            
@@ -3088,7 +3090,15 @@ namespace QTTabBarLib {
                         CurrentTab.Comment = string.Empty;
                     }
                     CurrentAddress = path;
-                    CurrentTab.Text = Explorer.LocationName;
+                    string locationName = Explorer.LocationName;
+                    if(string.IsNullOrWhiteSpace(locationName)) {
+                        tabNeedingDeferredTitleRefresh = CurrentTab;
+                        locationName = QTUtility2.MakePathDisplayText(path, false);
+                    }
+                    if(string.IsNullOrWhiteSpace(locationName)) {
+                        locationName = path;
+                    }
+                    CurrentTab.Text = locationName;
                     CurrentTab.CurrentIDL = null;
                     CurrentTab.ShellToolTip = null;
                     byte[] idl;
@@ -3215,6 +3225,9 @@ namespace QTTabBarLib {
                             listViewManager.CurrentListView.Handle, path);
                     }
                     FirstNavigationCompleted = true;
+                    if(tabNeedingDeferredTitleRefresh != null) {
+                        ScheduleNavigationTitleRefresh(tabNeedingDeferredTitleRefresh, (string)URL);
+                    }
                     RefreshTaskbarTabPreviews(true);
                     // this.listView
                     // compatibleView.SetBackColor(ColorTranslator.ToWin32(SystemColors.Window),   ColorTranslator.ToWin32(System.Drawing.Color.FromArgb(244, 248, 253)));
@@ -6082,10 +6095,14 @@ namespace QTTabBarLib {
 
                 StaticReg.SkipNextCapture = true;
                 if(ShellBrowser.Navigate(idlw, wFlags) != 0) {
-                    QTUtility2.MakeErrorLog(null, string.Format("Failed navigation: {0}", idlw.Path));
-                    if (Config.Window.ShowFailNavMsg)
+                    string failedPath = idlw.Path;
+                    if(!string.IsNullOrWhiteSpace(failedPath))
                     {
-                        MessageBox.Show(string.Format(QTUtility.TextResourcesDic["TabBar_Message"][0], idlw.Path));
+                        QTUtility2.MakeErrorLog(null, string.Format("Failed navigation: {0}", failedPath));
+                        if(Config.Window.ShowFailNavMsg)
+                        {
+                            MessageBox.Show(string.Format(QTUtility.TextResourcesDic["TabBar_Message"][0], failedPath));
+                        }
                     }
                     StaticReg.CreateWindowGroup = string.Empty;
                     StaticReg.SkipNextCapture = false;
@@ -6353,6 +6370,53 @@ namespace QTTabBarLib {
             catch(Exception ex) {
                 QTUtility2.MakeErrorLog(ex, "RefreshTaskbarTabPreviews" );
             }
+        }
+
+        private void ScheduleNavigationTitleRefresh(QTabItem tab, string navigationPath) {
+            if(tab == null) {
+                return;
+            }
+
+            Timer timer = new Timer(components) { Interval = 180 };
+            timer.Tick += delegate {
+                timer.Stop();
+                timer.Dispose();
+                if(IsDisposed || tabControl1 == null || tabControl1.IsDisposed ||
+                        !tabControl1.TabPages.Contains(tab)) {
+                    return;
+                }
+
+                string title = null;
+                if(ReferenceEquals(CurrentTab, tab)) {
+                    try {
+                        title = Explorer.LocationName;
+                    }
+                    catch {
+                    }
+                }
+                if(string.IsNullOrWhiteSpace(title)) {
+                    using(IDLWrapper wrapper = new IDLWrapper(tab.CurrentIDL)) {
+                        if(wrapper.Available) {
+                            title = wrapper.DisplayName;
+                        }
+                    }
+                }
+                if(string.IsNullOrWhiteSpace(title)) {
+                    title = QTUtility2.MakePathDisplayText(navigationPath, false);
+                }
+                if(string.IsNullOrWhiteSpace(title)) {
+                    title = navigationPath;
+                }
+                if(!string.IsNullOrWhiteSpace(title)) {
+                    tab.Text = title;
+                    if(string.IsNullOrWhiteSpace(tab.ToolTipText)) {
+                        tab.ToolTipText = navigationPath;
+                    }
+                    tabControl1.Invalidate();
+                    RefreshTaskbarTabPreviews(true);
+                }
+            };
+            timer.Start();
         }
 
         private static Icon GetTaskbarTabShellIcon(QTabItem tab) {
@@ -7113,7 +7177,23 @@ namespace QTTabBarLib {
         private void tabControl1_ItemDrag(object sender, ItemDragEventArgs e) {
             QTabItem item = (QTabItem)e.Item;
             string currentPath = item.CurrentPath;
-            if(Directory.Exists(currentPath)) {
+            if(!Config.DragDrop.TabDragSourceEnabled || string.IsNullOrEmpty(currentPath)) {
+                return;
+            }
+
+            bool newWindow = Config.DragDrop.TabDragSourceCreatesWindow;
+            if((ModifierKeys & Keys.Alt) == Keys.Alt) {
+                newWindow = !newWindow;
+            }
+
+            if(newWindow) {
+                using(IDLWrapper wrapper = new IDLWrapper(item.CurrentIDL)) {
+                    if(wrapper.Available) {
+                        OpenNewWindow(wrapper);
+                    }
+                }
+            }
+            else if(Directory.Exists(currentPath)) {
                 Interlocked.Increment(ref tabDragSourceDepth);
                 try {
                     ShellMethods.DoDragDrop(currentPath, this);
@@ -7122,6 +7202,11 @@ namespace QTTabBarLib {
                     Interlocked.Decrement(ref tabDragSourceDepth);
                 }
             }
+            NowTabDragging = false;
+            DraggingTab = null;
+            DraggingDestRect = Rectangle.Empty;
+            tabDuplicateDropIndex = -1;
+            Cursor = Cursors.Default;
         }
 
         /**
@@ -7147,6 +7232,7 @@ namespace QTTabBarLib {
         private void tabControl1_MouseDown(object sender, MouseEventArgs e) {
             QTabItem tabMouseOn = tabControl1.GetTabMouseOn();
             DraggingTab = null;
+            tabDuplicateDropIndex = -1;
             if(tabMouseOn != null) {
                 if(e.Button == MouseButtons.Left) {
                     NowTabDragging = true;
@@ -7183,6 +7269,12 @@ namespace QTTabBarLib {
                     // It will be unset in MouseUp.
                 }
                 else {
+                    if(!Config.DragDrop.TabBarDropTargetEnabled ||
+                            !Config.DragDrop.TabBarDropAcceptSameTabBar) {
+                        Cursor = Cursors.No;
+                        tabDuplicateDropIndex = -1;
+                        return;
+                    }
                     int num;
                     QTabItem tabMouseOn = tabControl1.GetTabMouseOn(out num);
                     int index = tabControl1.TabPages.IndexOf(DraggingTab);
@@ -7199,6 +7291,14 @@ namespace QTTabBarLib {
                         Rectangle tabRect = tabControl1.GetTabRect(num, false);
                         Rectangle rectangle2 = tabControl1.GetTabRect(index, false);
                         if(tabMouseOn != null) {
+                            bool duplicate = Config.DragDrop.TabBarDropAllowDuplicate &&
+                                    (ModifierKeys & Keys.Control) == Keys.Control;
+                            if(duplicate) {
+                                tabDuplicateDropIndex = num;
+                                Cursor = GetCursor(true);
+                                return;
+                            }
+                            tabDuplicateDropIndex = -1;
                             if(tabMouseOn != DraggingTab) {
                                 if(!DraggingDestRect.Contains(tabControl1.PointToClient(MousePosition))) {
                                     Cursor = GetCursor(true);
@@ -7238,8 +7338,21 @@ namespace QTTabBarLib {
             QTabItem tabMouseOn = tabControl1.GetTabMouseOn();
             if(NowTabDragging && e.Button == MouseButtons.Left) {
                 Keys modifierKeys = ModifierKeys;
+                if(DraggingTab != null && tabDuplicateDropIndex >= 0 &&
+                        Config.DragDrop.TabBarDropTargetEnabled &&
+                        Config.DragDrop.TabBarDropAcceptSameTabBar &&
+                        Config.DragDrop.TabBarDropAllowDuplicate &&
+                        (modifierKeys & Keys.Control) == Keys.Control) {
+                    int insertIndex = Math.Min(tabDuplicateDropIndex + 1, tabControl1.TabCount);
+                    CloneTabButton(DraggingTab, null, false, insertIndex);
+                    tabMouseOn = null;
+                }
                 if(tabMouseOn == null) {
-                    if(DraggingTab != null && (modifierKeys == Keys.Control || modifierKeys == (Keys.Control | Keys.Shift))) {
+                    if(DraggingTab != null && Config.DragDrop.TabBarDropTargetEnabled &&
+                            Config.DragDrop.TabBarDropAcceptSameTabBar &&
+                            Config.DragDrop.TabBarDropAllowDuplicate &&
+                            (modifierKeys == Keys.Control || modifierKeys == (Keys.Control | Keys.Shift)) &&
+                            tabDuplicateDropIndex < 0) {
                         bool cloning = false;
                         Point pt = tabControl1.PointToScreen(e.Location);
                         if(!QTUtility.IsXP) {
@@ -7277,6 +7390,7 @@ namespace QTTabBarLib {
                 NowTabDragging = false;
                 DraggingTab = null;
                 DraggingDestRect = Rectangle.Empty;
+                tabDuplicateDropIndex = -1;
                 TryCallButtonBar(bbar => bbar.RefreshButtons());
             }
             else if(e.Button == MouseButtons.Middle && !Explorer.Busy && tabMouseOn != null) {
@@ -8101,6 +8215,11 @@ namespace QTTabBarLib {
 
         protected void ShowMessageNavCanceled(string failedPath, bool fModal)
         {
+            if(string.IsNullOrWhiteSpace(failedPath))
+            {
+                return;
+            }
+
             QTUtility2.log("QTTabBarClass ShowMessageNavCanceled: " + failedPath);
             QTUtility2.MakeErrorLog(null, string.Format("Failed navigation: {0}", failedPath));
             if (Config.Window.ShowFailNavMsg)

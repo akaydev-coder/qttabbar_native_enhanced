@@ -510,7 +510,6 @@ namespace QTTabBarLib {
                 // exclusion prevents DWM from requesting the proxy's live bitmap.
                 TabbedThumbnailNativeMethods.SetWindowPeekPolicy(hwnd, false, false);
                 peekProtectedExplorerHandle = hwnd;
-                QTUtility2.flog("Taskbar tab Peek enabled without owner restrictions hwnd=0x" + hwnd.ToInt64().ToString("X"));
             }
             catch(Exception ex) {
                 QTUtility2.MakeErrorLog(ex, "TaskbarTabPreviewManager owner peek shield");

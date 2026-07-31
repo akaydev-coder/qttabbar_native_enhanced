@@ -20,6 +20,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Markup;
@@ -280,7 +281,12 @@ namespace QTTabBarLib {
             string ret = res[idx];
             string param = targetObject == null ? null : GetParam(targetObject);
             if(param != null) ret = string.Format(ret, param);
-            return ret.Replace("&", "_");
+            // Legacy language resources use '&' as an access-key marker. WPF expects '_'
+            // for command controls, while plain text (such as "Drag & Drop") must retain '&'.
+            bool usesAccessKeys = targetObject is ButtonBase ||
+                    targetObject is Label ||
+                    targetObject is MenuItem;
+            return usesAccessKeys ? ret.Replace("&", "_") : ret;
         }
     }
 }

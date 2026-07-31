@@ -74,6 +74,8 @@ namespace QTTabBarLib.Interop {
         public static extern int DwmExtendFrameIntoClientArea(IntPtr hWnd, ref MARGINS pMarInset);
         [DllImport("dwmapi.dll")]
         public static extern int DwmIsCompositionEnabled(out bool pfEnabled);
+        [DllImport("dwmapi.dll", PreserveSig = true)]
+        public static extern int DwmGetColorizationColor(out uint colorizationColor, out bool opaqueBlend);
         [DllImport("user32.dll")]
         public static extern bool EmptyClipboard();
         [DllImport("user32.dll")]
@@ -169,7 +171,7 @@ namespace QTTabBarLib.Interop {
         [DllImport("user32.dll")]
         public static extern int GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
         /// <summary>
-        /// 打开进程
+        /// 锟津开斤拷锟斤拷
         /// </summary>
         /// <param name="dwDesiredAccess"></param>
         /// <param name="bInheritHandle"></param>

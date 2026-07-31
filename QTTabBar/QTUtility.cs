@@ -206,23 +206,19 @@ namespace QTTabBarLib {
             };
 
             try {
-                QTUtility2.flog("QTUtility static initialization start");
                 QTUtility2.log("QTUtility RefreshShellStateValues");
                 // RefreshShellStateValues();
 
                 // Load the config
                 ConfigManager.Initialize();
-                QTUtility2.flog("QTUtility config initialized");
                 QTUtility2.log("QTUtility ��������");
                 
                 // Initialize the instance manager
                 InstanceManager.Initialize();
-                QTUtility2.flog("QTUtility instance manager initialized");
                 QTUtility2.log("QTUtility ��ʼ��InstanceManager");
 
                 // Create and enable the API hooks
                 HookLibManager.Initialize();
-                QTUtility2.flog("QTUtility hook initialization returned");
                 QTUtility2.log("QTUtility ������������ API hooks");
 
                 // Create the global imagelist

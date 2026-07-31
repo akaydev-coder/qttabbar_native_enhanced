@@ -99,8 +99,13 @@ namespace QTTabBarLib {
         private QTabCollection tabPages;
         private StringAlignment tabTextAlignment;
         private Timer timerSuppressDoubleClick;
+        private Timer timerTabSwitchAnimation;
         private ToolTip toolTip;
         private UpDown upDown;
+        private int tabAnimationFromIndex = -1;
+        private int tabAnimationToIndex = -1;
+        private int tabAnimationStartTick;
+        private const int TAB_ANIMATION_DURATION = 170;
         private const int UPDOWN_WIDTH = 0x24;
 
         [ThreadStatic()]
@@ -230,6 +235,9 @@ namespace QTTabBarLib {
             timerSuppressDoubleClick = new Timer(components);
             timerSuppressDoubleClick.Interval = SystemInformation.DoubleClickTime + 100;
             timerSuppressDoubleClick.Tick += timerSuppressDoubleClick_Tick;
+            timerTabSwitchAnimation = new Timer(components);
+            timerTabSwitchAnimation.Interval = 15;
+            timerTabSwitchAnimation.Tick += timerTabSwitchAnimation_Tick;
             if(VisualStyleRenderer.IsSupported) {
                 InitializeRenderer();
             }
@@ -523,12 +531,51 @@ namespace QTTabBarLib {
                     }
                 }
             }
+            StartTabSwitchAnimation(curSelectedIndex, index);
             Refresh();
             if(SelectedIndexChanged != null) { // ѡ��ı�ǩ���������仯�� ����ö�Ӧ���¼�
                 SelectedIndexChanged(this, new EventArgs());
             }
             iFocusedTabIndex = -1;
             return true;
+        }
+
+        private void StartTabSwitchAnimation(int fromIndex, int toIndex) {
+            if(!Config.Tabs.TabSwitchAnimation || fromIndex == toIndex ||
+                    fromIndex < 0 || toIndex < 0 ||
+                    fromIndex >= tabPages.Count || toIndex >= tabPages.Count) {
+                StopTabSwitchAnimation();
+                return;
+            }
+
+            tabAnimationFromIndex = fromIndex;
+            tabAnimationToIndex = toIndex;
+            tabAnimationStartTick = Environment.TickCount;
+            if(timerTabSwitchAnimation != null) {
+                timerTabSwitchAnimation.Stop();
+                timerTabSwitchAnimation.Start();
+            }
+        }
+
+        private void StopTabSwitchAnimation() {
+            if(timerTabSwitchAnimation != null) {
+                timerTabSwitchAnimation.Stop();
+            }
+            tabAnimationFromIndex = -1;
+            tabAnimationToIndex = -1;
+        }
+
+        private void timerTabSwitchAnimation_Tick(object sender, EventArgs e) {
+            if(tabAnimationFromIndex < 0 || tabAnimationToIndex < 0) {
+                StopTabSwitchAnimation();
+                return;
+            }
+
+            int elapsed = unchecked(Environment.TickCount - tabAnimationStartTick);
+            if(elapsed >= TAB_ANIMATION_DURATION) {
+                StopTabSwitchAnimation();
+            }
+            Invalidate();
         }
 
         protected override void Dispose(bool disposing) {
@@ -617,6 +664,60 @@ namespace QTTabBarLib {
                 g.DrawLine(shadow, outline.Right, outline.Top + 2, outline.Right, outline.Bottom);
                 g.DrawLine(shadow, outline.Left + 1, outline.Bottom, outline.Right - 1, outline.Bottom);
             }
+        }
+
+        private void DrawTabSwitchAnimation(Graphics g) {
+            if(tabAnimationFromIndex < 0 || tabAnimationToIndex < 0 ||
+                    tabAnimationFromIndex >= tabPages.Count || tabAnimationToIndex >= tabPages.Count) {
+                return;
+            }
+
+            Rectangle from = GetItemRectangle(tabAnimationFromIndex);
+            Rectangle to = GetItemRectangle(tabAnimationToIndex);
+            if(from.Width <= 0 || to.Width <= 0) {
+                return;
+            }
+
+            int elapsed = unchecked(Environment.TickCount - tabAnimationStartTick);
+            float progress = Math.Max(0f, Math.Min(1f, elapsed / (float)TAB_ANIMATION_DURATION));
+            progress = 1f - ((1f - progress) * (1f - progress));
+            int left = (int)(from.Left + ((to.Left - from.Left) * progress));
+            int right = (int)(from.Right + ((to.Right - from.Right) * progress));
+            int y = (int)(from.Bottom + ((to.Bottom - from.Bottom) * progress)) - 2;
+            if(right <= left) {
+                return;
+            }
+
+            Color baseColor = GetTabAnimationAccentColor();
+            using(Pen glow = new Pen(Color.FromArgb(80, baseColor), 5f))
+            using(Pen line = new Pen(Color.FromArgb(210, baseColor), 2f)) {
+                glow.StartCap = System.Drawing.Drawing2D.LineCap.Round;
+                glow.EndCap = System.Drawing.Drawing2D.LineCap.Round;
+                line.StartCap = System.Drawing.Drawing2D.LineCap.Round;
+                line.EndCap = System.Drawing.Drawing2D.LineCap.Round;
+                g.DrawLine(glow, left + 4, y, right - 4, y);
+                g.DrawLine(line, left + 5, y, right - 5, y);
+            }
+        }
+
+        private static Color GetTabAnimationAccentColor() {
+            try {
+                uint colorizationColor;
+                bool opaqueBlend;
+                if(PInvoke.DwmGetColorizationColor(out colorizationColor, out opaqueBlend) == 0) {
+                    Color accent = Color.FromArgb(255,
+                        (int)((colorizationColor >> 16) & 0xff),
+                        (int)((colorizationColor >> 8) & 0xff),
+                        (int)(colorizationColor & 0xff));
+                    int brightness = (accent.R * 299 + accent.G * 587 + accent.B * 114) / 1000;
+                    if(brightness > 28 && brightness < 235) {
+                        return accent;
+                    }
+                }
+            }
+            catch {
+            }
+            return SystemColors.Highlight;
         }
 
         private void DrawBackground(Graphics g, bool bSelected, bool fHot, Rectangle rctItem, Edges edges, bool fVisualStyle, int index) {
@@ -1234,6 +1335,20 @@ namespace QTTabBarLib {
             return tabBounds;
         }
 
+        private bool TryGetItemRectangle(int index, out Rectangle rectangle) {
+            rectangle = Rectangle.Empty;
+            if(index < 0 || index >= tabPages.Count) {
+                return false;
+            }
+            try {
+                rectangle = GetItemRectangle(index);
+                return true;
+            }
+            catch(ArgumentOutOfRangeException) {
+                return false;
+            }
+        }
+
         private Rectangle GetItemRectWithInflation(int index) {
             Rectangle tabBounds = tabPages[index].TabBounds;
             if(index == iSelectedIndex) {
@@ -1572,8 +1687,12 @@ namespace QTTabBarLib {
 
         protected override void OnMouseMove(MouseEventArgs e) {
             int num;
-            if(((e.Button == MouseButtons.Right) && !Parent.RectangleToScreen(Bounds).Contains(MousePosition)) && ((ItemDrag != null) && (draggingTab != null))) {
-                ItemDrag(this, new ItemDragEventArgs(e.Button, draggingTab));
+            if(((e.Button == MouseButtons.Right || e.Button == MouseButtons.Left) &&
+                    !RectangleToScreen(ClientRectangle).Contains(MousePosition)) &&
+                    ((ItemDrag != null) && (draggingTab != null))) {
+                QTabItem dragItem = draggingTab;
+                draggingTab = null;
+                ItemDrag(this, new ItemDragEventArgs(e.Button, dragItem));
             }
             QTabItem tabMouseOn = GetTabMouseOn(out num);
             InvalidateTabsOnMouseMove(tabMouseOn, num, e.Location);
@@ -1671,21 +1790,34 @@ namespace QTTabBarLib {
                     if(fVisualStyle && (vsr_LPressed == null)) {
                         InitializeRenderer();
                     }
-                    for(int i = 0; i < tabPages.Count; i++) {
-                        if(i != iSelectedIndex) {
-                            DrawTab(e.Graphics, GetItemRectangle(i), i, tabMouseOn, fVisualStyle);
+                    int paintCount = tabPages.Count;
+                    int selectedIndex = iSelectedIndex;
+                    for(int i = 0; i < paintCount; i++) {
+                        Rectangle itemRectangle;
+                        if(i != selectedIndex && TryGetItemRectangle(i, out itemRectangle)) {
+                            DrawTab(e.Graphics, itemRectangle, i, tabMouseOn, fVisualStyle);
                         }
                     }
-                    if((tabPages.Count > 0) && (iSelectedIndex > -1)) {
-                        DrawTab(e.Graphics, GetItemRectangle(iSelectedIndex), iSelectedIndex, tabMouseOn, fVisualStyle);
+                    Rectangle selectedRectangle = Rectangle.Empty;
+                    bool selectedRectangleAvailable =
+                            selectedIndex >= 0 &&
+                            selectedIndex < paintCount &&
+                            TryGetItemRectangle(selectedIndex, out selectedRectangle);
+                    if(selectedRectangleAvailable) {
+                        DrawTab(e.Graphics, selectedRectangle, selectedIndex, tabMouseOn, fVisualStyle);
                     }
-                    if(!FluentGlassManager.SuppressManagedBackground && (fNeedToDrawUpDown && (iSelectedIndex < tabPages.Count)) && ((iSelectedIndex > -1) && (GetItemRectangle(iSelectedIndex).X != 0))) {
+                    DrawTabSwitchAnimation(e.Graphics);
+                    if(!FluentGlassManager.SuppressManagedBackground &&
+                            fNeedToDrawUpDown &&
+                            selectedRectangleAvailable &&
+                            selectedRectangle.X != 0) {
                         e.Graphics.FillRectangle(SystemBrushes.Control, new Rectangle(0, 0, 2, e.ClipRectangle.Height));
                     }
 
-                    if (fNeedPlusButton)
-                    {
-                        DrawPlusButton(e.Graphics, GetItemRectangle(tabPages.Count - 1));
+                    Rectangle lastRectangle;
+                    if(fNeedPlusButton && paintCount > 0 &&
+                            TryGetItemRectangle(paintCount - 1, out lastRectangle)) {
+                        DrawPlusButton(e.Graphics, lastRectangle);
                     }
 
                     ShowUpDown(fNeedToDrawUpDown);
@@ -1897,6 +2029,7 @@ namespace QTTabBarLib {
                         }
                     }
                 }
+                DrawTabSwitchAnimation(e.Graphics);
                 ShowUpDown(false);
             }
             catch(Exception exception) {

@@ -123,6 +123,10 @@
             Content="{qt:Resx Key=Options_Page02_Tabs, Index=5}"
             IsChecked="{Binding Path=RenameAmbTabs}"
             Style="{StaticResource CheckStyle}"/>
+        <CheckBox x:Name="chkTabSwitchAnimation"
+            Content="{qt:Resx Key=Options_Page02_Tabs, Index=33}"
+            IsChecked="{Binding Path=TabSwitchAnimation}"
+            Style="{StaticResource CheckStyle}"/>
         <StackPanel Orientation="Horizontal" Visibility="Collapsed">
             <Label
                 Content="{qt:Resx Key=Options_Page02_Tabs, Index=6}"

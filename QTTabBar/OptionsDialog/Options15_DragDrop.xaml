@@ -29,6 +29,25 @@
                 VerticalAlignment="Bottom"/>
         </StackPanel>
 
+        <CheckBox x:Name="chkTabDragSourceEnabled"
+            Content="{qt:Resx Key=Options_Page15_DragDrop, Index=14}"
+            IsChecked="{Binding Path=TabDragSourceEnabled}"
+            Style="{StaticResource CheckStyle}"/>
+
+        <Label
+            Content="{qt:Resx Key=Options_Page15_DragDrop, Index=15}"
+            Margin="13,0,0,0"/>
+        <StackPanel Margin="26,0,0,10">
+            <RadioButton
+                Content="{qt:Resx Key=Options_Page15_DragDrop, Index=16}"
+                IsChecked="{Binding Path=TabDragSourceCreatesWindow, Converter={StaticResource BoolInverterConverter}}"
+                IsEnabled="{Binding Path=IsChecked, ElementName=chkTabDragSourceEnabled}"/>
+            <RadioButton
+                Content="{qt:Resx Key=Options_Page15_DragDrop, Index=17}"
+                IsChecked="{Binding Path=TabDragSourceCreatesWindow}"
+                IsEnabled="{Binding Path=IsChecked, ElementName=chkTabDragSourceEnabled}"/>
+        </StackPanel>
+
         <CheckBox x:Name="chkTabDropTargetEnabled"
             Content="{qt:Resx Key=Options_Page15_DragDrop, Index=1}"
             IsChecked="{Binding Path=TabDropTargetEnabled}"
@@ -103,6 +122,24 @@
             IsChecked="{Binding Path=TabDropAcceptSameTabBar}"
             IsEnabled="{Binding Path=IsChecked, ElementName=chkTabDropTargetEnabled}"
             Margin="13,12,0,0"
+            Style="{StaticResource CheckStyle}"/>
+
+        <CheckBox x:Name="chkTabBarDropTargetEnabled"
+            Content="{qt:Resx Key=Options_Page15_DragDrop, Index=18}"
+            IsChecked="{Binding Path=TabBarDropTargetEnabled}"
+            Margin="0,14,0,0"
+            Style="{StaticResource CheckStyle}"/>
+        <CheckBox
+            Content="{qt:Resx Key=Options_Page15_DragDrop, Index=19}"
+            IsChecked="{Binding Path=TabBarDropAcceptSameTabBar}"
+            IsEnabled="{Binding Path=IsChecked, ElementName=chkTabBarDropTargetEnabled}"
+            Margin="13,0,0,0"
+            Style="{StaticResource CheckStyle}"/>
+        <CheckBox
+            Content="{qt:Resx Key=Options_Page15_DragDrop, Index=20}"
+            IsChecked="{Binding Path=TabBarDropAllowDuplicate}"
+            IsEnabled="{Binding Path=IsChecked, ElementName=chkTabBarDropTargetEnabled}"
+            Margin="13,0,0,0"
             Style="{StaticResource CheckStyle}"/>
     </StackPanel>
 </qt:OptionsDialogTab>

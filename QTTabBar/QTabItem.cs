@@ -169,7 +169,7 @@ namespace QTTabBarLib {
 
         public string ShellToolTip {
             get {
-                bool fAllowSlow = Control.ModifierKeys == Keys.Shift;
+                bool fAllowSlow = Config.Tips.ShowDetailedTooltip || Control.ModifierKeys == Keys.Shift;
                 if(fNowSlowTip ^ fAllowSlow) {
                     shellToolTip = null;
                 }

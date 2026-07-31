@@ -360,6 +360,7 @@ namespace QTTabBarLib {
             public bool MultipleTabRows          { get; set; }
             public bool ActiveTabOnBottomRow     { get; set; }
             public bool NeedPlusButton           { get; set; }
+            public bool TabSwitchAnimation       { get; set; }
 
             public _Tabs() {
                /* NewTabPosition = TabPos.Rightmost;
@@ -396,23 +397,34 @@ namespace QTTabBarLib {
                 MultipleTabRows = true; // �������б�ǩ
                 ActiveTabOnBottomRow = false; // ʼ�ս����ǩ���ڵײ���
                 NeedPlusButton = true; // �Ƿ���ʾ��ɫ������ǩ��ť
+                TabSwitchAnimation = false;
             }
         }
 
         [Serializable]
         public class _DragDrop {
+            public bool TabDragSourceEnabled { get; set; }
+            public bool TabDragSourceCreatesWindow { get; set; }
             public bool TabDropTargetEnabled { get; set; }
             public TabDropDefaultEffect TabDropDefaultEffect { get; set; }
             public TabDropHoverAction TabDropHoverAction { get; set; }
             public int TabDropHoverTime { get; set; }
             public bool TabDropAcceptSameTabBar { get; set; }
+            public bool TabBarDropTargetEnabled { get; set; }
+            public bool TabBarDropAcceptSameTabBar { get; set; }
+            public bool TabBarDropAllowDuplicate { get; set; }
 
             public _DragDrop() {
+                TabDragSourceEnabled = true;
+                TabDragSourceCreatesWindow = true;
                 TabDropTargetEnabled = true;
                 TabDropDefaultEffect = TabDropDefaultEffect.SystemDefault;
                 TabDropHoverAction = TabDropHoverAction.ShowSubfolderMenu;
                 TabDropHoverTime = 700;
                 TabDropAcceptSameTabBar = true;
+                TabBarDropTargetEnabled = true;
+                TabBarDropAcceptSameTabBar = true;
+                TabBarDropAllowDuplicate = true;
             }
         }
 
@@ -480,6 +492,7 @@ namespace QTTabBarLib {
             public bool ShowTooltipPreviews      { get; set; }
             public bool ShowPreviewsWithShift    { get; set; }
             public bool ShowPreviewInfo          { get; set; }
+            public bool ShowDetailedTooltip      { get; set; }
             public int PreviewMaxWidth           { get; set; }
             public int PreviewMaxHeight          { get; set; }
             public int PreviewDelay              { get; set; }
@@ -509,6 +522,7 @@ namespace QTTabBarLib {
                 SubDirTipsWithShift = false ; // ����shift��������ʾ��Ŀ¼
                 ShowTooltipPreviews = true;  
                 ShowPreviewInfo = true; // �����ļ�Ԥ��
+                ShowDetailedTooltip = false;
                 ShowPreviewsWithShift = true; // ����shift������, �����ļ�Ԥ��
                 
                 // Ԥ���Ŀ���

@@ -232,22 +232,18 @@ namespace QTTabBarLib {
                 if(width < sizeActual.Width) {
                     width = sizeActual.Width;
                 }
+                if(Config.Tips.ShowDetailedTooltip && string.IsNullOrEmpty(toolTipText)) {
+                    try {
+                        toolTipText = ShellMethods.GetShellInfoTipText(path, true);
+                    }
+                    catch(Exception exception) {
+                        QTUtility2.MakeErrorLog(exception, "CreateThumbnail GetShellInfoTipText detailed");
+                    }
+                }
                 bool flag4 = false;
                 if(Config.Tips.ShowPreviewInfo) {
                     SizeF ef;
-                    string text = Path.GetFileName(path) + "\r\n";
-                    if(thumbnail && (toolTipText != null)) {
-                        text = text + toolTipText;
-                    }
-                    else {
-                        bool flag5 = sizeActual == empty;
-                        text = text + FormatSize(info.Length);
-                        if(!thumbnail) {
-                            object obj2 = text;
-                            text = string.Concat(new object[] { obj2, "    ( ", empty.Width, " x ", empty.Height, " )", flag5 ? string.Empty : "*" });
-                        }
-                        text = text + "\r\n" + info.LastWriteTime;
-                    }
+                    string text = BuildImageInfoText(path, info, sizeActual, empty, thumbnail, toolTipText);
                     using(Graphics graphics = lblInfo.CreateGraphics()) {
                         ef = graphics.MeasureString(text, lblInfo.Font, (width - 8));
                     }
@@ -397,6 +393,59 @@ namespace QTTabBarLib {
                 str = Math.Round(((size) / 1048576.0), 1) + " MB";
             }
             return str;
+        }
+
+        private static string BuildImageInfoText(string path, FileInfo info, Size sizeActual, Size sizeRaw, bool thumbnail, string shellInfoTipText) {
+            string fileName = Path.GetFileName(path);
+            if(!Config.Tips.ShowDetailedTooltip) {
+                string text = fileName + "\r\n";
+                if(thumbnail && !string.IsNullOrEmpty(shellInfoTipText)) {
+                    return text + shellInfoTipText;
+                }
+
+                bool sameSize = sizeActual == sizeRaw;
+                text = text + FormatSize(info.Length);
+                if(!thumbnail) {
+                    text = string.Concat(new object[] { text, "    ( ", sizeRaw.Width, " x ", sizeRaw.Height, " )", sameSize ? string.Empty : "*" });
+                }
+                return text + "\r\n" + info.LastWriteTime;
+            }
+
+            StringBuilder builder = new StringBuilder();
+            builder.AppendLine(fileName);
+            builder.Append(FormatSize(info.Length));
+            if(sizeRaw.Width > 0 && sizeRaw.Height > 0) {
+                builder.Append("    ( ");
+                builder.Append(sizeRaw.Width);
+                builder.Append(" x ");
+                builder.Append(sizeRaw.Height);
+                builder.Append(" )");
+                if(sizeActual != sizeRaw) {
+                    builder.Append("*");
+                }
+            }
+            builder.AppendLine();
+            builder.AppendLine(info.LastWriteTime.ToString());
+            if(info.CreationTime != DateTime.MinValue) {
+                builder.AppendLine(info.CreationTime.ToString());
+            }
+            AppendDistinctInfoTip(builder, shellInfoTipText);
+            return builder.ToString().TrimEnd();
+        }
+
+        private static void AppendDistinctInfoTip(StringBuilder builder, string shellInfoTipText) {
+            if(string.IsNullOrWhiteSpace(shellInfoTipText)) {
+                return;
+            }
+
+            string existing = builder.ToString();
+            foreach(string line in shellInfoTipText.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries)) {
+                string trimmed = line.Trim();
+                if(trimmed.Length == 0 || existing.IndexOf(trimmed, StringComparison.OrdinalIgnoreCase) >= 0) {
+                    continue;
+                }
+                builder.AppendLine(trimmed);
+            }
         }
 
         private static string GetGDIPSupportedImages() {
@@ -1456,7 +1505,7 @@ namespace QTTabBarLib {
                             ImageData data = new ImageData(bmp, null, path, dtLastWriteTime, size, size);
                             data.Thumbnail = true;
                             try {
-                                toolTipText = data.TooltipText = ShellMethods.GetShellInfoTipText(zero, false);
+                                toolTipText = data.TooltipText = ShellMethods.GetShellInfoTipText(zero, Config.Tips.ShowDetailedTooltip);
                             }
                             catch (Exception e)
                             {
@@ -1518,7 +1567,7 @@ namespace QTTabBarLib {
                             ImageData data = new ImageData(bmp, null, path, dtLastWriteTime, size, size);
                             data.Thumbnail = true;
                             try {
-                                toolTipText = data.TooltipText = ShellMethods.GetShellInfoTipText(zero, false);
+                                toolTipText = data.TooltipText = ShellMethods.GetShellInfoTipText(zero, Config.Tips.ShowDetailedTooltip);
                             }
                             catch (Exception e)
                             {
