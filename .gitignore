@@ -27,6 +27,10 @@
 Installer/bin/
 Installer/obj/
 
+# MIDL intermediates occasionally emitted beside the native project
+native/QTTabBarNative/QTTabBarNative_i.c
+native/QTTabBarNative/QTTabBarNative_i.h
+
 # Test and analysis output
 TestResults/
 coverage/

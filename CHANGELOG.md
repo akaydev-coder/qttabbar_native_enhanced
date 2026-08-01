@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.6.4.0 Resume Handoff Hotfix - 2026-08-01
+
+- Require an acknowledgement before closing a newly captured Explorer window.
+- Keep and initialize the requested Explorer window when a stale named-pipe callback rejects the handoff after suspend or resume.
+
+## 1.6.3.0 Infrastructure Baseline - 2026-08-01
+
+- Bundle the pinned Microsoft Visual C++ 2015-2022 x86 and x64 redistributables.
+- Pin MSVC 14.44.35207, Windows SDK 10.0.19041.0, MSBuild, WiX, and redistributable hashes.
+- Add strict build-environment validation and a complete release-build entry point.
+
 ## 1.6.2.0 Stable - 2026-08-01
 
 - Hardens MinHook thread enumeration, suspension, instruction-pointer migration, and resume handling for safer Explorer hook transitions.

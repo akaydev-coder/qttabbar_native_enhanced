@@ -10,8 +10,10 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-$msbuild = "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\MSBuild.exe"
-$vcvars = "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvarsall.bat"
+$repoRoot = $PSScriptRoot
+$buildEnvironment = & (Join-Path $repoRoot "Build\Test-BuildEnvironment.ps1") -Quiet -PassThru
+$msbuild = $buildEnvironment.MSBuild
+$vcvars = $buildEnvironment.VcVarsAll
 
 function Quote-CmdArg([string]$Value) {
     return ('"{0}"' -f ($Value -replace '"', '""'))
@@ -26,7 +28,10 @@ $argsList = @(
     "/t:Rebuild",
     (Quote-CmdArg "/p:Configuration=$Configuration"),
     (Quote-CmdArg "/p:Platform=$Platform"),
-    (Quote-CmdArg "/p:WixTargetsPath=C:\Program Files (x86)\MSBuild\Microsoft\WiX\v3.x\Wix.targets"),
+    (Quote-CmdArg "/p:SolutionDir=$repoRoot"),
+    (Quote-CmdArg "/p:VCToolsVersion=$($buildEnvironment.VCToolsVersion)"),
+    (Quote-CmdArg "/p:WindowsTargetPlatformVersion=$($buildEnvironment.WindowsSdkVersion)"),
+    (Quote-CmdArg "/p:WixTargetsPath=$($buildEnvironment.WixTargets)"),
     "/verbosity:minimal"
 ) + ($ExtraMSBuildArgs | ForEach-Object {
     if ($_ -match '^".*"$') {
@@ -39,7 +44,7 @@ $argsList = @(
 $cmdFile = [System.IO.Path]::ChangeExtension([System.IO.Path]::GetTempFileName(), ".cmd")
 $cmdLines = @(
     "@echo off",
-    ("call {0} {1}" -f $quotedVcVars, $Arch),
+    ("call {0} {1} {2} -vcvars_ver={3}" -f $quotedVcVars, $Arch, $buildEnvironment.WindowsSdkVersion, $buildEnvironment.VCToolsVersion),
     "if errorlevel 1 exit /b %errorlevel%",
     ("{0} {1} 2>&1" -f $quotedMSBuild, ($argsList -join " ")),
     "exit /b %errorlevel%"

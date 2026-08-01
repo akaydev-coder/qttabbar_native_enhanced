@@ -2493,6 +2493,7 @@ namespace QTTabBarLib {
                     // QTUtility2.log("DoFirstNavigation GetCommandLine parent process name: " + parentProcessName);
                     // QTUtility2.log("DoFirstNavigation GetCommandLine parent process name2: " + allParentProcessNames2);
                     string cmd = GetCommandLine();
+                    bool captureAccepted = false;
                     if (!String.IsNullOrEmpty(cmd))
                     {
                         /*string dirPath, selection;
@@ -2511,7 +2512,7 @@ namespace QTTabBarLib {
                             string selectMe = GetNameToSelectFromCommandLineArg(cmd);
                             // QTUtility2.log("select cmd " + cmd + " select :" + selectMe );
                             TimeSpan start = new TimeSpan(DateTime.Now.Ticks);
-                            InstanceManager.BeginInvokeMain(tabbar =>
+                            captureAccepted = InstanceManager.TryBeginInvokeMain(tabbar =>
                             {
                                 tabbar.OpenNewTab(path);
                                 if (selectMe != "")
@@ -2531,7 +2532,7 @@ namespace QTTabBarLib {
                         {
                             mCmdType = 2;
                             TimeSpan start = new TimeSpan(DateTime.Now.Ticks);
-                            InstanceManager.BeginInvokeMain(tabbar =>
+                            captureAccepted = InstanceManager.TryBeginInvokeMain(tabbar =>
                             {
                                 tabbar.OpenNewTab(path);
                                 tabbar.RestoreWindow();
@@ -2546,7 +2547,7 @@ namespace QTTabBarLib {
                         else
                         {
                             mCmdType = 3;
-                            InstanceManager.BeginInvokeMain(tabbar =>
+                            captureAccepted = InstanceManager.TryBeginInvokeMain(tabbar =>
                             {
                                 // vscode �򿪵�ʱ����ͬ���̣� ������Ҫ shell����
                                 tabbar.OpenNewTab(path);
@@ -2557,32 +2558,32 @@ namespace QTTabBarLib {
                         }
                     }
 
-                    fNowQuitting = true;
-                    if (QTUtility.IsXP)
-                    {
-                        QTUtility2.log("Close Explorer WindowUtils.CloseExplorer");
-                        WindowUtils.CloseExplorer(ExplorerHandle, 0);
-                    }
-                    else
-                    {
-                        
-                        // QTUtility2.Wait4SelectFiles(Explorer);
-                        // Wait4SelectedQuit();
-                        // Explorer.Quit();
-                        // WindowUtils.HideExplorer(ExplorerHandle);
-                        // (ExplorerHandle != PInvoke.GetForegroundWindow())) || Explorer.Busy
-                        fHideExplorer = true;
-                        
-                        if (mCmdType == 3 || !Config.Window.CaptureWeChatSelection)
-                        {
-                            QTUtility2.log("Close Explorer Explorer.Quit");
-                            Explorer.Quit();
-                            // WindowUtils.HideExplorer(ExplorerHandle);
-                            // WindowUtils.CloseExplorer(ExplorerHandle, 0);
+                    if(captureAccepted) {
+                        fNowQuitting = true;
+                        if(QTUtility.IsXP) {
+                            QTUtility2.log("Close Explorer WindowUtils.CloseExplorer");
+                            WindowUtils.CloseExplorer(ExplorerHandle, 0);
                         }
+                        else {
+                            // The target acknowledged queuing the navigation. It is now
+                            // safe to close the temporary Explorer window.
+                            fHideExplorer = true;
+
+                            if(mCmdType == 3 || !Config.Window.CaptureWeChatSelection) {
+                                QTUtility2.log("Close Explorer Explorer.Quit");
+                                Explorer.Quit();
+                            }
+                        }
+                        QTUtility2.log("DoFirstNavigation return");
+                        return;
                     }
-                    QTUtility2.log("DoFirstNavigation return");
-                    return;
+
+                    // Resume can leave a stale named-pipe callback behind. Never discard
+                    // the requested navigation unless another Explorer accepted it.
+                    QTUtility2.log("Capture handoff unavailable; keeping Explorer window");
+                    mCmdType = 0;
+                    fNowQuitting = false;
+                    fHideExplorer = false;
                 } // ����������߼�
                 QTUtility2.log("AddStartUpTabs ");
                 AddStartUpTabs(string.Empty, path);

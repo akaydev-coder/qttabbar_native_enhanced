@@ -87,6 +87,9 @@ namespace QTTabBarLib {
             bool ExecuteOnMainProcess(byte[] encodedAction, bool doAsync);
 
             [OperationContract]
+            bool TryExecuteOnMainProcess(byte[] encodedAction);
+
+            [OperationContract]
             void ExecuteOnServerProcess(byte[] encodedAction, bool doAsync);
 
             [OperationContract]
@@ -180,6 +183,42 @@ namespace QTTabBarLib {
                     QTUtility2.log("ExecuteOnMainProcess callback.Execute");
                     callback.Execute(encodedAction);
                 }
+                return false;
+            }
+
+            public bool TryExecuteOnMainProcess(byte[] encodedAction) {
+                CheckConnections();
+                ICommClient sender = GetCallback();
+
+                while(sdInstances.Count > 0) {
+                    ICommClient callback = sdInstances.Peek();
+                    if(callback == sender) {
+                        return false;
+                    }
+                    if(IsDead(callback)) {
+                        callbacks.Remove(callback);
+                        sdInstances.RemoveAllValues(c => c == callback);
+                        continue;
+                    }
+
+                    try {
+                        // The callback only queues work on the target Explorer UI thread.
+                        // Waiting for it here gives the source window a reliable handoff ack.
+                        IContextChannel callbackChannel = callback as IContextChannel;
+                        if(callbackChannel != null) {
+                            callbackChannel.OperationTimeout = TimeSpan.FromSeconds(2);
+                        }
+                        callback.Execute(encodedAction);
+                        return true;
+                    }
+                    catch(Exception ex) {
+                        callbacks.Remove(callback);
+                        sdInstances.RemoveAllValues(c => c == callback);
+                        QTUtility2.log("TryExecuteOnMainProcess rejected stale callback: "
+                                + ex.GetType().Name + " " + ex.Message);
+                    }
+                }
+
                 return false;
             }
 
@@ -479,6 +518,60 @@ namespace QTTabBarLib {
         public static void BeginInvokeMain(Action<QTTabBarClass> action) {
             // QTUtility2.log("InstanceManager BeginInvokeMain");
             ExecuteOnMainProcess(() => LocalInvokeMain(action, true), true);
+        }
+
+        public static bool TryBeginInvokeMain(Action<QTTabBarClass> action) {
+            try {
+                ICommService service = GetChannel();
+                if(service == null) {
+                    return false;
+                }
+
+                if(service.IsMainProcess()) {
+                    return TryLocalBeginInvokeMain(action);
+                }
+
+                IContextChannel serviceChannel = service as IContextChannel;
+                if(serviceChannel != null) {
+                    serviceChannel.OperationTimeout = TimeSpan.FromSeconds(2);
+                }
+                return service.TryExecuteOnMainProcess(
+                        DelToByte(new Action(() => LocalInvokeMain(action, true))));
+            }
+            catch(CommunicationException ex) {
+                QTUtility2.log("TryBeginInvokeMain communication unavailable: "
+                        + ex.GetType().Name + " " + ex.Message);
+                return false;
+            }
+            catch(TimeoutException ex) {
+                QTUtility2.log("TryBeginInvokeMain timed out: " + ex.Message);
+                return false;
+            }
+            catch(Exception ex) {
+                QTUtility2.log("TryBeginInvokeMain failed safely: "
+                        + ex.GetType().Name + " " + ex.Message);
+                return false;
+            }
+        }
+
+        private static bool TryLocalBeginInvokeMain(Action<QTTabBarClass> action) {
+            QTTabBarClass instance;
+            using(new Keychain(rwLockTabBar, false)) {
+                instance = sdTabHandles.Count == 0 ? null : sdTabHandles.Peek();
+            }
+            if(instance == null || instance.IsDisposed || !instance.IsHandleCreated) {
+                return false;
+            }
+
+            try {
+                instance.BeginInvoke(action, instance);
+                return true;
+            }
+            catch(InvalidOperationException ex) {
+                QTUtility2.log("TryLocalBeginInvokeMain rejected unavailable instance: "
+                        + ex.Message);
+                return false;
+            }
         }
 
         public static void LocalInvokeMain(Action<QTTabBarClass> action, bool doAsync = false) {

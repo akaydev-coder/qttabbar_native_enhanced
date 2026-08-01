@@ -76,25 +76,17 @@ Hold Escape while Explorer starts to bypass background initialization for recove
 
 Requirements:
 
-- Visual Studio 2022 Build Tools
-- MSVC/ATL and a Windows SDK
+- Visual Studio 2022 Build Tools 17.14.37411.7
+- MSVC/ATL 14.44.35207
+- Windows SDK 10.0.19041.0
 - .NET Framework 4.8 SDK and targeting pack
-- WiX Toolset 3.14
+- WiX Toolset 3.14.1.8722
 
-The repository includes `build_with_clean_env.ps1`, which initializes the requested Visual Studio environment before invoking MSBuild.
+The pinned versions and VC++ redistributable hashes live in `Build\Toolchain.psd1`. `Build\Test-BuildEnvironment.ps1` fails early when the machine differs from that baseline. The bundle stages the verified x86 and x64 redistributables from Visual Studio without committing Microsoft binaries to the repository.
 
 ```powershell
-# Background hook libraries
-.\build_with_clean_env.ps1 -Project 'QTHookLib\QTHookLib.vcxproj' -Configuration Release -Platform Win32 -Arch x86
-.\build_with_clean_env.ps1 -Project 'QTHookLib\QTHookLib.vcxproj' -Configuration Release -Platform x64 -Arch x64
-
-# Native bridge and managed shell extension
-.\build_with_clean_env.ps1 -Project 'native\QTTabBarNative\QTTabBarNative.vcxproj' -Configuration Release -Platform x64 -Arch x64 -ExtraMSBuildArgs @('/p:SolutionDir=' + $PWD + '\')
-.\build_with_clean_env.ps1 -Project 'QTTabBar\QTTabBar.csproj' -Configuration Release -Platform AnyCPU -Arch x86
-
-# MSI and bootstrapper
-.\build_with_clean_env.ps1 -Project 'Installer\Installer.wixproj' -Configuration Release -Platform x86 -Arch x86 -ExtraMSBuildArgs @('/p:SuppressValidation=True')
-.\build_with_clean_env.ps1 -Project 'Installer\Bundle.wixproj' -Configuration Release -Platform x86 -Arch x86
+.\Build\Test-BuildEnvironment.ps1
+.\build_release.ps1
 ```
 
 ## Project lineage and credits

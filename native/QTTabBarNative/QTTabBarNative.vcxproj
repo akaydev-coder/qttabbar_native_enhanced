@@ -23,7 +23,8 @@
     <ProjectGuid>{D5F4F666-4E5D-4D6F-9F65-3D2A37E19B63}</ProjectGuid>
     <Keyword>AtlProject</Keyword>
     <RootNamespace>QTTabBarNative</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
+    <VCToolsVersion>14.44.35207</VCToolsVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -94,8 +95,8 @@
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
       <TargetEnvironment>Win32</TargetEnvironment>
-      <HeaderFileName>QTTabBarNative_i.h</HeaderFileName>
-      <InterfaceIdentifierFileName>QTTabBarNative_i.c</InterfaceIdentifierFileName>
+      <HeaderFileName>$(IntDir)QTTabBarNative_i.h</HeaderFileName>
+      <InterfaceIdentifierFileName>$(IntDir)QTTabBarNative_i.c</InterfaceIdentifierFileName>
       <GenerateClientFiles>Stub</GenerateClientFiles>
     </Midl>
   </ItemDefinitionGroup>
@@ -121,8 +122,8 @@
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
       <TargetEnvironment>Win32</TargetEnvironment>
-      <HeaderFileName>QTTabBarNative_i.h</HeaderFileName>
-      <InterfaceIdentifierFileName>QTTabBarNative_i.c</InterfaceIdentifierFileName>
+      <HeaderFileName>$(IntDir)QTTabBarNative_i.h</HeaderFileName>
+      <InterfaceIdentifierFileName>$(IntDir)QTTabBarNative_i.c</InterfaceIdentifierFileName>
       <GenerateClientFiles>Stub</GenerateClientFiles>
     </Midl>
   </ItemDefinitionGroup>
@@ -144,8 +145,8 @@
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
       <TargetEnvironment>X64</TargetEnvironment>
-      <HeaderFileName>QTTabBarNative_i.h</HeaderFileName>
-      <InterfaceIdentifierFileName>QTTabBarNative_i.c</InterfaceIdentifierFileName>
+      <HeaderFileName>$(IntDir)QTTabBarNative_i.h</HeaderFileName>
+      <InterfaceIdentifierFileName>$(IntDir)QTTabBarNative_i.c</InterfaceIdentifierFileName>
       <GenerateClientFiles>Stub</GenerateClientFiles>
     </Midl>
   </ItemDefinitionGroup>
@@ -171,8 +172,8 @@
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
       <TargetEnvironment>X64</TargetEnvironment>
-      <HeaderFileName>QTTabBarNative_i.h</HeaderFileName>
-      <InterfaceIdentifierFileName>QTTabBarNative_i.c</InterfaceIdentifierFileName>
+      <HeaderFileName>$(IntDir)QTTabBarNative_i.h</HeaderFileName>
+      <InterfaceIdentifierFileName>$(IntDir)QTTabBarNative_i.c</InterfaceIdentifierFileName>
       <GenerateClientFiles>Stub</GenerateClientFiles>
     </Midl>
   </ItemDefinitionGroup>

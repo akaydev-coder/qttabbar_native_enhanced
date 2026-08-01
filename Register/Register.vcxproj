@@ -23,6 +23,8 @@
     <RootNamespace>Register</RootNamespace>
     <Keyword>Win32Proj</Keyword>
     <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
+    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
+    <VCToolsVersion>14.44.35207</VCToolsVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">

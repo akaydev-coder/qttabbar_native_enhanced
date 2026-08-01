@@ -1,13 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
      xmlns:bal="http://schemas.microsoft.com/wix/BalExtension"
-     xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
+     xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension"
+     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
 
-    <Bundle Name="QTTabBar 1.6.2.0 Stable"
-            Version="1.6.2.0"
+    <Bundle Name="QTTabBar 1.6.4.0 Resume Handoff Hotfix"
+            Version="1.6.4.0"
             Manufacturer="indiff"
             UpgradeCode="{6E6EAFA9-B39E-4A2F-88A0-E52B365F33D8}"
             IconSourceFile="QTTabBar.ico">
+
+        <util:RegistrySearch Id="VCRedistX86InstalledSearch"
+                             Variable="VCRedistX86Installed"
+                             Root="HKLM"
+                             Key="SOFTWARE\Microsoft\VisualStudio\14.0\VC\Runtimes\x86"
+                             Value="Installed"
+                             Format="raw"
+                             Win64="no" />
+        <util:RegistrySearch Id="VCRedistX86BuildSearch"
+                             Variable="VCRedistX86Build"
+                             Root="HKLM"
+                             Key="SOFTWARE\Microsoft\VisualStudio\14.0\VC\Runtimes\x86"
+                             Value="Bld"
+                             Format="raw"
+                             Win64="no" />
+        <util:RegistrySearch Id="VCRedistX64InstalledSearch"
+                             Variable="VCRedistX64Installed"
+                             Root="HKLM"
+                             Key="SOFTWARE\Microsoft\VisualStudio\14.0\VC\Runtimes\x64"
+                             Value="Installed"
+                             Format="raw"
+                             Win64="yes" />
+        <util:RegistrySearch Id="VCRedistX64BuildSearch"
+                             Variable="VCRedistX64Build"
+                             Root="HKLM"
+                             Key="SOFTWARE\Microsoft\VisualStudio\14.0\VC\Runtimes\x64"
+                             Value="Bld"
+                             Format="raw"
+                             Win64="yes" />
 
         <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLicense">
             <bal:WixStandardBootstrapperApplication
@@ -17,6 +47,27 @@
         </BootstrapperApplicationRef>
 
         <Chain>
+            <ExePackage Id="VCRedistX86"
+                        SourceFile="Redist\vc_redist.x86.exe"
+                        InstallCommand="/install /quiet /norestart"
+                        RepairCommand="/repair /quiet /norestart"
+                        DetectCondition="VCRedistX86Installed = 1 AND VCRedistX86Build &gt;= 35211"
+                        PerMachine="yes"
+                        Permanent="yes"
+                        Compressed="yes"
+                        Vital="yes" />
+
+            <ExePackage Id="VCRedistX64"
+                        SourceFile="Redist\vc_redist.x64.exe"
+                        InstallCommand="/install /quiet /norestart"
+                        RepairCommand="/repair /quiet /norestart"
+                        DetectCondition="VersionNT64 AND VCRedistX64Installed = 1 AND VCRedistX64Build &gt;= 35211"
+                        InstallCondition="VersionNT64"
+                        PerMachine="yes"
+                        Permanent="yes"
+                        Compressed="yes"
+                        Vital="yes" />
+
             <!-- Download and install .NET Framework 4.8 if not already present -->
             <PackageGroupRef Id="NetFx48Web" />
 
