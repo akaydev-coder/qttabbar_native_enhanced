@@ -109,13 +109,13 @@ namespace QTTabBarLib {
                         }
                         break;
                     case 0x0010: // WM_CLOSE
-                        QTUtility2.flog("Taskbar thumbnail close requested via WM_CLOSE for proxy index " + Index);
+                        QTUtility2.log("Taskbar thumbnail close requested via WM_CLOSE for proxy index " + Index);
                         owner.Close(Index);
                         m.Result = IntPtr.Zero;
                         return;
                     case 0x0112: // WM_SYSCOMMAND
                         if(((int)m.WParam & 0xFFF0) == 0xF060) {
-                            QTUtility2.flog("Taskbar thumbnail close requested via SC_CLOSE for proxy index " + Index);
+                            QTUtility2.log("Taskbar thumbnail close requested via SC_CLOSE for proxy index " + Index);
                             owner.Close(Index);
                             m.Result = IntPtr.Zero;
                             return;
@@ -135,7 +135,7 @@ namespace QTTabBarLib {
                     case 0x0326: // WM_DWMSENDICONICLIVEPREVIEWBITMAP
                         if(!livePreviewRequestLogged) {
                             livePreviewRequestLogged = true;
-                            QTUtility2.flog("Taskbar live preview requested for proxy index " + Index);
+                            QTUtility2.log("Taskbar live preview requested for proxy index " + Index);
                         }
                         SendLivePreview();
                         m.Result = IntPtr.Zero;
@@ -199,7 +199,7 @@ namespace QTTabBarLib {
                         TabbedThumbnailNativeMethods.SetPeekBitmap(Handle, hBitmap, offset, false);
                         if(!livePreviewResultLogged) {
                             livePreviewResultLogged = true;
-                            QTUtility2.flog(String.Format(
+                            QTUtility2.log(String.Format(
                                     "Taskbar live preview supplied index={0} bitmap={1}x{2} offset={3},{4} snapshot={5}",
                                     Index, bitmap.Width, bitmap.Height, offset.X, offset.Y,
                                     preview == null ? "none" : preview.Width + "x" + preview.Height));

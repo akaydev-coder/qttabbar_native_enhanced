@@ -1170,7 +1170,7 @@ namespace QTTabBarLib {
             // Options run on their own STA thread. Reloading managed plugins here can
             // dispose Explorer-owned objects while their UI thread is still using
             // them. Persist the selection now and load it on the next Explorer start.
-            QTUtility2.flog("Plugin refresh deferred until Explorer restart");
+            QTUtility2.log("Plugin refresh deferred until Explorer restart");
             InstanceManager.LocalTabBroadcast(tabbar => tabbar.RefreshOptions());
             if(fBroadcast) {
                 // SyncTaskBarMenu(); todo

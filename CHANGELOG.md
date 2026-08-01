@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.6.2.0 Stable - 2026-08-01
+
+- Hardens MinHook thread enumeration, suspension, instruction-pointer migration, and resume handling for safer Explorer hook transitions.
+- Flushes the instruction cache after enabling or disabling hooks and supports hooks that do not request an original-function pointer.
+- Adds Win32 and x64 concurrent MinHook smoke tests covering repeated enable/disable cycles and null-original hooks.
+- Keeps routine production diagnostics behind the existing opt-in logger while preserving forced warnings and exception reports.
+
 ## 1.6.0.0 Stable - 2026-07-14
 
 - Updates the integrated German language resources from the corrected language file so the Options dialog labels line up with their intended controls again.

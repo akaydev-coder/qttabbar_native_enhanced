@@ -1,11 +1,11 @@
-/* 
- *  MinHook - Minimalistic API Hook Library	
+/*
+ *  MinHook - Minimalistic API Hook Library
  *  Copyright (C) 2009 Tsuda Kageyu. All rights reserved.
- *  
+ *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
  *  are met:
- *  
+ *
  *  1. Redistributions of source code must retain the above copyright
  *     notice, this list of conditions and the following disclaimer.
  *  2. Redistributions in binary form must reproduce the above copyright
@@ -13,7 +13,7 @@
  *     documentation and/or other materials provided with the distribution.
  *  3. The name of the author may not be used to endorse or promote products
  *     derived from this software without specific prior written permission.
- *  
+ *
  *  THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
  *  IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
  *  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -35,7 +35,6 @@
 
 namespace MinHook
 {
-	// ScopedLock 付きクリティカルセクション
 	class CriticalSection
 	{
 	public:
@@ -44,9 +43,9 @@ namespace MinHook
 		private:
 			CriticalSection& cs_;
 		public:
-			ScopedLock(CriticalSection& cs);
+			explicit ScopedLock(CriticalSection& cs);
 			~ScopedLock();
-		private:			
+		private:
 			ScopedLock(const ScopedLock&);
 			const ScopedLock& operator=(const ScopedLock&);
 		};
@@ -58,24 +57,28 @@ namespace MinHook
 		~CriticalSection();
 		void enter();
 		void leave();
-	private:			
+	private:
 		CriticalSection(const CriticalSection&);
 		const CriticalSection& operator=(const CriticalSection&);
 	};
 
-	// 同一プロセス内の他のスレッドをすべて停止
 	class ScopedThreadExclusive
 	{
 	private:
-		std::vector<DWORD> threads_;
+		std::vector<DWORD> suspendedThreads_;
+		bool acquired_;
 	public:
 		ScopedThreadExclusive(const std::vector<uintptr_t>& oldIPs, const std::vector<uintptr_t>& newIPs);
 		~ScopedThreadExclusive();
+
+		bool IsAcquired() const;
 	private:
-		static void GetThreads(std::vector<DWORD>& threads);
-		static void Freeze(
-			const std::vector<DWORD>& threads, const std::vector<uintptr_t>& oldIPs, const std::vector<uintptr_t>& newIPs);
-		static void Unfreeze(const std::vector<DWORD>& threads);
+		static bool GetThreads(std::vector<DWORD>& threads);
+		static bool Freeze(
+			const std::vector<DWORD>& threads,
+			std::vector<DWORD>& suspendedThreads,
+			const std::vector<uintptr_t>& oldIPs,
+			const std::vector<uintptr_t>& newIPs);
+		static void Unfreeze(const std::vector<DWORD>& suspendedThreads);
 	};
 }
-

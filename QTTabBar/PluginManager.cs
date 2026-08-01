@@ -332,7 +332,7 @@ namespace QTTabBarLib {
             // Options are hosted on a separate STA thread. The native plugin
             // manager is initialized and updated only on Explorer's main thread.
             UpdateCachedNativeEnablement(Config.Plugin.Enabled);
-            QTUtility2.flog("Native plugin refresh deferred until Explorer restart");
+            QTUtility2.log("Native plugin refresh deferred until Explorer restart");
             // Read in the Assemblies to refresh
             string[] enabled = Config.Plugin.Enabled ?? new string[0];
 /*

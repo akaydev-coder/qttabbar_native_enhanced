@@ -3322,7 +3322,7 @@ namespace QTTabBarLib {
                     Explorer.ShowBrowserBar(pvaButtonBar, pvarShow, pvarSize);
                     msg.Result = (IntPtr)1;
 
-                    QTUtility2.flog("QTTabBarClass WM_SHOWHIDEBARS ShowBrowserBar tabBar buttonBar");
+                    QTUtility2.log("QTTabBarClass WM_SHOWHIDEBARS ShowBrowserBar tabBar buttonBar");
                 }
                 catch(COMException e) {
                     QTUtility2.MakeErrorLog(e, "WM_SHOWHIDEBARS ShowBrowserBar");
@@ -6326,12 +6326,12 @@ namespace QTTabBarLib {
                                             return;
                                         }
                                         if(tabControl1.TabCount == 1) {
-                                            QTUtility2.flog("Taskbar thumbnail close is closing the Explorer window for the final tab");
+                                            QTUtility2.log("Taskbar thumbnail close is closing the Explorer window for the final tab");
                                             PInvoke.PostMessage(ExplorerHandle, 0x0010, IntPtr.Zero, IntPtr.Zero);
                                             return;
                                         }
                                         bool closed = CloseTab(tabToClose, false);
-                                        QTUtility2.flog("Taskbar thumbnail close completed tab=" +
+                                        QTUtility2.log("Taskbar thumbnail close completed tab=" +
                                                 (tabToClose.Text ?? string.Empty) + " closed=" + closed);
                                         if(closed) {
                                             RefreshTaskbarTabPreviews(true);

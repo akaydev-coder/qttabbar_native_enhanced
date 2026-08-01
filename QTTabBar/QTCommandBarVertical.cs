@@ -1406,7 +1406,7 @@ namespace QTTabBarLib {
                 RegisterInView(type, RegistryView.Registry64);
                 RegisterInView(type, RegistryView.Registry32);
             }
-            QTUtility2.flog("QTCommandBarVertical registry registered");
+            QTUtility2.log("QTCommandBarVertical registry registered");
         }
 
         private static void RegisterInView(Type type, RegistryView view) {

@@ -246,7 +246,10 @@ namespace MinHook
 		}
 
 		// OUT引数の処理
-		*ppOriginal = pHook->pTrampoline;
+		if (ppOriginal != NULL)
+		{
+			*ppOriginal = pHook->pTrampoline;
+		}
 		
 		return MH_OK;
 	}
@@ -274,6 +277,10 @@ namespace MinHook
 		// ターゲット関数の冒頭に、中継関数またはフック関数へのジャンプを書き込む
 		{
 			ScopedThreadExclusive tex(pHook->oldIPs, pHook->newIPs);
+			if (!tex.IsAcquired())
+			{
+				return MH_ERROR_MEMORY_ALLOC;
+			}
 
 			DWORD oldProtect;
 			if (!VirtualProtect(pHook->pTarget, sizeof(JMP_REL), PAGE_EXECUTE_READWRITE, &oldProtect))
@@ -287,6 +294,7 @@ namespace MinHook
 			WriteRelativeJump(pHook->pTarget, pHook->pDetour);
 #endif
 			VirtualProtect(pHook->pTarget, sizeof(JMP_REL), oldProtect, &oldProtect);
+			FlushInstructionCache(GetCurrentProcess(), pHook->pTarget, sizeof(JMP_REL));
 		}
 
 		pHook->isEnabled = true;
@@ -316,7 +324,11 @@ namespace MinHook
 
 		// ターゲット関数の冒頭を書き戻すだけ。他は再利用のため残しておく
 		{
-			ScopedThreadExclusive tex(pHook->oldIPs, pHook->newIPs);
+			ScopedThreadExclusive tex(pHook->newIPs, pHook->oldIPs);
+			if (!tex.IsAcquired())
+			{
+				return MH_ERROR_MEMORY_ALLOC;
+			}
 
 			DWORD oldProtect;
 			if (!VirtualProtect(pHook->pTarget, sizeof(JMP_REL), PAGE_EXECUTE_READWRITE, &oldProtect))
@@ -327,6 +339,7 @@ namespace MinHook
 			memcpy(pHook->pTarget, pHook->pBackup, sizeof(JMP_REL));
 
 			VirtualProtect(pHook->pTarget, sizeof(JMP_REL), oldProtect, &oldProtect);
+			FlushInstructionCache(GetCurrentProcess(), pHook->pTarget, sizeof(JMP_REL));
 		}
 
 		pHook->isEnabled = false;

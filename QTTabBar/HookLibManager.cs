@@ -482,7 +482,7 @@ namespace QTTabBarLib {
                 {
                     if(fBackgroundRendererLoaded)
                     {
-                        QTUtility2.flog("InitShellBrowserHook skipped for isolated background renderer");
+                        QTUtility2.log("InitShellBrowserHook skipped for isolated background renderer");
                     }
                     return;
                 }

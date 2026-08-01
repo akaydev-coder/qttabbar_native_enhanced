@@ -42,7 +42,7 @@ namespace QTTabBarLib {
             }
             Registry.LocalMachine.CreateSubKey(BHOKEYNAME + name);
             QCommandBarVertical.EnsureRegistered();
-            QTUtility2.flog( "AutoLoader 注册表 QTTabBar 自动加载(安装)");
+            QTUtility2.log( "AutoLoader 注册表 QTTabBar 自动加载(安装)");
         }
 
         [ComUnregisterFunction]
@@ -50,7 +50,7 @@ namespace QTTabBarLib {
             using(RegistryKey key = Registry.LocalMachine.CreateSubKey(BHOKEYNAME)) {
                 key.DeleteSubKey(t.GUID.ToString("B"), false);
             }
-            QTUtility2.flog("AutoLoader 注册表 QTTabBar 自动加载(卸载)");
+            QTUtility2.log("AutoLoader 注册表 QTTabBar 自动加载(卸载)");
         }
 
         public int SetSite(object site) {
@@ -124,9 +124,9 @@ namespace QTTabBarLib {
                     object show = true;
                     object size = null;
                     explorer.ShowBrowserBar(ref tabBarClsid, ref show, ref size);
-                    QTUtility2.flog("QTTabBar AutoLoader ShowBrowserBar succeeded");
+                    QTUtility2.log("QTTabBar AutoLoader ShowBrowserBar succeeded");
                     key.SetValue("ActivationDate", installDateString);
-                    QTUtility2.flog("QTTabBar AutoLoader add ActivationDate");
+                    QTUtility2.log("QTTabBar AutoLoader add ActivationDate");
                 }
             }
             catch(Exception ex) {
