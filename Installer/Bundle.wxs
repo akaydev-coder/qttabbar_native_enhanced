@@ -4,8 +4,8 @@
      xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension"
      xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
 
-    <Bundle Name="QTTabBar 1.6.4.0 Resume Handoff Hotfix"
-            Version="1.6.4.0"
+    <Bundle Name="QTTabBar 1.6.5.0 Popup Capture Handoff Test"
+            Version="1.6.5.0"
             Manufacturer="indiff"
             UpgradeCode="{6E6EAFA9-B39E-4A2F-88A0-E52B365F33D8}"
             IconSourceFile="QTTabBar.ico">

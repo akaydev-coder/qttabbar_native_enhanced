@@ -25,6 +25,32 @@ using System.Threading.Tasks;
 using QTTabBarLib.Interop;
 
 namespace QTTabBarLib {
+    internal enum CaptureHandoffKind {
+        OpenTab,
+        OpenTabAndSelect,
+        FactoryOpenTab
+    }
+
+    [Serializable]
+    internal sealed class CaptureHandoffRequest {
+        internal CaptureHandoffKind Kind { get; private set; }
+        internal string Path { get; private set; }
+        internal string Selection { get; private set; }
+        internal bool WaitForSelection { get; private set; }
+
+        internal CaptureHandoffRequest(CaptureHandoffKind kind, string path,
+                string selection = null, bool waitForSelection = false) {
+            Kind = kind;
+            Path = path;
+            Selection = selection;
+            WaitForSelection = waitForSelection;
+        }
+
+        internal bool TryQueueOnMain() {
+            return QTTabBarClass.TryAcceptCaptureHandoff(this);
+        }
+    }
+
     internal static class InstanceManager {
         private static Dictionary<string, List<string>> selectDict = new Dictionary<string, List<string>>();
         private static Dictionary<Thread, QTTabBarClass> dictTabInstances = new Dictionary<Thread, QTTabBarClass>();
@@ -208,8 +234,14 @@ namespace QTTabBarLib {
                         if(callbackChannel != null) {
                             callbackChannel.OperationTimeout = TimeSpan.FromSeconds(2);
                         }
-                        callback.Execute(encodedAction);
-                        return true;
+                        if(callback.TryExecute(encodedAction)) {
+                            return true;
+                        }
+
+                        // A live channel is not enough: the target must deserialize the
+                        // request and successfully queue it on a live QTTabBar UI thread.
+                        sdInstances.RemoveAllValues(c => c == callback);
+                        QTUtility2.log("TryExecuteOnMainProcess target rejected capture handoff");
                     }
                     catch(Exception ex) {
                         callbacks.Remove(callback);
@@ -323,6 +355,9 @@ namespace QTTabBarLib {
         private interface ICommClient {
             [OperationContract]
             void Execute(byte[] encodedAction);
+
+            [OperationContract]
+            bool TryExecute(byte[] encodedAction);
         }
 
         [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Reentrant, UseSynchronizationContext = false)]
@@ -356,6 +391,30 @@ namespace QTTabBarLib {
                     QTUtility2.MakeErrorLog(ex, errStr);
                     // re initialize 
                     Initialize();
+                }
+            }
+
+            public bool TryExecute(byte[] encodedAction) {
+                Delegate action = null;
+                try {
+                    if(encodedAction == null || encodedAction.Length == 0) {
+                        return false;
+                    }
+
+                    action = ByteToDel(encodedAction);
+                    if(action == null || action.Method == null) {
+                        return false;
+                    }
+
+                    object result = action.DynamicInvoke();
+                    return result is bool && (bool)result;
+                }
+                catch(Exception ex) {
+                    string context = action == null || action.Method == null
+                            ? "TryExecute could not deserialize capture handoff"
+                            : "TryExecute could not queue capture handoff " + action.Method.Name;
+                    QTUtility2.MakeErrorLog(ex, context);
+                    return false;
                 }
             }
         }
@@ -536,7 +595,7 @@ namespace QTTabBarLib {
                     serviceChannel.OperationTimeout = TimeSpan.FromSeconds(2);
                 }
                 return service.TryExecuteOnMainProcess(
-                        DelToByte(new Action(() => LocalInvokeMain(action, true))));
+                        DelToByte(new Func<bool>(() => TryLocalBeginInvokeMain(action))));
             }
             catch(CommunicationException ex) {
                 QTUtility2.log("TryBeginInvokeMain communication unavailable: "
@@ -549,6 +608,47 @@ namespace QTTabBarLib {
             }
             catch(Exception ex) {
                 QTUtility2.log("TryBeginInvokeMain failed safely: "
+                        + ex.GetType().Name + " " + ex.Message);
+                return false;
+            }
+        }
+
+        internal static bool TryDispatchCapture(CaptureHandoffRequest request) {
+            if(request == null || string.IsNullOrEmpty(request.Path)) {
+                return false;
+            }
+
+            return TryExecuteMainRequest(request.TryQueueOnMain);
+        }
+
+        private static bool TryExecuteMainRequest(Func<bool> request) {
+            try {
+                ICommService service = GetChannel();
+                if(service == null) {
+                    return false;
+                }
+
+                if(service.IsMainProcess()) {
+                    return request();
+                }
+
+                IContextChannel serviceChannel = service as IContextChannel;
+                if(serviceChannel != null) {
+                    serviceChannel.OperationTimeout = TimeSpan.FromSeconds(2);
+                }
+                return service.TryExecuteOnMainProcess(DelToByte(request));
+            }
+            catch(CommunicationException ex) {
+                QTUtility2.log("Capture handoff communication unavailable: "
+                        + ex.GetType().Name + " " + ex.Message);
+                return false;
+            }
+            catch(TimeoutException ex) {
+                QTUtility2.log("Capture handoff timed out: " + ex.Message);
+                return false;
+            }
+            catch(Exception ex) {
+                QTUtility2.log("Capture handoff failed safely: "
                         + ex.GetType().Name + " " + ex.Message);
                 return false;
             }

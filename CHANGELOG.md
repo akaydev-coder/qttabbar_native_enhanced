@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.6.5.0 Popup Capture Handoff Test - 2026-08-01
+
+- Serialize popup-capture handoffs as a small request containing only paths, mode, and selection behavior.
+- Acknowledge capture only after the target Explorer deserializes the request and queues it on a live QTTabBar UI thread.
+- Close `/factory -Embedding` windows only after that acknowledgement; otherwise keep and initialize the original window.
+
 ## 1.6.4.0 Resume Handoff Hotfix - 2026-08-01
 
 - Require an acknowledgement before closing a newly captured Explorer window.

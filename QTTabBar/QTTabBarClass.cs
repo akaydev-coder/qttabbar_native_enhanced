@@ -2385,6 +2385,46 @@ namespace QTTabBarLib {
         // ����ķ�ʽ  select 1 / factory 2 / other 3
         private int mCmdType = 0;
 
+        private static bool TryDispatchOpenTabToMain(string capturedPath) {
+            return InstanceManager.TryDispatchCapture(new CaptureHandoffRequest(
+                    CaptureHandoffKind.OpenTab, capturedPath));
+        }
+
+        private static bool TryDispatchOpenTabSelectToMain(string capturedPath, string capturedSelection) {
+            return InstanceManager.TryDispatchCapture(new CaptureHandoffRequest(
+                    CaptureHandoffKind.OpenTabAndSelect, capturedPath, capturedSelection));
+        }
+
+        private static bool TryDispatchFactoryOpenTabToMain(string capturedPath, bool waitForSelection) {
+            return InstanceManager.TryDispatchCapture(new CaptureHandoffRequest(
+                    CaptureHandoffKind.FactoryOpenTab, capturedPath,
+                    waitForSelection: waitForSelection));
+        }
+
+        internal static bool TryAcceptCaptureHandoff(CaptureHandoffRequest request) {
+            if(request == null || string.IsNullOrEmpty(request.Path)) {
+                return false;
+            }
+
+            string capturedPath = request.Path;
+            string capturedSelection = request.Selection;
+            bool waitForSelection = request.WaitForSelection;
+            CaptureHandoffKind kind = request.Kind;
+
+            return InstanceManager.TryBeginInvokeMain(tabbar => {
+                tabbar.OpenNewTab(capturedPath);
+                if(kind == CaptureHandoffKind.OpenTabAndSelect
+                        && !string.IsNullOrEmpty(capturedSelection)) {
+                    tabbar.ShellBrowser.TrySetSelection(
+                            new Address[] { new Address(capturedSelection) }, null, true);
+                }
+                tabbar.RestoreWindow();
+                if(kind == CaptureHandoffKind.FactoryOpenTab && waitForSelection) {
+                    tabbar.Wait4Select();
+                }
+            });
+        }
+
         // This function is either called by BeforeNavigate2 (on XP and Vista)
         // �˺�����BeforeNavigate2����(on XP and Vista)
         // or NavigateComplete2 (on 7)
@@ -2510,51 +2550,20 @@ namespace QTTabBarLib {
                         {
                             mCmdType = 1;
                             string selectMe = GetNameToSelectFromCommandLineArg(cmd);
-                            // QTUtility2.log("select cmd " + cmd + " select :" + selectMe );
-                            TimeSpan start = new TimeSpan(DateTime.Now.Ticks);
-                            captureAccepted = InstanceManager.TryBeginInvokeMain(tabbar =>
-                            {
-                                tabbar.OpenNewTab(path);
-                                if (selectMe != "")
-                                {
-                                    tabbar.ShellBrowser.TrySetSelection(
-                                          new Address[] { new Address(selectMe) }, null, true);
-                                }
-                                
-                                tabbar.RestoreWindow();
-                                TimeSpan abs = new TimeSpan(DateTime.Now.Ticks).Subtract(start).Duration();
-                                QTUtility2.log(string.Format("select cmd BeginInvokeMain cost {0} ", abs.TotalMilliseconds));
-                            });
+                            captureAccepted = TryDispatchOpenTabSelectToMain(path, selectMe);
                         }
                         else if (lcmd.Contains("/factory")   ||
                                  lcmd.Contains("-embedding") ||
                                  lcmd.Contains("{75dff2b7-6936-4c06-a8bb-676a7b00b24b}"))
                         {
                             mCmdType = 2;
-                            TimeSpan start = new TimeSpan(DateTime.Now.Ticks);
-                            captureAccepted = InstanceManager.TryBeginInvokeMain(tabbar =>
-                            {
-                                tabbar.OpenNewTab(path);
-                                tabbar.RestoreWindow();
-                                if (Config.Window.CaptureWeChatSelection)
-                                {
-                                    tabbar.Wait4Select();
-                                }
-                                TimeSpan abs = new TimeSpan(DateTime.Now.Ticks).Subtract(start).Duration();
-                                QTUtility2.log(string.Format("factory cmd BeginInvokeMain cost {0} ", abs.TotalMilliseconds));
-                            });
+                            captureAccepted = TryDispatchFactoryOpenTabToMain(
+                                    path, Config.Window.CaptureWeChatSelection);
                         }
                         else
                         {
                             mCmdType = 3;
-                            captureAccepted = InstanceManager.TryBeginInvokeMain(tabbar =>
-                            {
-                                // vscode �򿪵�ʱ����ͬ���̣� ������Ҫ shell����
-                                tabbar.OpenNewTab(path);
-                                QTUtility2.log("other cmd BeginInvokeMain RestoreWindow");
-                                tabbar.RestoreWindow();
-                                // tabbar.Wait4Select(); // intellij idea / vs code ���±�����
-                            });
+                            captureAccepted = TryDispatchOpenTabToMain(path);
                         }
                     }
 
@@ -2569,7 +2578,7 @@ namespace QTTabBarLib {
                             // safe to close the temporary Explorer window.
                             fHideExplorer = true;
 
-                            if(mCmdType == 3 || !Config.Window.CaptureWeChatSelection) {
+                            if(mCmdType == 2 || mCmdType == 3 || !Config.Window.CaptureWeChatSelection) {
                                 QTUtility2.log("Close Explorer Explorer.Quit");
                                 Explorer.Quit();
                             }
