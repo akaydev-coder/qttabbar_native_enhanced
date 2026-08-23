@@ -80,7 +80,7 @@ namespace QTTabBarLib {
                PInvoke.LoWord((int)msg.WParam) == WM.CREATE) {
                 string name = PInvoke.GetClassName(msg.LParam);
                 if(name == "SHELLDLL_DefView" && msg.HWnd == ActiveContainer()) {
-                    RecaptureHandles(msg.LParam);
+                    RecaptureHandles(msg.LParam, true);
                 }
             }
             else if(msg.Msg == WM.WINDOWPOSCHANGED && containerControllers.Count > 1) {
@@ -109,7 +109,7 @@ namespace QTTabBarLib {
             }
             if(hwndShellView == IntPtr.Zero) {
                 if(CurrentListView != null) {
-                    CurrentListView.Dispose();
+                    DetachAndDisposeView(CurrentListView);
                 }
                 CurrentListView = new AbstractListView();
                 ListViewChanged(this, null);
@@ -119,7 +119,30 @@ namespace QTTabBarLib {
             }
         }
 
-        private void RecaptureHandles(IntPtr hwndShellView) {
+        private static bool IsReusableView(AbstractListView view) {
+            return view != null && view.Handle != IntPtr.Zero && PInvoke.IsWindow(view.Handle);
+        }
+
+        private void DetachAndDisposeView(AbstractListView view) {
+            if(view == null) return;
+            view.ListViewDestroyed -= ListView_Destroyed;
+            liveViews.Remove(view);
+            if(ReferenceEquals(CurrentListView, view)) CurrentListView = null;
+            if(ReferenceEquals(PreviousListView, view)) PreviousListView = null;
+            view.Dispose();
+        }
+
+        private void PruneDeadViews(AbstractListView preservedView) {
+            for(int i = liveViews.Count - 1; i >= 0; i--) {
+                AbstractListView view = liveViews[i];
+                if(ReferenceEquals(view, preservedView)) continue;
+                if(!IsReusableView(view)) {
+                    DetachAndDisposeView(view);
+                }
+            }
+        }
+
+        private void RecaptureHandles(IntPtr hwndShellView, bool forceNew = false) {
             bool fIsSysListView = false;
             IntPtr hwndListView = WindowUtils.FindChildWindow(hwndShellView, hwnd => {
                 string name = PInvoke.GetClassName(hwnd);
@@ -134,15 +157,31 @@ namespace QTTabBarLib {
                 return false;
             });
 
+            PruneDeadViews(CurrentListView);
+
             if(CurrentListView != null) {
-                if(CurrentListView.Handle == hwndListView) {
+                if(!forceNew && CurrentListView.Handle == hwndListView &&
+                        (hwndListView == IntPtr.Zero || IsReusableView(CurrentListView))) {
                     return;
                 }
-                PreviousListView = CurrentListView;
+                AbstractListView oldCurrent = CurrentListView;
+                if(forceNew && oldCurrent.Handle == hwndListView) {
+                    DetachAndDisposeView(oldCurrent);
+                }
+                else if(IsReusableView(oldCurrent)) {
+                    PreviousListView = oldCurrent;
+                }
+                else {
+                    DetachAndDisposeView(oldCurrent);
+                }
             }
 
             AbstractListView live = hwndListView == IntPtr.Zero ? null
                     : liveViews.Find(view => view.Handle == hwndListView);
+            if(live != null && forceNew) {
+                DetachAndDisposeView(live);
+                live = null;
+            }
             if(live != null) {
                 CurrentListView = live;
                 UpdateBackgroundWindow(hwndListView, fIsSysListView);
@@ -182,21 +221,28 @@ namespace QTTabBarLib {
         }
 
         private void ListView_Destroyed(object sender, EventArgs args) {
-            liveViews.Remove((AbstractListView)sender);
-            if(sender == CurrentListView) {
-                if(PreviousListView != null) {
-                    CurrentListView = PreviousListView;
-                    PreviousListView = null;
+            AbstractListView view = (AbstractListView)sender;
+            bool wasCurrent = ReferenceEquals(view, CurrentListView);
+            AbstractListView fallback = wasCurrent ? PreviousListView : null;
+
+            view.ListViewDestroyed -= ListView_Destroyed;
+            liveViews.Remove(view);
+            if(ReferenceEquals(CurrentListView, view)) CurrentListView = null;
+            if(ReferenceEquals(PreviousListView, view)) PreviousListView = null;
+            view.Dispose();
+
+            if(wasCurrent) {
+                if(fallback != null && !ReferenceEquals(fallback, view) &&
+                        IsReusableView(fallback) && liveViews.Contains(fallback)) {
+                    CurrentListView = fallback;
                 }
                 else {
+                    DetachAndDisposeView(fallback);
                     CurrentListView = new AbstractListView();
                 }
+                PreviousListView = null;
                 ListViewChanged(this, null);
             }
-            else if(sender == PreviousListView) {
-                PreviousListView = null;
-            }
-            ((AbstractListView)sender).Dispose();
         }
 
         #region IDisposable Members

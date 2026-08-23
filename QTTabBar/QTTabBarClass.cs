@@ -768,13 +768,14 @@ namespace QTTabBarLib {
                             return ptr;*/
 
                         case WM.XBUTTONDOWN:
-                             
                         case WM.XBUTTONUP:
-                            MouseButtons mouseButtons = MouseButtons;
+                            MOUSEHOOKSTRUCTEX mouseData = (MOUSEHOOKSTRUCTEX)Marshal.PtrToStructure(
+                                    lParam, typeof(MOUSEHOOKSTRUCTEX));
+                            int xButton = PInvoke.HiWord(mouseData.mouseData);
                             Keys modifierKeys = ModifierKeys;
-                            MouseChord chord = mouseButtons == MouseButtons.XButton1
+                            MouseChord chord = xButton == 1
                                     ? MouseChord.X1
-                                    : mouseButtons == MouseButtons.XButton2 ? MouseChord.X2 : MouseChord.None;
+                                    : xButton == 2 ? MouseChord.X2 : MouseChord.None;
                             if(chord == MouseChord.None) break;
                             chord = QTUtility.MakeMouseChord(chord, modifierKeys);
                             BindAction action;
@@ -3512,28 +3513,16 @@ namespace QTTabBarLib {
 
                     switch(command) {
                         case APPCOMMAND_BROWSER_BACKWARD:
-                            QTUtility2.log("APPCOMMAND_BROWSER_BACKWARD");
-                            if(fProcess) {
-                                MouseChord chord = QTUtility.MakeMouseChord(MouseChord.X1, ModifierKeys);
-                               // QTUtility2.log("APPCOMMAND_BROWSER_BACKWARD fProcess chord " + chord);
-                                if(Config.Mouse.GlobalMouseActions.TryGetValue(chord, out action)) {
-                                  //  QTUtility2.log("APPCOMMAND_BROWSER_BACKWARD fProcess DoBindAction " + action);
-                                    DoBindAction(action);
-                                }
-                            }
-                            else
-                            {
-
-                            }
-                            return true;
-
                         case APPCOMMAND_BROWSER_FORWARD:
-                            QTUtility2.log("APPCOMMAND_BROWSER_FORWARD");
-                            if(fProcess) {
-                                MouseChord chord = QTUtility.MakeMouseChord(MouseChord.X2, ModifierKeys);
-                                if(Config.Mouse.GlobalMouseActions.TryGetValue(chord, out action)) {
-                                    DoBindAction(action);
-                                }
+                            QTUtility2.log(command == APPCOMMAND_BROWSER_BACKWARD
+                                    ? "APPCOMMAND_BROWSER_BACKWARD"
+                                    : "APPCOMMAND_BROWSER_FORWARD");
+                            if(!fProcess) return false;
+                            MouseChord chord = QTUtility.MakeMouseChord(
+                                    command == APPCOMMAND_BROWSER_BACKWARD ? MouseChord.X1 : MouseChord.X2,
+                                    ModifierKeys);
+                            if(Config.Mouse.GlobalMouseActions.TryGetValue(chord, out action)) {
+                                DoBindAction(action);
                             }
                             return true;
 

@@ -24,7 +24,7 @@
     <?define SkuName = "QTTabBar"?>
     <?define RTMProductVersion="1.5.0" ?>
     <?define ProductVersion="1.6.5" ?> <!-- MSI compares only the first three version fields. -->
-    <?define VersionString="1.6.5.0 Popup Capture Handoff Test (2026)" ?>
+    <?define VersionString="1.6.5.0 Stable (2026)" ?>
     <?define UpgradeCode="{ec9baff7-58fb-40cb-9f67-1c438a7524a5}"?> <!-- NEVER CHANGE THIS, EVER!! -->
     <!-- Quizo and Paul Accisano and indiff -->
     <?define Manufacturer="indiff"?>

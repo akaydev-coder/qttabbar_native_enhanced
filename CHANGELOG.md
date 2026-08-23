@@ -1,10 +1,14 @@
 # Changelog
 
-## 1.6.5.0 Popup Capture Handoff Test - 2026-08-01
+## 1.6.5.0 Stable - 2026-08-23
 
 - Serialize popup-capture handoffs as a small request containing only paths, mode, and selection behavior.
 - Acknowledge capture only after the target Explorer deserializes the request and queues it on a live QTTabBar UI thread.
 - Close `/factory -Embedding` windows only after that acknowledgement; otherwise keep and initialize the original window.
+- Prune destroyed or stale Explorer list-view wrappers before reusing handles and recapture newly created shell views cleanly.
+- Decode XButton input from the native mouse-hook payload and pass unhandled browser commands back to Explorer.
+- Provide a German name, description, options dialog, search view, and context menu for the bundled Folder Memo plugin.
+- Promoted to Stable after nearly three weeks without observed regressions on the production system.
 
 ## 1.6.4.0 Resume Handoff Hotfix - 2026-08-01
 

@@ -24,8 +24,8 @@ using QTPlugin;
 using QTPlugin.Interop;
 
 namespace QuizoPlugins {
-  //  [Plugin(PluginType.Background, Author = "Quizo", Name = "Folder Memo", Version = "1.0.0.0", Description = "Memo for folder.")]
- 	[Plugin(PluginType.Interactive, Author = "indiff", Name = "文件夹备忘录", Version = "1.0.0.0", Description = "文件夹备忘录")]
+    [Plugin(PluginType.Background, Author = "Quizo", Name = "Ordner-Memo", Version = "1.0.0.0", Description = "Notizen für Ordner anzeigen und verwalten.")]
+ //	[Plugin(PluginType.Interactive, Author = "indiff", Name = "文件夹备忘录", Version = "1.0.0.0", Description = "文件夹备忘录")]
     public class Memo : IPluginClient {
         internal static byte[] ConfigValues = new byte[4];
         private MemoForm memoForm;
@@ -86,7 +86,10 @@ namespace QuizoPlugins {
         public void Open(IPluginServer pluginServer, IShellBrowser shellBrowser) {
             this.pluginServer = pluginServer;
             if(!this.pluginServer.TryGetLocalizedStrings(this, 4, out ResStrs)) {
-                if(CultureInfo.CurrentCulture.Parent.Name == "ja") {
+                if(CultureInfo.CurrentCulture.Parent.Name == "de") {
+                    ResStrs = Resource.str_de.Split(new char[] { ';' });
+                }
+                else if(CultureInfo.CurrentCulture.Parent.Name == "ja") {
                     ResStrs = Resource.str_ja.Split(new char[] { ';' });
                 }
                 else if(CultureInfo.CurrentCulture.Parent.Name == "zh-CHS") {

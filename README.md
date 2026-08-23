@@ -8,7 +8,7 @@ An enhanced native/managed QTTabBar fork for the classic Windows Explorer interf
 
 ## Stable release
 
-Current version: **1.6.2.0 Stable**
+Current version: **1.6.5.0 Stable**
 
 Download the installer from [GitHub Releases](https://github.com/akaydev-coder/qttabbar_native_enhanced/releases/latest).
 
@@ -35,7 +35,7 @@ Windows 11 may require a classic Explorer restoration solution. Test changes in 
 
 ## Installation
 
-1. Download `QTTabBar Setup - 1.6.2.0 Stable.exe` from the latest release.
+1. Download `QTTabBar Setup - 1.6.5.0 Stable.exe` from the latest release.
 2. Run the installer as an administrator.
 3. Restart Windows when requested.
 4. In Explorer, enable **QTTabBar** under **View > Toolbars**.

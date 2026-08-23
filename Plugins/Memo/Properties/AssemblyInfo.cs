@@ -21,8 +21,8 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Memo")]
-[assembly: AssemblyDescription("Memo Plugin")]
+[assembly: AssemblyTitle("Ordner-Memo")]
+[assembly: AssemblyDescription("Notizen für Ordner anzeigen und verwalten")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("indiff")]
 [assembly: AssemblyProduct("indiff")]

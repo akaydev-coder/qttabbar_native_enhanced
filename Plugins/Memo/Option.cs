@@ -58,7 +58,7 @@ namespace QuizoPlugins {
             buttonCancel.Name = "buttonCancel";
             buttonCancel.Size = new Size(0x4b, 0x17);
             buttonCancel.TabIndex = 3;
-            buttonCancel.Text = "Cancel";
+            buttonCancel.Text = "Abbrechen";
             buttonCancel.UseVisualStyleBackColor = true;
             AcceptButton = buttonOK;
             AutoScaleDimensions = new SizeF(6f, 13f);
@@ -75,7 +75,7 @@ namespace QuizoPlugins {
             ShowIcon = false;
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "Memo Option";
+            Text = "Ordner-Memo - Optionen";
             ResumeLayout(false);
         }
 
